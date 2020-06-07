@@ -37,6 +37,7 @@ namespace DofLog
             };
             account_cm_del.Click += Account_cm_del_Click;
 
+            account_cm.Items.Add(account_cm_edit);
             account_cm.Items.Add(account_cm_del);
 
             foreach (var account in App.config.Accounts)
@@ -53,10 +54,16 @@ namespace DofLog
         {
             try
             {
-                var newAccountDialog = new NewAccount(
-                    (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content
-                );
+                var senderAccount = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
+                var newAccountDialog = new NewAccount(senderAccount);
                 newAccountDialog.ShowDialog();
+                if (!senderAccount.Equals(newAccountDialog.createdAccount) && newAccountDialog.createdAccount != null)
+                {
+                    var index = App.config.Accounts.IndexOf(senderAccount);
+                    App.config.Accounts[index] = new Account(newAccountDialog.createdAccount);
+                    App.config.UpdateConfig();
+                    Reload_lb_accounts();
+                }
             }
             catch (Exception ex) { App.logstream.Error(ex); }
         }

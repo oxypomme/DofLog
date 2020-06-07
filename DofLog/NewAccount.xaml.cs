@@ -18,15 +18,14 @@ namespace DofLog
         {
             InitializeComponent();
 
-            btn_cancel.IsEnabled = false;
             tb_nickname.Text = acc.nickname;
             tb_username.Text = acc.username;
-            tb_password.Text = acc.password;
+            tb_password.Password = acc.password;
         }
 
         private void btn_ok_Click(object sender, RoutedEventArgs e)
         {
-            createdAccount = new Account(tb_nickname.Text, tb_username.Text, tb_password.Text);
+            createdAccount = new Account(tb_nickname.Text, tb_username.Text, tb_password.Password);
             Close();
         }
 

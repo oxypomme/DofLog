@@ -25,7 +25,7 @@
         <TextBox Name="tb_username" Grid.Column="1" Grid.Row="1" />
 
         <Label Content="Mot de passe :" Grid.Column="0" Grid.Row="2" />
-        <TextBox Name="tb_password" Grid.Column="1" Grid.Row="2" />
+        <PasswordBox Name="tb_password" Grid.Column="1" Grid.Row="2" />
 
         <Button Name="btn_cancel" Content="Annuler" Grid.Column="0" Grid.Row="3" Click="btn_cancel_Click" />
         <Button Name="btn_ok" Content="Valider" Grid.Column="1" Grid.Row="3" Click="btn_ok_Click" />
