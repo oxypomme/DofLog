@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using Forms = System.Windows.Forms;
@@ -121,13 +122,14 @@ namespace DofLog
             }
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (WindowState == WindowState.Minimized)
             {
                 notify.ShowBalloonTip(5000, "DofLog est maintenant réduit !", "Au moins il ne prend plus beaucoup de place...", Forms.ToolTipIcon.Info);
                 WindowState = WindowState.Minimized;
                 ShowInTaskbar = false;
+                e.Cancel = true;
             }
         }
 

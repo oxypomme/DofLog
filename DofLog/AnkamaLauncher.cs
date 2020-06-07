@@ -40,20 +40,13 @@ namespace DofLog
 
         public AnkamaLauncher()
         {
-            try
+            AL_Process = Process.GetProcessesByName("ankama launcher");
+            if (AL_Process.Length <= 0)
             {
+                var startInfo = new ProcessStartInfo(App.config.AL_Path);
+                startInfo.WorkingDirectory = Directory.GetParent(App.config.AL_Path).FullName;
+                Process.Start(startInfo);
                 AL_Process = Process.GetProcessesByName("ankama launcher");
-                if (AL_Process.Length <= 0)
-                {
-                    var startInfo = new ProcessStartInfo(App.config.AL_Path);
-                    startInfo.WorkingDirectory = Directory.GetParent(App.config.AL_Path).FullName;
-                    Process.Start(startInfo);
-                    AL_Process = Process.GetProcessesByName("ankama launcher");
-                }
-            }
-            catch (System.Exception)
-            {
-                throw new System.IO.FileNotFoundException();
             }
         }
 

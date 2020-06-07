@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DofLog"
         mc:Ignorable="d" MinWidth="250" MinHeight="144"
         Title="DofLog 2" Width="250" Height="144"
-        SizeChanged="Window_SizeChanged">
+        Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
