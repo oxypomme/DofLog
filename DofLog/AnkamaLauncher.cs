@@ -21,7 +21,7 @@ namespace DofLog
 
         #region Public Fields
 
-        public Process AL_Process { get; set; }
+        public Process[] AL_Process { get; set; }
 
         public Point usernameField = new Point(Origin.X + 325, Origin.Y + 190);
 
@@ -39,19 +39,16 @@ namespace DofLog
 
         public AnkamaLauncher()
         {
-            // TODO BUG : Mauvais processus
             try
             {
-                Process[] process = Process.GetProcessesByName("ankama launcher");
-                AL_Process = process[process.Length - 1];
+                AL_Process = Process.GetProcessesByName("ankama launcher");
             }
             catch (System.IndexOutOfRangeException)
             {
                 try
                 {
                     Process.Start(App.config.AL_Path);
-                    Process[] process = Process.GetProcessesByName("ankama launcher");
-                    AL_Process = process[process.Length - 1];
+                    AL_Process = Process.GetProcessesByName("ankama launcher");
                 }
                 catch (System.Exception)
                 {

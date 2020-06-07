@@ -43,7 +43,11 @@ namespace DofLog
             var al = new AnkamaLauncher();
             var input = new InputSimulator();
 
-            SetForegroundWindow(al.AL_Process.MainWindowHandle);
+            void SetForegroundWindowAL()
+            {
+                foreach (var process in al.AL_Process)
+                    SetForegroundWindow(process.MainWindowHandle);
+            }
 
             void UnlogFromAL(AnkamaLauncher launcher, InputSimulator controller = null)
             {
@@ -51,7 +55,7 @@ namespace DofLog
                     controller = new InputSimulator();
 
                 /* UNLOG FROM AL*/
-                SetForegroundWindow(launcher.AL_Process.MainWindowHandle);
+                SetForegroundWindowAL();
                 while (!launcher.IsGamesBtn(GetPixel(launcher.gamesBtn)))
                     Thread.Sleep(PAUSE * 2);
                 LClickMouseTo(launcher.profileBtn, controller);
@@ -60,6 +64,8 @@ namespace DofLog
                     Thread.Sleep(PAUSE * 2);
                 controller.Mouse.LeftButtonClick().Sleep(PAUSE);
             }
+
+            SetForegroundWindowAL();
 
             Thread.Sleep(PAUSE * 2);
 
@@ -95,12 +101,12 @@ namespace DofLog
             var dof = new Dofus();
             while (dofusProcess.Length < accounts.Count)
             {
-                SetForegroundWindow(al.AL_Process.MainWindowHandle);
+                SetForegroundWindowAL(); ;
 
                 CustomMouseTo(al.dofusBtn, input);
                 while (!al.IsStartBtn(GetPixel(al.startBtn)))
                 {
-                    SetForegroundWindow(al.AL_Process.MainWindowHandle);
+                    SetForegroundWindowAL(); ;
                     Thread.Sleep(PAUSE * 2);
                 }
                 LClickMouseTo(al.startBtn, input);
