@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DofLog
 {
+    [Serializable]
     public class Account
     {
         // TODO : Security

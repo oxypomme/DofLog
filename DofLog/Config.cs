@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace DofLog
 {
+    [Serializable]
     public class Config
     {
         #region Public Fields
@@ -23,36 +25,19 @@ namespace DofLog
         /// </summary>
         public void GenConfig()
         {
+            AL_Path = @"C:\Users\" + Environment.GetEnvironmentVariable("USERNAME") + @"\AppData\Local\Programs\zaap\Ankama Launcher.exe";
+            StayLog = false;
+            RetroMode = false;
+            Accounts = new List<Account>();
+
             try
             {
                 if (!File.Exists("config.json"))
                 {
                     File.Create("config.json").Close();
                     App.logstream.Log("config created");
-
-                    AL_Path = @"C:\Users\" + Environment.GetEnvironmentVariable("USERNAME") + @"\AppData\Local\Programs\zaap\Ankama Launcher.exe";
-                    StayLog = false;
-                    RetroMode = false;
-                    Accounts = new List<Account>();
-
-                    UpdateConfigJSON();
                 }
-                else
-                {
-                    Config config;
-                    using (StreamReader file = new StreamReader("config.json"))
-                    {
-                        config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
-                        file.Close();
-                    }
-
-                    foreach (var field in config.GetType().GetFields())
-                    {
-                        GetType().GetField(field.Name).SetValue(this, field.GetValue(config));
-                        App.logstream.Log(field.Name + " loaded");
-                    }
-
-                }
+                UpdateConfig();
             }
             catch (Exception e) { App.logstream.Error(e);  }
         }
@@ -65,6 +50,31 @@ namespace DofLog
                 file.Close();
                 App.logstream.Log("config reloaded");
             }
+        }
+
+        public void UpdateConfig()
+        {
+            {   // Serialize config
+                var stream = File.Open("config.ser", FileMode.Create);
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(stream, this);
+                stream.Close();
+                App.logstream.Log("config saved");
+            }
+
+            {  // Deserialize config
+                var stream = File.Open("config.ser", FileMode.Open);
+                var formatter = new BinaryFormatter();
+                var config = (Config)formatter.Deserialize(stream);
+                stream.Close();
+
+                foreach (var field in config.GetType().GetProperties())
+                {
+                    GetType().GetProperty(field.Name).SetValue(this, field.GetValue(config));
+                    App.logstream.Log(field.Name + " loaded");
+                }
+            }
+
         }
 
         #endregion Public Methods
