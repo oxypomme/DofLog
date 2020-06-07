@@ -65,7 +65,11 @@ namespace DofLog
                     Reload_lb_accounts();
                 }
             }
-            catch (Exception ex) { App.logstream.Error(ex); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
 
         private void Account_cm_del_Click(object sender, RoutedEventArgs e)
@@ -79,7 +83,11 @@ namespace DofLog
                 Reload_lb_accounts();
                 App.logstream.Log("Account removed");
             }
-            catch (Exception ex) { App.logstream.Error(ex); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
 
         private void btn_connect_Click(object sender, RoutedEventArgs e)
@@ -94,7 +102,16 @@ namespace DofLog
                 }
                 App.logger.LogAccounts(checkedAccounts);
             }
-            catch (Exception ex) { App.logstream.Error(ex); }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
 
         private void lb_accounts_cm_add_Click(object sender, RoutedEventArgs e)
@@ -110,7 +127,11 @@ namespace DofLog
                     Reload_lb_accounts();
                 }
             }
-            catch (Exception ex) { App.logstream.Error(ex); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
     }
 }
