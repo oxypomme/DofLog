@@ -76,6 +76,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="Dofus.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="LogStream.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

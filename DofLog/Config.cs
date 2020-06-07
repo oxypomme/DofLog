@@ -11,7 +11,6 @@ namespace DofLog
 
         public string AL_Path { get; set; }
         public bool StayLog { get; set; }
-        public bool UpperAccountsName { get; set; }
         public bool RetroMode { get; set; }
         public List<Account> Accounts { get; set; }
 
@@ -24,33 +23,38 @@ namespace DofLog
         /// </summary>
         public void GenConfig()
         {
-            if (!File.Exists("config.json"))
+            try
             {
-                File.Create("config.json").Close();
-
-                AL_Path = @"C:\Users\" + Environment.GetEnvironmentVariable("USERNAME") + @"\AppData\Local\Programs\zaap\Ankama Launcher.exe";
-                StayLog = false;
-                UpperAccountsName = true;
-                RetroMode = false;
-                Accounts = new List<Account>();
-
-                UpdateConfigJSON();
-            }
-            else
-            {
-                Config config;
-                using (StreamReader file = new StreamReader("config.json"))
+                if (!File.Exists("config.json"))
                 {
-                    config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
-                    file.Close();
-                }
+                    File.Create("config.json").Close();
+                    App.logstream.Log("config created");
 
-                AL_Path = config.AL_Path;
-                StayLog = config.StayLog;
-                UpperAccountsName = config.UpperAccountsName;
-                RetroMode = config.RetroMode;
-                Accounts = config.Accounts;
+                    AL_Path = @"C:\Users\" + Environment.GetEnvironmentVariable("USERNAME") + @"\AppData\Local\Programs\zaap\Ankama Launcher.exe";
+                    StayLog = false;
+                    RetroMode = false;
+                    Accounts = new List<Account>();
+
+                    UpdateConfigJSON();
+                }
+                else
+                {
+                    Config config;
+                    using (StreamReader file = new StreamReader("config.json"))
+                    {
+                        config = JsonConvert.DeserializeObject<Config>(file.ReadToEnd());
+                        file.Close();
+                    }
+
+                    foreach (var field in config.GetType().GetFields())
+                    {
+                        GetType().GetField(field.Name).SetValue(this, field.GetValue(config));
+                        App.logstream.Log(field.Name + " loaded");
+                    }
+
+                }
             }
+            catch (IOException e) { App.logstream.Error(e);  }
         }
 
         public void UpdateConfigJSON()
@@ -59,6 +63,7 @@ namespace DofLog
             {
                 file.Write(JsonConvert.SerializeObject(this));
                 file.Close();
+                App.logstream.Log("config reloaded");
             }
         }
 
