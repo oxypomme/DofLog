@@ -15,6 +15,7 @@ namespace DofLog
     public partial class App : Application
     {
         public static LogStream logstream = new LogStream(Path.Combine(Environment.CurrentDirectory, "logs.log"));
-        public static Config config = new Config();
+        internal static Config config = new Config();
+        internal static Logger logger = new Logger();
     }
 }

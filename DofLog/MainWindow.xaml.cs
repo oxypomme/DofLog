@@ -26,21 +26,13 @@ namespace DofLog
 
             App.config.GenConfig();
 
-            lb_accounts.Items.Clear(); //DEBUG purposes
-
-            var Accounts = new List<Account>();
-            Accounts.Add(new Account("Account 1", "fauxcompte", "biententé"));
-            Accounts.Add(new Account("Account 2", "fauxcompte", "biententé"));
-            Accounts.Add(new Account("Account 3", "fauxcompte", "biententé"));
-            Accounts.Add(new Account("Account 4", "fauxcompte", "biententé"));
-
             var account_cm = new ContextMenu();
             account_cm.Items.Add(new MenuItem
             {
                 Header = "Supprimer"
             });
 
-            foreach(var account in Accounts)
+            foreach(var account in App.config.Accounts)
             {
                 lb_accounts.Items.Add(new CheckBox
                 {
@@ -48,6 +40,17 @@ namespace DofLog
                     ContextMenu = account_cm
                 });
             }
+        }
+
+        private void btn_connect_Click(object sender, RoutedEventArgs e)
+        {
+            var checkedAccounts = new List<Account>();
+            foreach (CheckBox acc in lb_accounts.Items)
+            {
+                if (acc.IsChecked.HasValue && acc.IsChecked.Value)
+                    checkedAccounts.Add((Account) acc.Content);
+            }
+            App.logger.LogAccounts(checkedAccounts);
         }
     }
 }

@@ -44,6 +44,7 @@ namespace DofLog
         public void UpdateConfig()
         {
             {   // Serialize config
+                // TODO BUG: Accounts not saved 
                 var stream = File.Open("config.ser", FileMode.Create);
                 var formatter = new BinaryFormatter();
                 formatter.Serialize(stream, this);

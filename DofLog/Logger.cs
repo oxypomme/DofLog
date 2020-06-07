@@ -63,17 +63,25 @@ namespace DofLog
 
             Thread.Sleep(PAUSE * 2);
 
-            if (al.IsGamesBtn(GetPixel(al.gamesBtn)))
-                UnlogFromAL(al, input);
-
             /* CONNECT TO AL */
+            App.logstream.Log($"Waiting to detect FB button (x:{al.fbBtn.X},y:{al.fbBtn.Y})");
             while (!al.IsFbBtn(GetPixel(al.fbBtn)))
+            {
                 Thread.Sleep(PAUSE * 2);
+                if (al.IsGamesBtn(GetPixel(al.gamesBtn)))
+                {
+                    UnlogFromAL(al, input);
+                    App.logstream.Log("Unlogged from AL");
+                }
+            }
+            App.logstream.Log("FB button found !");
             LClickMouseTo(al.usernameField, input);
             WriteLogs(accounts[0], input);
+            App.logstream.Log($"Waiting to detect the log in button (x:{al.connectBtn.X},y:{al.connectBtn.Y})");
             while (!al.IsConnectBtn(GetPixel(al.connectBtn)))
                 Thread.Sleep(PAUSE * 2);
             input.Keyboard.KeyPress(VirtualKeyCode.RETURN).Sleep(PAUSE);
+            App.logstream.Log("First account connected");
 
             /* CONNECT TO DOFUS */
             while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
@@ -104,7 +112,7 @@ namespace DofLog
                     dofusProcess = TMPdofusProcess;
                 Thread.Sleep(PAUSE * 2);
             }
-            for (int i = 0; i < accounts.Count; i++)
+            for (int i = 1; i < accounts.Count; i++)
             {
                 SetForegroundWindow(dofusProcess[i].MainWindowHandle);
                 while (true)
@@ -121,6 +129,12 @@ namespace DofLog
                         input.Keyboard.KeyPress(VirtualKeyCode.RETURN).Sleep(PAUSE);
                     }
                 }
+            }
+
+            while (!dof.IsPlayBtn(GetPixel(dof.playBtn)))
+            {
+                Thread.Sleep(PAUSE * 2);
+                SetForegroundWindow(dofusProcess[0].MainWindowHandle);
             }
 
             if (!App.config.StayLog)

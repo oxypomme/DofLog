@@ -25,8 +25,8 @@ namespace DofLog
 
         public Point usernameField = new Point(Origin.X + 325, Origin.Y + 190);
 
-        public Point fbBtn = new Point(Origin.X + 120, Origin.Y + 450);
-        public Point connectBtn = new Point(360 + 295, 160 + 340);
+        public Point fbBtn = new Point(Origin.X + 120, Origin.Y + 490);
+        public Point connectBtn = new Point(360 + 295, 160 + 370);
         public Point gamesBtn = new Point(Origin.X + 130, Origin.Y + 50);
         public Point dofusBtn = new Point(Origin.X + 35, Origin.Y + 95);
         public Point startBtn = new Point(Origin.X + 1020, Origin.Y + 590);
@@ -39,6 +39,7 @@ namespace DofLog
 
         public AnkamaLauncher()
         {
+            // TODO BUG : Mauvais processus
             try
             {
                 Process[] process = Process.GetProcessesByName("ankama launcher");

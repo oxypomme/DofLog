@@ -12,10 +12,6 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <ListBox Name="lb_accounts" Grid.Column="0">
-            <CheckBox Content="Account 1" />
-            <CheckBox Content="Account 2" />
-            <CheckBox Content="Account 3" />
-            <CheckBox Content="Account 4" />
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" />
@@ -27,7 +23,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button Name="btn_connect" Content="Connexion" Grid.Row="0"/>
+            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click"/>
             <StackPanel Grid.Row="1">
                 <Button Name="btn_organizer" Content="Organizer" />
                 <Button Name="btn_settings" Content="Paramètres" />
