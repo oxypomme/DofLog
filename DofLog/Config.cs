@@ -53,9 +53,6 @@ namespace DofLog
         {
             using (var stream = File.Open("config.ser", FileMode.Create))
             {
-                // Serialize config
-                // TODO BUG: Accounts not saved
-
                 var formatter = new BinaryFormatter();
                 formatter.Serialize(stream, this);
                 App.logstream.Log("config saved");
@@ -66,7 +63,6 @@ namespace DofLog
         {
             using (var stream = File.Open("config.ser", FileMode.Open))
             {
-                // Deserialize config
                 var formatter = new BinaryFormatter();
                 var config = (Config)formatter.Deserialize(stream);
 
