@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 
 namespace DofLog
 {
@@ -42,18 +43,17 @@ namespace DofLog
             try
             {
                 AL_Process = Process.GetProcessesByName("ankama launcher");
-            }
-            catch (System.IndexOutOfRangeException)
-            {
-                try
+                if (AL_Process.Length <= 0)
                 {
-                    Process.Start(App.config.AL_Path);
+                    var startInfo = new ProcessStartInfo(App.config.AL_Path);
+                    startInfo.WorkingDirectory = Directory.GetParent(App.config.AL_Path).FullName;
+                    Process.Start(startInfo);
                     AL_Process = Process.GetProcessesByName("ankama launcher");
                 }
-                catch (System.Exception)
-                {
-                    throw new System.IO.FileNotFoundException();
-                }
+            }
+            catch (System.Exception)
+            {
+                throw new System.IO.FileNotFoundException();
             }
         }
 

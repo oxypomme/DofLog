@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Forms = System.Windows.Forms;
 
 namespace DofLog
 {
@@ -10,13 +11,40 @@ namespace DofLog
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Forms.NotifyIcon notify;
+
         public MainWindow()
         {
             InitializeComponent();
+            notify = new Forms.NotifyIcon();
 
             App.config.GenConfig();
 
             Reload_lb_accounts();
+
+            var cmNotify = new Forms.ContextMenu();
+            {
+                var item = new Forms.MenuItem();
+
+                item.Text = "Doflog - v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                item.Enabled = false;
+                cmNotify.MenuItems.Add(item);
+
+                item = new Forms.MenuItem();
+                item.Text = "&Show";
+                item.Click += NotifyMenu_ShowClick;
+                cmNotify.MenuItems.Add(item);
+
+                item = new Forms.MenuItem();
+                item.Text = "&Quit";
+                item.Click += NotifyMenu_QuitClick;
+                cmNotify.MenuItems.Add(item);
+            }
+
+            notify.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            notify.ContextMenu = cmNotify;
+            notify.Click += NotifyMenu_ShowClick;
+            notify.Visible = true;
         }
 
         private void Reload_lb_accounts()
@@ -24,21 +52,24 @@ namespace DofLog
             lb_accounts.Items.Clear();
 
             var account_cm = new ContextMenu();
-
-            var account_cm_edit = new MenuItem
             {
-                Header = "Editer"
-            };
-            account_cm_edit.Click += Account_cm_edit_Click; ;
-
-            var account_cm_del = new MenuItem
-            {
-                Header = "Supprimer"
-            };
-            account_cm_del.Click += Account_cm_del_Click;
-
-            account_cm.Items.Add(account_cm_edit);
-            account_cm.Items.Add(account_cm_del);
+                {
+                    var item = new MenuItem()
+                    {
+                        Header = "Editer"
+                    };
+                    item.Click += Account_cm_edit_Click;
+                    account_cm.Items.Add(item);
+                }
+                {
+                    var item = new MenuItem()
+                    {
+                        Header = "Supprimer"
+                    };
+                    item.Click += Account_cm_del_Click;
+                    account_cm.Items.Add(item);
+                }
+            }
 
             foreach (var account in App.config.Accounts)
             {
@@ -90,10 +121,34 @@ namespace DofLog
             }
         }
 
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+            {
+                notify.ShowBalloonTip(5000, "DofLog est maintenant réduit !", "Au moins il ne prend plus beaucoup de place...", Forms.ToolTipIcon.Info);
+                WindowState = WindowState.Minimized;
+                ShowInTaskbar = false;
+            }
+        }
+
+        private void NotifyMenu_ShowClick(object sender, EventArgs e)
+        {
+            notify.Visible = false;
+            WindowState = WindowState.Normal;
+            ShowInTaskbar = true;
+        }
+
+        private void NotifyMenu_QuitClick(object sender, EventArgs e)
+        {
+            Environment.Exit(1);
+        }
+
         private void btn_connect_Click(object sender, RoutedEventArgs e)
         { //TODO: ordre
             try
             {
+                Forms.Cursor.Current = Forms.Cursors.WaitCursor;
+
                 var checkedAccounts = new List<Account>();
                 foreach (CheckBox acc in lb_accounts.Items)
                 {
@@ -101,10 +156,26 @@ namespace DofLog
                         checkedAccounts.Add((Account)acc.Content);
                 }
                 App.logger.LogAccounts(checkedAccounts);
+
+                var sb = new System.Text.StringBuilder();
+                foreach (var acc in checkedAccounts)
+                {
+                    sb.Append(acc);
+                    if (checkedAccounts.IndexOf(acc) + 2 == checkedAccounts.Count)
+                        sb.Append(" et ");
+                    else if (checkedAccounts.IndexOf(acc) + 1 != checkedAccounts.Count)
+                        sb.Append(", ");
+                }
+                notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " sont connectés !", Forms.ToolTipIcon.Info);
             }
             catch (ArgumentException ex)
             {
                 MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
             catch (Exception ex)
@@ -112,6 +183,7 @@ namespace DofLog
                 MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
+            Forms.Cursor.Current = Forms.Cursors.Default;
         }
 
         private void lb_accounts_cm_add_Click(object sender, RoutedEventArgs e)

@@ -55,11 +55,14 @@ namespace DofLog
                     controller = new InputSimulator();
 
                 /* UNLOG FROM AL*/
+                App.logstream.Log("Logging off from AL");
                 SetForegroundWindowAL();
+                App.logstream.Log($"Waiting to detect the games button (x:{launcher.gamesBtn.X},y:{launcher.gamesBtn.Y})");
                 while (!launcher.IsGamesBtn(GetPixel(launcher.gamesBtn)))
                     Thread.Sleep(PAUSE * 2);
                 LClickMouseTo(launcher.profileBtn, controller);
                 CustomMouseTo(launcher.unlogBtn, controller);
+                App.logstream.Log($"Waiting to detect the unlog button (x:{launcher.unlogBtn.X},y:{launcher.unlogBtn.Y})");
                 while (!launcher.IsUnlogBtn(GetPixel(launcher.unlogBtn)))
                     Thread.Sleep(PAUSE * 2);
                 controller.Mouse.LeftButtonClick().Sleep(PAUSE);
@@ -90,14 +93,17 @@ namespace DofLog
             App.logstream.Log("First account connected");
 
             /* CONNECT TO DOFUS */
+            App.logstream.Log($"Waiting to detect the play button (x:{al.gamesBtn.X},y:{al.gamesBtn.Y})");
             while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
                 Thread.Sleep(PAUSE * 2);
+            App.logstream.Log("Play button found !");
             if (!App.config.RetroMode)
             {
                 LClickMouseTo(al.dofusBtn, input);
             }
 
             Process[] dofusProcess = Process.GetProcessesByName("dofus");
+            App.logstream.Log("Starting all the dofus instances");
             var dof = new Dofus();
             while (dofusProcess.Length < accounts.Count)
             {
@@ -118,25 +124,44 @@ namespace DofLog
                     dofusProcess = TMPdofusProcess;
                 Thread.Sleep(PAUSE * 2);
             }
-            for (int i = 1; i < accounts.Count; i++)
+            for (int i = 0; i < accounts.Count; i++)
             {
+                App.logstream.Log($"Connecting the dofus instance number {i}");
                 SetForegroundWindow(dofusProcess[i].MainWindowHandle);
+                var DoOnceDetect = false;
+                var DoOnceConnec = false;
                 while (true)
                 {
                     Thread.Sleep(PAUSE * 2);
                     SetForegroundWindow(dofusProcess[i].MainWindowHandle);
+                    if (!DoOnceDetect)
+                    {
+                        App.logstream.Log($"Waiting to detect the connect button (x:{dof.logBtn.X},y:{dof.logBtn.Y})");
+                        App.logstream.Log($"or the play button (x:{dof.playBtn.X},y:{dof.playBtn.Y})");
+                        DoOnceDetect = true;
+                    }
                     if (dof.IsPlayBtn(GetPixel(dof.playBtn)))
+                    {
+                        App.logstream.Log("Play button found ! No need to connect");
                         break;
+                    }
                     if (dof.IsLogBtn(GetPixel(dof.logBtn)))
                     {
+                        App.logstream.Log("Connect button found !");
                         Thread.Sleep(PAUSE * 2);
                         LClickMouseTo(dof.usernameField);
                         WriteLogs(accounts[i], input);
                         input.Keyboard.KeyPress(VirtualKeyCode.RETURN).Sleep(PAUSE);
                     }
+                    if (!DoOnceConnec)
+                    {
+                        App.logstream.Log($"Dofus instance number {i} connected !");
+                        DoOnceConnec = true;
+                    }
                 }
             }
 
+            App.logstream.Log($"Waiting to detect the play button (x:{dof.logBtn.X},y:{dof.logBtn.Y})");
             while (!dof.IsPlayBtn(GetPixel(dof.playBtn)))
             {
                 Thread.Sleep(PAUSE * 2);
@@ -147,6 +172,8 @@ namespace DofLog
                 UnlogFromAL(al, input);
 
             SetForegroundWindow(dofusProcess[0].MainWindowHandle);
+
+            App.logstream.Log("Connected and ready to play !");
         }
 
         #endregion Public Methods
