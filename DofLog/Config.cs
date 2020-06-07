@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -40,16 +39,6 @@ namespace DofLog
                 UpdateConfig();
             }
             catch (Exception e) { App.logstream.Error(e);  }
-        }
-
-        public void UpdateConfigJSON()
-        {
-            using (StreamWriter file = new StreamWriter("config.json"))
-            {
-                file.Write(JsonConvert.SerializeObject(this));
-                file.Close();
-                App.logstream.Log("config reloaded");
-            }
         }
 
         public void UpdateConfig()

@@ -20,13 +20,6 @@ namespace DofLog
 
         #region Constructor
 
-        public Account(string rawAccount)
-        {
-            nickname = rawAccount.Split('/')[0];
-            username = GetUsername(rawAccount.Split('/')[1]);
-            password = GetPassword(rawAccount.Split('/')[2]);
-        }
-        
         public Account(string nickname, string username, string password)
         {
             this.nickname = nickname;
