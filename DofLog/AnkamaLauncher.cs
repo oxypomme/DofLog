@@ -37,7 +37,7 @@ namespace DofLog
 
         #region Constructor
 
-        public AnkamaLauncher(Logger df)
+        public AnkamaLauncher()
         {
             try
             {
@@ -48,7 +48,7 @@ namespace DofLog
             {
                 try
                 {
-                    Process.Start(df.config.AL_Path);
+                    Process.Start(App.config.AL_Path);
                     Process[] process = Process.GetProcessesByName("ankama launcher");
                     AL_Process = process[process.Length - 1];
                 }

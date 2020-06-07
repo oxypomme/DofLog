@@ -8,6 +8,7 @@ namespace DofLog
 {
     public class Account
     {
+        // TODO : Security
         #region Public Fields
 
         public string nickname;
@@ -24,8 +25,24 @@ namespace DofLog
             username = GetUsername(rawAccount.Split('/')[1]);
             password = GetPassword(rawAccount.Split('/')[2]);
         }
+        
+        public Account(string nickname, string username, string password)
+        {
+            this.nickname = nickname;
+            this.username = username;
+            this.password = password;
+        }
 
         #endregion Constructor
+
+        #region Public Methods
+
+        public override string ToString()
+        {
+            return nickname;
+        }
+
+        #endregion Public Methods
 
         #region Private Methods
 

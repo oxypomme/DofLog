@@ -54,7 +54,7 @@ namespace DofLog
 
                 }
             }
-            catch (IOException e) { App.logstream.Error(e);  }
+            catch (Exception e) { App.logstream.Error(e);  }
         }
 
         public void UpdateConfigJSON()

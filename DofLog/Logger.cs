@@ -15,27 +15,11 @@ namespace DofLog
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        #region Public Fields
-
-        public string VERSION = "v2.0.0";
-        public Config config = new Config();
-
-        #endregion Public Fields
-
         #region Private Fields
 
         private const int PAUSE = 100;
 
         #endregion Private Fields
-
-        #region Constructor
-
-        public Logger()
-        {
-            config.GenConfig();
-        }
-
-        #endregion Constructor
 
         #region Public Methods
 
@@ -56,7 +40,7 @@ namespace DofLog
         {
             if (!accounts.Any())
                 throw new ArgumentException();
-            var al = new AnkamaLauncher(this);
+            var al = new AnkamaLauncher();
             var input = new InputSimulator();
 
             SetForegroundWindow(al.AL_Process.MainWindowHandle);
@@ -94,7 +78,7 @@ namespace DofLog
             /* CONNECT TO DOFUS */
             while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
                 Thread.Sleep(PAUSE * 2);
-            if (!config.RetroMode)
+            if (!App.config.RetroMode)
             {
                 LClickMouseTo(al.dofusBtn, input);
             }
@@ -139,7 +123,7 @@ namespace DofLog
                 }
             }
 
-            if (!config.StayLog)
+            if (!App.config.StayLog)
                 UnlogFromAL(al, input);
 
             SetForegroundWindow(dofusProcess[0].MainWindowHandle);

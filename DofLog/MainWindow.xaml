@@ -5,8 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DofLog"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="DofLog 2" Width="320" Height="240">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <ListBox Name="lb_accounts" Grid.Column="0">
+            <CheckBox Content="Account 1" />
+            <CheckBox Content="Account 2" />
+            <CheckBox Content="Account 3" />
+            <CheckBox Content="Account 4" />
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Button Name="btn_connect" Content="Connexion" Grid.Row="0"/>
+            <StackPanel Grid.Row="1">
+                <Button Name="btn_organizer" Content="Organizer" />
+                <Button Name="btn_settings" Content="Paramètres" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

@@ -23,6 +23,31 @@ namespace DofLog
         public MainWindow()
         {
             InitializeComponent();
+
+            App.config.GenConfig();
+
+            lb_accounts.Items.Clear(); //DEBUG purposes
+
+            var Accounts = new List<Account>();
+            Accounts.Add(new Account("Account 1", "fauxcompte", "biententé"));
+            Accounts.Add(new Account("Account 2", "fauxcompte", "biententé"));
+            Accounts.Add(new Account("Account 3", "fauxcompte", "biententé"));
+            Accounts.Add(new Account("Account 4", "fauxcompte", "biententé"));
+
+            var account_cm = new ContextMenu();
+            account_cm.Items.Add(new MenuItem
+            {
+                Header = "Supprimer"
+            });
+
+            foreach(var account in Accounts)
+            {
+                lb_accounts.Items.Add(new CheckBox
+                {
+                    Content = account,
+                    ContextMenu = account_cm
+                });
+            }
         }
     }
 }
