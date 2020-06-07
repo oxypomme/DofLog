@@ -61,20 +61,20 @@ namespace DofLog
 
             SetForegroundWindow(al.AL_Process.MainWindowHandle);
 
-            void UnlogFromAL(AnkamaLauncher al, InputSimulator input = null)
+            void UnlogFromAL(AnkamaLauncher launcher, InputSimulator controller = null)
             {
-                if (input == null)
-                    input = new InputSimulator();
+                if (controller == null)
+                    controller = new InputSimulator();
 
                 /* UNLOG FROM AL*/
-                SetForegroundWindow(al.AL_Process.MainWindowHandle);
-                while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
+                SetForegroundWindow(launcher.AL_Process.MainWindowHandle);
+                while (!launcher.IsGamesBtn(GetPixel(launcher.gamesBtn)))
                     Thread.Sleep(PAUSE * 2);
-                LClickMouseTo(al.profileBtn, input);
-                CustomMouseTo(al.unlogBtn, input);
-                while (!al.IsUnlogBtn(GetPixel(al.unlogBtn)))
+                LClickMouseTo(launcher.profileBtn, controller);
+                CustomMouseTo(launcher.unlogBtn, controller);
+                while (!launcher.IsUnlogBtn(GetPixel(launcher.unlogBtn)))
                     Thread.Sleep(PAUSE * 2);
-                input.Mouse.LeftButtonClick().Sleep(PAUSE);
+                controller.Mouse.LeftButtonClick().Sleep(PAUSE);
             }
 
             Thread.Sleep(PAUSE * 2);

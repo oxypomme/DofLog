@@ -13,7 +13,7 @@ namespace DofLog
         public bool StayLog { get; set; }
         public bool UpperAccountsName { get; set; }
         public bool RetroMode { get; set; }
-        public List<string> Accounts { get; set; }
+        public List<Account> Accounts { get; set; }
 
         #endregion Public Fields
 
@@ -32,7 +32,7 @@ namespace DofLog
                 StayLog = false;
                 UpperAccountsName = true;
                 RetroMode = false;
-                Accounts = new List<string>();
+                Accounts = new List<Account>();
 
                 UpdateConfigJSON();
             }
@@ -55,9 +55,11 @@ namespace DofLog
 
         public void UpdateConfigJSON()
         {
-            using StreamWriter file = new StreamWriter("config.json");
-            file.Write(JsonConvert.SerializeObject(this));
-            file.Close();
+            using (StreamWriter file = new StreamWriter("config.json"))
+            {
+                file.Write(JsonConvert.SerializeObject(this));
+                file.Close();
+            }
         }
 
         #endregion Public Methods
