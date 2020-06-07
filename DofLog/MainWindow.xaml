@@ -4,22 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DofLog"
-        mc:Ignorable="d" MinWidth="250" MinHeight="144"
-        Title="DofLog 2" Width="250" Height="144"
+        mc:Ignorable="d" MinWidth="250" MinHeight="200"
+        Title="DofLog 2" Width="250" Height="200"
         Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
-        <ListBox Name="lb_accounts" Grid.Column="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ToolBar>
+            <Button Name="btn_add" Content="+" />
+            <Button Name="btn_rem" Content="-" />
+            <Separator />
+            <Button Name="btn_settings" Content="P" />
+        </ToolBar>
+        <ListBox Name="lb_accounts" Grid.Column="0" Grid.Row="1">
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="lb_accounts_cm_add_Click" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -27,7 +37,6 @@
             <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click" />
             <StackPanel Grid.Row="1">
                 <Button Name="btn_organizer" Content="Organizer" />
-                <Button Name="btn_settings" Content="Paramètres" />
             </StackPanel>
         </Grid>
     </Grid>
