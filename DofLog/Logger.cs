@@ -15,6 +15,17 @@ namespace DofLog
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        internal static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+        internal struct Rect
+        {
+            public int Left;        // x position of upper-left corner
+            public int Top;         // y position of upper-left corner
+            public int Right;       // x position of lower-right corner
+            public int Bottom;      // y position of lower-right corner
+        }
+
         #region Private Fields
 
         private const int PAUSE = 100;
@@ -46,7 +57,9 @@ namespace DofLog
             void SetForegroundWindowAL()
             {
                 foreach (var process in al.AL_Process)
+                {
                     SetForegroundWindow(process.MainWindowHandle);
+                }
             }
 
             void UnlogFromAL(AnkamaLauncher launcher, InputSimulator controller = null)
@@ -84,6 +97,20 @@ namespace DofLog
                 }
             }
             App.logstream.Log("FB button found !");
+            {   // Redefine the origin of AL window
+                var max = new Point(0, 0);
+                foreach (var proc in al.AL_Process)
+                {
+                    var ptr = proc.MainWindowHandle;
+                    var procWin = new Rect();
+                    GetWindowRect(ptr, ref procWin);
+                    if (procWin.Left > max.X && procWin.Top > max.Y)
+                        max = new Point(procWin.Left, procWin.Top);
+                }
+
+                App.logstream.Log($"AL orig : (x:{max.X}, y: {max.Y})", "DEBUG");
+                al.RecalcCoord(max);
+            }
             LClickMouseTo(al.usernameField, input);
             WriteLogs(accounts[0], input);
             App.logstream.Log($"Waiting to detect the log in button (x:{al.connectBtn.X},y:{al.connectBtn.Y})");
@@ -93,7 +120,7 @@ namespace DofLog
             App.logstream.Log("First account connected");
 
             /* CONNECT TO DOFUS */
-            App.logstream.Log($"Waiting to detect the play button (x:{al.gamesBtn.X},y:{al.gamesBtn.Y})");
+            App.logstream.Log($"Waiting to detect the game button (x:{al.gamesBtn.X},y:{al.gamesBtn.Y})");
             while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
                 Thread.Sleep(PAUSE * 2);
             App.logstream.Log("Play button found !");
@@ -102,10 +129,10 @@ namespace DofLog
                 LClickMouseTo(al.dofusBtn, input);
             }
 
-            Process[] dofusProcess = Process.GetProcessesByName("dofus");
+            var dofusProcess = Process.GetProcessesByName("dofus").ToList();
             App.logstream.Log("Starting all the dofus instances");
-            var dof = new Dofus();
-            while (dofusProcess.Length < accounts.Count)
+            var dofs = new List<Dofus>();
+            while (dofs.Count < accounts.Count)
             {
                 SetForegroundWindowAL(); ;
 
@@ -117,61 +144,71 @@ namespace DofLog
                 }
                 LClickMouseTo(al.startBtn, input);
 
-                var TMPdofusProcess = Process.GetProcessesByName("dofus");
-                if (TMPdofusProcess.Length == dofusProcess.Length)
-                    Thread.Sleep(PAUSE * 2);
-                else
-                    dofusProcess = TMPdofusProcess;
-                Thread.Sleep(PAUSE * 2);
+                var TMPdofusProcess = Process.GetProcessesByName("dofus").ToList();
+                if (TMPdofusProcess.Count > dofusProcess.Count)
+                    foreach (var proc in TMPdofusProcess)
+                        if (!dofusProcess.Any(item => item.Id == proc.Id))
+                        {
+                            var ptr = proc.MainWindowHandle;
+                            Rect procWin = new Rect();
+                            GetWindowRect(ptr, ref procWin);
+
+                            App.logstream.Log($"Dofus orig : (x:{procWin.Left}, y: {procWin.Top})", "DEBUG");
+
+                            var dof = new Dofus(proc, new Point(procWin.Left, procWin.Top));
+                            dofs.Add(dof);
+                            App.logstream.Log($"Dofus count : {dofs.Count}");
+                            dofusProcess = TMPdofusProcess;
+                        }
             }
             for (int i = 0; i < accounts.Count; i++)
             {
                 App.logstream.Log($"Connecting the dofus instance number {i}");
-                SetForegroundWindow(dofusProcess[i].MainWindowHandle);
-                var DoOnceDetect = false;
-                var DoOnceConnec = false;
+                var dof = dofs[i];
+                var conectFound = false;
+                var doOnce = true;
                 while (true)
                 {
                     Thread.Sleep(PAUSE * 2);
-                    SetForegroundWindow(dofusProcess[i].MainWindowHandle);
-                    if (!DoOnceDetect)
-                    {
+                    SetForegroundWindow(dofs[i].process.MainWindowHandle);
+                    if (doOnce)
                         App.logstream.Log($"Waiting to detect the connect button (x:{dof.logBtn.X},y:{dof.logBtn.Y})");
-                        App.logstream.Log($"or the play button (x:{dof.playBtn.X},y:{dof.playBtn.Y})");
-                        DoOnceDetect = true;
-                    }
-                    if (dof.IsPlayBtn(GetPixel(dof.playBtn)))
-                    {
-                        App.logstream.Log("Play button found ! No need to connect");
-                        break;
-                    }
-                    if (dof.IsLogBtn(GetPixel(dof.logBtn)))
+                    if (dof.IsLogBtn(GetPixel(dof.logBtn)) && !conectFound)
                     {
                         App.logstream.Log("Connect button found !");
                         Thread.Sleep(PAUSE * 2);
                         LClickMouseTo(dof.usernameField);
                         WriteLogs(accounts[i], input);
                         input.Keyboard.KeyPress(VirtualKeyCode.RETURN).Sleep(PAUSE);
-                    }
-                    if (!DoOnceConnec)
-                    {
                         App.logstream.Log($"Dofus instance number {i} connected !");
-                        DoOnceConnec = true;
+                        conectFound = true;
+                        doOnce = true;
+                    }
+                    if (doOnce)
+                    {
+                        App.logstream.Log($"or the play button (x:{dof.playBtn.X},y:{dof.playBtn.Y})");
+                        doOnce = false;
+                    }
+                    if (dof.IsPlayBtn(GetPixel(dof.playBtn)))
+                    {
+                        App.logstream.Log("Play button found ! No need to connect");
+                        App.logstream.Log($"Dofus instance number {i} connected !");
+                        break;
                     }
                 }
             }
 
-            App.logstream.Log($"Waiting to detect the play button (x:{dof.logBtn.X},y:{dof.logBtn.Y})");
-            while (!dof.IsPlayBtn(GetPixel(dof.playBtn)))
+            App.logstream.Log($"Waiting to detect the play button (x:{dofs[0].logBtn.X},y:{dofs[0].logBtn.Y})");
+            while (!dofs[0].IsPlayBtn(GetPixel(dofs[0].playBtn)))
             {
                 Thread.Sleep(PAUSE * 2);
-                SetForegroundWindow(dofusProcess[0].MainWindowHandle);
+                SetForegroundWindow(dofs[0].process.MainWindowHandle);
             }
 
             if (!App.config.StayLog)
                 UnlogFromAL(al, input);
 
-            SetForegroundWindow(dofusProcess[0].MainWindowHandle);
+            SetForegroundWindow(dofs[0].process.MainWindowHandle);
 
             App.logstream.Log("Connected and ready to play !");
         }

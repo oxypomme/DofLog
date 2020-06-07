@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 
 namespace DofLog
 {
@@ -11,7 +12,7 @@ namespace DofLog
 
         private static Point Origin = new Point(0, 0);
 
-        private readonly Color logColor = Color.FromArgb(191, 231, 0);
+        private readonly Color logColor = Color.FromArgb(191, 230, 0);
         private readonly Color playColor = Color.FromArgb(191, 230, 0);
 
         #endregion Private Fields
@@ -23,18 +24,30 @@ namespace DofLog
         public Point logBtn = new Point(Origin.X + 915, Origin.Y + 565);
         public Point playBtn = new Point(Origin.X + 1150, Origin.Y + 815);
 
+        public Process process;
+
         #endregion Public Fields
+
+        public Dofus(Process pro, Point orig)
+        {
+            process = pro;
+            Origin = orig;
+
+            usernameField = new Point(Origin.X + 915, Origin.Y + 350);
+            logBtn = new Point(Origin.X + 915, Origin.Y + 565);
+            playBtn = new Point(Origin.X + 1150, Origin.Y + 815);
+        }
 
         #region Public Methods
 
         public bool IsLogBtn(Color pixelColor)
         {
-            return pixelColor == logColor;
+            return App.IsAroundColor(logColor, pixelColor);
         }
 
         public bool IsPlayBtn(Color pixelColor)
         {
-            return pixelColor == playColor;
+            return App.IsAroundColor(playColor, pixelColor);
         }
 
         #endregion Public Methods

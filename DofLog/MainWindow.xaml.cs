@@ -124,13 +124,10 @@ namespace DofLog
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (WindowState == WindowState.Minimized)
-            {
-                notify.ShowBalloonTip(5000, "DofLog est maintenant réduit !", "Au moins il ne prend plus beaucoup de place...", Forms.ToolTipIcon.Info);
-                WindowState = WindowState.Minimized;
-                ShowInTaskbar = false;
-                e.Cancel = true;
-            }
+            notify.ShowBalloonTip(5000, "DofLog est maintenant réduit !", "Au moins il ne prend plus beaucoup de place...", Forms.ToolTipIcon.Info);
+            WindowState = WindowState.Minimized;
+            ShowInTaskbar = false;
+            e.Cancel = true;
         }
 
         private void NotifyMenu_ShowClick(object sender, EventArgs e)
@@ -167,8 +164,12 @@ namespace DofLog
                         sb.Append(" et ");
                     else if (checkedAccounts.IndexOf(acc) + 1 != checkedAccounts.Count)
                         sb.Append(", ");
+                    if (checkedAccounts.Count > 1)
+                        sb.Append("sont");
+                    else
+                        sb.Append("est");
                 }
-                notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " sont connectés !", Forms.ToolTipIcon.Info);
+                notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connectés !", Forms.ToolTipIcon.Info);
             }
             catch (ArgumentException ex)
             {

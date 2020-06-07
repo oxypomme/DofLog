@@ -25,6 +25,7 @@ namespace DofLog
 
         private void btn_ok_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Bind enter
             createdAccount = new Account(tb_nickname.Text, tb_username.Text, tb_password.Password);
             Close();
         }
