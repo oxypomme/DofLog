@@ -14,7 +14,7 @@
         <ListBox Name="lb_accounts" Grid.Column="0">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" />
+                    <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="lb_accounts_cm_add_Click" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
@@ -23,7 +23,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click"/>
+            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click" />
             <StackPanel Grid.Row="1">
                 <Button Name="btn_organizer" Content="Organizer" />
                 <Button Name="btn_settings" Content="Paramètres" />

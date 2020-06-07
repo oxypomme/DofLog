@@ -1,6 +1,4 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -30,7 +28,6 @@ using System.Windows;
 
 //[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
 
-
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //où se trouvent les dictionnaires de ressources spécifiques à un thème
                                      //(utilisé si une ressource est introuvable dans la page,
@@ -39,7 +36,6 @@ using System.Windows;
                                               //(utilisé si une ressource est introuvable dans la page,
                                               // dans l'application ou dans l'un des dictionnaires de ressources spécifiques à un thème)
 )]
-
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //

@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace DofLog
 {
-    [Serializable]
+    [Serializable()]
     public class Config
     {
         #region Public Fields
@@ -31,32 +31,44 @@ namespace DofLog
 
             try
             {
-                if (!File.Exists("config.json"))
+                if (!File.Exists("config.ser"))
                 {
-                    File.Create("config.json").Close();
+                    File.Create("config.ser").Close();
                     App.logstream.Log("config created");
+                    SaveConfig();
                 }
-                UpdateConfig();
+                else
+                    LoadConfig();
             }
-            catch (Exception e) { App.logstream.Error(e);  }
+            catch (Exception e) { App.logstream.Error(e); }
         }
 
         public void UpdateConfig()
         {
-            {   // Serialize config
-                // TODO BUG: Accounts not saved 
-                var stream = File.Open("config.ser", FileMode.Create);
+            SaveConfig();
+            LoadConfig();
+        }
+
+        public void SaveConfig()
+        {
+            using (var stream = File.Open("config.ser", FileMode.Create))
+            {
+                // Serialize config
+                // TODO BUG: Accounts not saved
+
                 var formatter = new BinaryFormatter();
                 formatter.Serialize(stream, this);
-                stream.Close();
                 App.logstream.Log("config saved");
             }
+        }
 
-            {  // Deserialize config
-                var stream = File.Open("config.ser", FileMode.Open);
+        public void LoadConfig()
+        {
+            using (var stream = File.Open("config.ser", FileMode.Open))
+            {
+                // Deserialize config
                 var formatter = new BinaryFormatter();
                 var config = (Config)formatter.Deserialize(stream);
-                stream.Close();
 
                 foreach (var field in config.GetType().GetProperties())
                 {
@@ -64,7 +76,6 @@ namespace DofLog
                     App.logstream.Log(field.Name + " loaded");
                 }
             }
-
         }
 
         #endregion Public Methods

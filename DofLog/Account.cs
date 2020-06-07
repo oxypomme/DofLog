@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DofLog
 {
-    [Serializable]
+    [Serializable()]
     public class Account
     {
         // TODO : Security
+
         #region Public Fields
 
         public string nickname;
