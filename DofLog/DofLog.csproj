@@ -122,5 +122,21 @@
   <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\checkbox_c.jpg" />
+    <Resource Include="img\checkbox_uc.jpg" />
+    <Resource Include="img\down.png" />
+    <Resource Include="img\login.png" />
+    <Resource Include="img\up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\add.png" />
+    <Resource Include="img\remove.png" />
+    <Resource Include="img\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\no.png" />
+    <Resource Include="img\ok.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
