@@ -16,12 +16,12 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ToolBar>
-            <Button Name="btn_add" Content="+" />
+        <StackPanel Orientation="Horizontal">
+            <Button Name="btn_add" Content="+" Margin="3,0" />
             <Button Name="btn_rem" Content="-" />
-            <Separator />
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="3,0" />
             <Button Name="btn_settings" Content="P" />
-        </ToolBar>
+        </StackPanel>
         <ListBox Name="lb_accounts" Grid.Column="0" Grid.Row="1">
             <ListBox.ContextMenu>
                 <ContextMenu>
