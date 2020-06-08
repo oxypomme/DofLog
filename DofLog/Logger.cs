@@ -151,6 +151,7 @@ namespace DofLog
 
             var dofusProcess = Process.GetProcessesByName("dofus").ToList();
             App.logstream.Log("Starting all the dofus instances");
+            // TODO BUG: AL size can't start
             var dofs = new List<Dofus>();
             while (dofs.Count < accounts.Count)
             {
