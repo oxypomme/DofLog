@@ -229,9 +229,17 @@ namespace DofLog
 
         private void btn_settings_Click(object sender, RoutedEventArgs e)
         {
-            var settingsDialog = new SettingsDialog();
-            settingsDialog.Owner = this;
-            settingsDialog.ShowDialog();
+            try
+            {
+                var settingsDialog = new SettingsDialog();
+                settingsDialog.Owner = this;
+                settingsDialog.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
     }
 }
