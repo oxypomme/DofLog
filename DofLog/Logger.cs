@@ -51,12 +51,11 @@ namespace DofLog
         {
             if (!accounts.Any())
                 throw new ArgumentException();
-            var al = new AnkamaLauncher();
             var input = new InputSimulator();
 
-            void SetForegroundWindowAL()
+            void SetForegroundWindowAL(AnkamaLauncher launcher)
             {
-                foreach (var process in al.AL_Process)
+                foreach (var process in launcher.process)
                 {
                     SetForegroundWindow(process.MainWindowHandle);
                 }
@@ -69,7 +68,7 @@ namespace DofLog
 
                 /* UNLOG FROM AL*/
                 App.logstream.Log("Logging off from AL");
-                SetForegroundWindowAL();
+                SetForegroundWindowAL(launcher);
                 App.logstream.Log($"Waiting to detect the games button (x:{launcher.gamesBtn.X},y:{launcher.gamesBtn.Y})");
                 while (!launcher.IsGamesBtn(GetPixel(launcher.gamesBtn)))
                     Thread.Sleep(PAUSE * 2);
@@ -81,7 +80,42 @@ namespace DofLog
                 controller.Mouse.LeftButtonClick().Sleep(PAUSE);
             }
 
-            SetForegroundWindowAL();
+            // Attenmping to get the AL processes
+            var AL_Process = Process.GetProcessesByName("ankama launcher");
+            if (AL_Process.Length <= 0)
+            {
+                // Starting AL
+                var startInfo = new ProcessStartInfo(App.config.AL_Path);
+                startInfo.WorkingDirectory = System.IO.Directory.GetParent(App.config.AL_Path).FullName;
+                Process.Start(startInfo);
+                AL_Process = Process.GetProcessesByName("ankama launcher");
+            }
+
+            var AL_Origin = new Point(0, 0);
+            var AL_Size = new Size(0, 0);
+            {   // Redefine the origin of AL window
+                while (true)
+                {
+                    foreach (var proc in AL_Process)
+                    {
+                        var ptr = proc.MainWindowHandle;
+                        var procWin = new Rect();
+                        GetWindowRect(ptr, ref procWin);
+                        if (procWin.Left > AL_Origin.X && procWin.Top > AL_Origin.Y)
+                            AL_Origin = new Point(procWin.Left, procWin.Top);
+                        if (procWin.Right - procWin.Left > AL_Size.Width && procWin.Bottom - procWin.Top > AL_Size.Height)
+                            AL_Size = new Size(procWin.Right - procWin.Left, procWin.Bottom - procWin.Top);
+                    }
+                    if (AL_Size.Width != 0 && AL_Size.Height != 0)
+                        break;
+                }
+
+                App.logstream.Log($"AL orig (x:{AL_Origin.X},y: {AL_Origin.Y})", "DEBUG");
+                App.logstream.Log($"AL size (x:{AL_Size.Width},y: {AL_Size.Height})", "DEBUG");
+            }
+            var al = new AnkamaLauncher(AL_Process, AL_Origin, AL_Size);
+
+            SetForegroundWindowAL(al);
 
             Thread.Sleep(PAUSE * 2);
 
@@ -97,20 +131,6 @@ namespace DofLog
                 }
             }
             App.logstream.Log("FB button found !");
-            {   // Redefine the origin of AL window
-                var max = new Point(0, 0);
-                foreach (var proc in al.AL_Process)
-                {
-                    var ptr = proc.MainWindowHandle;
-                    var procWin = new Rect();
-                    GetWindowRect(ptr, ref procWin);
-                    if (procWin.Left > max.X && procWin.Top > max.Y)
-                        max = new Point(procWin.Left, procWin.Top);
-                }
-
-                App.logstream.Log($"AL orig : (x:{max.X}, y: {max.Y})", "DEBUG");
-                al.RecalcCoord(max);
-            }
             LClickMouseTo(al.usernameField, input);
             WriteLogs(accounts[0], input);
             App.logstream.Log($"Waiting to detect the log in button (x:{al.connectBtn.X},y:{al.connectBtn.Y})");
@@ -123,7 +143,7 @@ namespace DofLog
             App.logstream.Log($"Waiting to detect the game button (x:{al.gamesBtn.X},y:{al.gamesBtn.Y})");
             while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
                 Thread.Sleep(PAUSE * 2);
-            App.logstream.Log("Play button found !");
+            App.logstream.Log("Game button found !");
             if (!App.config.RetroMode)
             {
                 LClickMouseTo(al.dofusBtn, input);
@@ -134,12 +154,12 @@ namespace DofLog
             var dofs = new List<Dofus>();
             while (dofs.Count < accounts.Count)
             {
-                SetForegroundWindowAL(); ;
+                SetForegroundWindowAL(al); ;
 
                 CustomMouseTo(al.dofusBtn, input);
                 while (!al.IsStartBtn(GetPixel(al.startBtn)))
                 {
-                    SetForegroundWindowAL(); ;
+                    SetForegroundWindowAL(al); ;
                     Thread.Sleep(PAUSE * 2);
                 }
                 LClickMouseTo(al.startBtn, input);
@@ -149,13 +169,29 @@ namespace DofLog
                     foreach (var proc in TMPdofusProcess)
                         if (!dofusProcess.Any(item => item.Id == proc.Id))
                         {
-                            var ptr = proc.MainWindowHandle;
-                            Rect procWin = new Rect();
-                            GetWindowRect(ptr, ref procWin);
+                            var procWin = new Rect();
+                            var size = new Size();
+                            var doOnce = true;
+                            while (true)
+                            {
+                                Thread.Sleep(PAUSE * 2);
+                                var ptr = proc.MainWindowHandle;
+                                GetWindowRect(ptr, ref procWin);
 
-                            App.logstream.Log($"Dofus orig : (x:{procWin.Left}, y: {procWin.Top})", "DEBUG");
+                                if (doOnce)
+                                {
+                                    App.logstream.Log("Waiting dofus start");
+                                    doOnce = false;
+                                }
 
-                            var dof = new Dofus(proc, new Point(procWin.Left, procWin.Top));
+                                size = new Size(procWin.Right - procWin.Left, procWin.Bottom - procWin.Top);
+                                if (size.Width != 0 && size.Height != 0)
+                                    break;
+                            }
+                            App.logstream.Log($"Dofus orig (x:{procWin.Left},y: {procWin.Top})", "DEBUG");
+                            App.logstream.Log($"Dofus size (x:{size.Width},y: {size.Height})", "DEBUG");
+
+                            var dof = new Dofus(proc, new Point(procWin.Left, procWin.Top), size);
                             dofs.Add(dof);
                             App.logstream.Log($"Dofus count : {dofs.Count}");
                             dofusProcess = TMPdofusProcess;

@@ -1,16 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace DofLog
 {
-    internal class Dofus
+    internal class Dofus : AppInstance
     {
-        //TODO: En fonction de la taille de l'écran
-        //TODO: En fonction de la taille de la fenêtre
-
         #region Private Fields
-
-        private static Point Origin = new Point(0, 0);
 
         private readonly Color logColor = Color.FromArgb(191, 230, 0);
         private readonly Color playColor = Color.FromArgb(191, 230, 0);
@@ -19,23 +15,28 @@ namespace DofLog
 
         #region Public Fields
 
-        public Point usernameField = new Point(Origin.X + 915, Origin.Y + 350);
+        public Point usernameField;
 
-        public Point logBtn = new Point(Origin.X + 915, Origin.Y + 565);
-        public Point playBtn = new Point(Origin.X + 1150, Origin.Y + 815);
-
-        public Process process;
+        public Point logBtn;
+        public Point playBtn;
 
         #endregion Public Fields
 
-        public Dofus(Process pro, Point orig)
+        // Coordinates are measured with a resolution of 1920x1040
+        public Dofus(Process pro, Point orig, Size size) : base(pro, orig, size, new Size(1920, 1040))
         {
-            process = pro;
-            Origin = orig;
-
-            usernameField = new Point(Origin.X + 915, Origin.Y + 350);
-            logBtn = new Point(Origin.X + 915, Origin.Y + 565);
-            playBtn = new Point(Origin.X + 1150, Origin.Y + 815);
+            usernameField = new Point(
+                App.RoundFloat(Origin.X + 915 * sizeModifier.X),
+                App.RoundFloat(Origin.Y + 350 * sizeModifier.Y)
+            );
+            logBtn = new Point(
+                App.RoundFloat(Origin.X + 915 * sizeModifier.X),
+                App.RoundFloat(Origin.Y + 565 * sizeModifier.Y)
+            );
+            playBtn = new Point(
+                App.RoundFloat(Origin.X + 1150 * sizeModifier.X),
+                App.RoundFloat(Origin.Y + 815 * sizeModifier.Y)
+            );
         }
 
         #region Public Methods

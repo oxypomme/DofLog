@@ -30,5 +30,15 @@ namespace DofLog
                         return true;
             return false;
         }
+
+        /// <summary>
+        /// Round a float and converts it to an int
+        /// </summary>
+        /// <param name="value">The float</param>
+        /// <returns>An int</returns>
+        public static int RoundFloat(float value)
+        {
+            return Convert.ToInt32(Math.Round(value));
+        }
     }
 }
