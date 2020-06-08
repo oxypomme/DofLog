@@ -190,9 +190,9 @@ namespace DofLog
                         sb.Append(", ");
                     else if (checkedAccounts.IndexOf(acc) + 1 == checkedAccounts.Count)
                         if (checkedAccounts.Count > 1)
-                            sb.Append("sont");
+                            sb.Append(" sont");
                         else
-                            sb.Append("est");
+                            sb.Append(" est");
                 }
                 notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connectés !", Forms.ToolTipIcon.Info);
             }
