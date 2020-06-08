@@ -35,7 +35,7 @@
             </Button>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" />
         </StackPanel>
-        <ListBox Name="lb_accounts" Margin="0,5,5,0" Grid.Column="0" Grid.Row="1">
+        <ListBox Name="lb_accounts" SelectionMode="Single" Margin="0,5,5,0" Grid.Column="0" Grid.Row="1">
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click">

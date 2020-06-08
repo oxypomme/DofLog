@@ -43,12 +43,18 @@ namespace DofLog
             catch (Exception e) { App.logstream.Error(e); }
         }
 
+        /// <summary>
+        /// Save into config.ser and load from config.ser
+        /// </summary>
         public void UpdateConfig()
         {
             SaveConfig();
             LoadConfig();
         }
 
+        /// <summary>
+        /// Save into config.ser
+        /// </summary>
         public void SaveConfig()
         {
             using (var stream = File.Open("config.ser", FileMode.Create))
@@ -59,6 +65,9 @@ namespace DofLog
             }
         }
 
+        /// <summary>
+        /// Load from config.ser
+        /// </summary>
         public void LoadConfig()
         {
             using (var stream = File.Open("config.ser", FileMode.Open))

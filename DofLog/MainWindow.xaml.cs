@@ -12,7 +12,7 @@ namespace DofLog
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Forms.NotifyIcon notify;
+        private Forms.NotifyIcon notify;
 
         public MainWindow()
         {
@@ -109,12 +109,18 @@ namespace DofLog
         {
             try
             {
-                var senderAccount = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
-                var newAccountDialog = new NewAccount(senderAccount);
+                Account item;
+                if (sender is MenuItem)
+                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
+                else if (sender is Button)
+                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                else
+                    return;
+                var newAccountDialog = new NewAccount(item);
                 newAccountDialog.ShowDialog();
-                if (!senderAccount.Equals(newAccountDialog.createdAccount) && newAccountDialog.createdAccount != null)
+                if (!item.Equals(newAccountDialog.createdAccount) && newAccountDialog.createdAccount != null)
                 {
-                    var index = App.config.Accounts.IndexOf(senderAccount);
+                    var index = App.config.Accounts.IndexOf(item);
                     App.config.Accounts[index] = new Account(newAccountDialog.createdAccount);
                     App.config.UpdateConfig();
                     Reload_lb_accounts();
@@ -131,9 +137,14 @@ namespace DofLog
         {
             try
             {
-                App.config.Accounts.Remove(
-                    (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content
-                );
+                Account item;
+                if (sender is MenuItem)
+                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
+                else if (sender is Button)
+                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                else
+                    return;
+                App.config.Accounts.Remove(item);
                 App.config.UpdateConfig();
                 Reload_lb_accounts();
                 App.logstream.Log("Account removed");
