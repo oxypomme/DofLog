@@ -20,9 +20,9 @@ namespace DofLog
             notify = new Forms.NotifyIcon();
 
             App.config.GenConfig();
-
             Reload_lb_accounts();
 
+            // Creating the context menu of the notify
             var cmNotify = new Forms.ContextMenu();
             {
                 var item = new Forms.MenuItem();
@@ -42,6 +42,7 @@ namespace DofLog
                 cmNotify.MenuItems.Add(item);
             }
 
+            // Setting up the notify
             notify.Icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetExecutingAssembly().Location);
             notify.ContextMenu = cmNotify;
             notify.Click += NotifyMenu_ShowClick;
@@ -52,12 +53,13 @@ namespace DofLog
         {
             lb_accounts.Items.Clear();
 
+            // Creating the context menu of each check box
             var account_cm = new ContextMenu();
             {
                 {
                     var item = new MenuItem()
                     {
-                        Header = "Editer"
+                        Header = "Éditer"
                     };
                     item.Click += EditAccount_Click;
                     account_cm.Items.Add(item);
@@ -72,6 +74,7 @@ namespace DofLog
                 }
             }
 
+            // Creating check box for each account saved
             foreach (var account in App.config.Accounts)
             {
                 lb_accounts.Items.Add(new CheckBox
@@ -151,6 +154,7 @@ namespace DofLog
 
         private void NotifyMenu_QuitClick(object sender, EventArgs e)
         {
+            App.logstream.Close();
             Environment.Exit(1);
         }
 

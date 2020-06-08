@@ -14,12 +14,19 @@ namespace DofLog
         internal static Config config = new Config();
         internal static Logger logger = new Logger();
 
-        public static bool IsAroundColor(Color colorBase, Color colorFound)
+        /// <summary>
+        /// Check if a color is nearly the same of another
+        /// </summary>
+        /// <param name="colorBase">The color that you searched</param>
+        /// <param name="colorFound">The color that you find</param>
+        /// <param name="tolerance">The tolerance (inclusive), by default 10</param>
+        /// <returns>`true` if the color is nearly the same, `false` if doesn't</returns>
+        public static bool IsAroundColor(Color colorBase, Color colorFound, int tolerance = 10)
         {
             //logstream.Log(colorFound, "DEBUG");
-            if (colorBase.R - 10 <= colorFound.R && colorFound.R <= colorBase.R + 10)
-                if (colorBase.G - 10 <= colorFound.G && colorFound.G <= colorBase.G + 10)
-                    if (colorBase.B - 10 <= colorFound.B && colorFound.B <= colorBase.B + 10)
+            if (colorBase.R - tolerance <= colorFound.R && colorFound.R <= colorBase.R + tolerance)
+                if (colorBase.G - tolerance <= colorFound.G && colorFound.G <= colorBase.G + tolerance)
+                    if (colorBase.B - tolerance <= colorFound.B && colorFound.B <= colorBase.B + tolerance)
                         return true;
             return false;
         }

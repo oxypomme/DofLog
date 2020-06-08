@@ -17,8 +17,17 @@ namespace DofLog
             writer.Close();
         }
 
+        /// <summary>
+        /// Logs an object as error
+        /// </summary>
+        /// <param name="value">The object</param>
         public void Error(object value) => Log(value, "ERROR");
 
+        /// <summary>
+        /// Logs an object
+        /// </summary>
+        /// <param name="value">The object</param>
+        /// <param name="status">The status, info by default</param>
         public void Log(object value, string status = "INFO")
         {
             writer.WriteLine($"[{status}] {DateTime.Now} - {value.ToString()}");
@@ -42,6 +51,10 @@ namespace DofLog
             Console.WriteLine($"] {DateTime.Now} - {value.ToString()}");
         }
 
+        /// <summary>
+        /// Logs an object as warning
+        /// </summary>
+        /// <param name="value"></param>
         public void Warning(object value) => Log(value, "WARNING");
 
         [Obsolete]
