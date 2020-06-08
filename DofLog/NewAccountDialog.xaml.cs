@@ -5,16 +5,16 @@ namespace DofLog
     /// <summary>
     /// Logique d'interaction pour NewAccount.xaml
     /// </summary>
-    public partial class NewAccount : Window
+    public partial class NewAccountDialog : Window
     {
         internal Account createdAccount;
 
-        public NewAccount()
+        public NewAccountDialog()
         {
             InitializeComponent();
         }
 
-        public NewAccount(Account acc)
+        public NewAccountDialog(Account acc)
         {
             InitializeComponent();
 

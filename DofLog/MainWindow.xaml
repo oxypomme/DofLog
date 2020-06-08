@@ -54,7 +54,7 @@
                 <Button Name="btn_organizer" ToolTip="Lance le module Organizer">
                     <Image Source="img/organizer.ico" />
                 </Button>
-                <Button Name="btn_settings" ToolTip="Affiche les paramètres de l'application">
+                <Button Name="btn_settings" ToolTip="Affiche les paramètres de l'application" Click="btn_settings_Click">
                     <Image Source="img/settings.png" />
                 </Button>
             </StackPanel>

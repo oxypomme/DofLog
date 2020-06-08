@@ -89,7 +89,8 @@ namespace DofLog
         {
             try
             {
-                var newAccountDialog = new NewAccount();
+                var newAccountDialog = new NewAccountDialog();
+                newAccountDialog.Owner = this;
                 newAccountDialog.ShowDialog();
                 if (newAccountDialog.createdAccount != null)
                 {
@@ -116,7 +117,8 @@ namespace DofLog
                     item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
                 else
                     return;
-                var newAccountDialog = new NewAccount(item);
+                var newAccountDialog = new NewAccountDialog(item);
+                newAccountDialog.Owner = this;
                 newAccountDialog.ShowDialog();
                 if (!item.Equals(newAccountDialog.createdAccount) && newAccountDialog.createdAccount != null)
                 {
@@ -223,6 +225,13 @@ namespace DofLog
                 App.logstream.Error(ex);
             }
             Forms.Cursor.Current = Forms.Cursors.Default;
+        }
+
+        private void btn_settings_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsDialog = new SettingsDialog();
+            settingsDialog.Owner = this;
+            settingsDialog.ShowDialog();
         }
     }
 }
