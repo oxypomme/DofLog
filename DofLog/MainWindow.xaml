@@ -39,7 +39,9 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click">
-                        <Image Source="img/add.png" />
+                        <MenuItem.Icon>
+                            <Image Source="img/add.png" />
+                        </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>

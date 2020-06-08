@@ -59,7 +59,11 @@ namespace DofLog
                 {
                     var item = new MenuItem()
                     {
-                        Header = "Éditer"
+                        Header = "Éditer",
+                        Icon = new Image()
+                        {
+                            Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/edit.png", UriKind.Relative))
+                        }
                     };
                     item.Click += EditAccount_Click;
                     account_cm.Items.Add(item);
@@ -67,7 +71,11 @@ namespace DofLog
                 {
                     var item = new MenuItem()
                     {
-                        Header = "Supprimer"
+                        Header = "Supprimer",
+                        Icon = new Image()
+                        {
+                            Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/remove.png", UriKind.Relative))
+                        }
                     };
                     item.Click += DeleteAccount_Click;
                     account_cm.Items.Add(item);
