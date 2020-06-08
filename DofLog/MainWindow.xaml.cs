@@ -121,10 +121,10 @@ namespace DofLog
                 Account item;
                 if (sender is MenuItem)
                     item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
-                else if (sender is Button)
+                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
                     item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
                 else
-                    return;
+                    throw new NullReferenceException();
                 var newAccountDialog = new NewAccountDialog(item);
                 newAccountDialog.Owner = this;
                 newAccountDialog.ShowDialog();
@@ -135,6 +135,11 @@ namespace DofLog
                     App.config.UpdateConfig();
                     Reload_lb_accounts();
                 }
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show("Veuillez sélectionner un compte à éditer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
             }
             catch (Exception ex)
             {
@@ -153,11 +158,16 @@ namespace DofLog
                 else if (sender is Button)
                     item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
                 else
-                    return;
+                    throw new NullReferenceException();
                 App.config.Accounts.Remove(item);
                 App.config.UpdateConfig();
                 Reload_lb_accounts();
                 App.logstream.Log("Account removed");
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show("Veuillez sélectionner un compte à supprimer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
             }
             catch (Exception ex)
             {
