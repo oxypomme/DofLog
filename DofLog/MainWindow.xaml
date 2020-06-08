@@ -7,7 +7,7 @@
         mc:Ignorable="d" MinWidth="250" MinHeight="200"
         Title="DofLog 2" Width="250" Height="200"
         Closing="Window_Closing">
-    <Grid>
+    <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="auto" />
@@ -17,21 +17,30 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Button Name="btn_add" Margin="3,0">
+            <Button ToolTip="Ajoute un compte" Click="AddAccount_Click" Width="24">
                 <Image Source="img/add.png" />
             </Button>
-            <Button Name="btn_rem">
+            <Button ToolTip="Supprime le compte sélectionné" Click="DeleteAccount_Click" Width="24">
                 <Image Source="img/remove.png" />
             </Button>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="3,0" />
-            <Button Name="btn_settings">
-                <Image Source="img/settings.png" />
+            <Button ToolTip="Édite le compte sélectionné" Click="EditAccount_Click" Width="24">
+                <Image Source="img/edit.png" />
             </Button>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" />
+            <Button Name="btn_up" ToolTip="Fait monter le compte sélectionné" Width="24">
+                <Image Source="img/up.png" />
+            </Button>
+            <Button Name="btn_down" ToolTip="Fait descendre le compte sélectionné" Width="24">
+                <Image Source="img/down.png" />
+            </Button>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" />
         </StackPanel>
-        <ListBox Name="lb_accounts" Grid.Column="0" Grid.Row="1">
+        <ListBox Name="lb_accounts" Margin="0,5,5,0" Grid.Column="0" Grid.Row="1">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="lb_accounts_cm_add_Click" />
+                    <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click">
+                        <Image Source="img/add.png" />
+                    </MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
@@ -40,9 +49,14 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click" />
+            <Button Name="btn_connect" Content="Connexion" ToolTip="Connecte les comptes cochés" Grid.Row="0" Click="btn_connect_Click" />
             <StackPanel Grid.Row="1">
-                <Button Name="btn_organizer" Content="Organizer" />
+                <Button Name="btn_organizer" ToolTip="Lance le module Organizer">
+                    <Image Source="img/organizer.ico" />
+                </Button>
+                <Button Name="btn_settings" ToolTip="Affiche les paramètres de l'application">
+                    <Image Source="img/settings.png" />
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>

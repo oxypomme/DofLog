@@ -123,10 +123,7 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\checkbox_c.jpg" />
-    <Resource Include="img\checkbox_uc.jpg" />
     <Resource Include="img\down.png" />
-    <Resource Include="img\login.png" />
     <Resource Include="img\up.png" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +134,12 @@
   <ItemGroup>
     <Resource Include="img\no.png" />
     <Resource Include="img\ok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\organizer.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\edit.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

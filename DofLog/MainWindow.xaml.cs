@@ -59,7 +59,7 @@ namespace DofLog
                     {
                         Header = "Editer"
                     };
-                    item.Click += Account_cm_edit_Click;
+                    item.Click += EditAccount_Click;
                     account_cm.Items.Add(item);
                 }
                 {
@@ -67,7 +67,7 @@ namespace DofLog
                     {
                         Header = "Supprimer"
                     };
-                    item.Click += Account_cm_del_Click;
+                    item.Click += DeleteAccount_Click;
                     account_cm.Items.Add(item);
                 }
             }
@@ -82,7 +82,27 @@ namespace DofLog
             }
         }
 
-        private void Account_cm_edit_Click(object sender, RoutedEventArgs e)
+        private void AddAccount_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var newAccountDialog = new NewAccount();
+                newAccountDialog.ShowDialog();
+                if (newAccountDialog.createdAccount != null)
+                {
+                    App.config.Accounts.Add(newAccountDialog.createdAccount);
+                    App.config.UpdateConfig();
+                    Reload_lb_accounts();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void EditAccount_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -104,7 +124,7 @@ namespace DofLog
             }
         }
 
-        private void Account_cm_del_Click(object sender, RoutedEventArgs e)
+        private void DeleteAccount_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -122,14 +142,6 @@ namespace DofLog
             }
         }
 
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            notify.ShowBalloonTip(5000, "DofLog est maintenant réduit !", "Au moins il ne prend plus beaucoup de place...", Forms.ToolTipIcon.Info);
-            WindowState = WindowState.Minimized;
-            ShowInTaskbar = false;
-            e.Cancel = true;
-        }
-
         private void NotifyMenu_ShowClick(object sender, EventArgs e)
         {
             notify.Visible = false;
@@ -140,6 +152,14 @@ namespace DofLog
         private void NotifyMenu_QuitClick(object sender, EventArgs e)
         {
             Environment.Exit(1);
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            notify.ShowBalloonTip(5000, "DofLog est maintenant réduit !", "Au moins il ne prend plus beaucoup de place...", Forms.ToolTipIcon.Info);
+            WindowState = WindowState.Minimized;
+            ShowInTaskbar = false;
+            e.Cancel = true;
         }
 
         private void btn_connect_Click(object sender, RoutedEventArgs e)
@@ -188,26 +208,6 @@ namespace DofLog
                 App.logstream.Error(ex);
             }
             Forms.Cursor.Current = Forms.Cursors.Default;
-        }
-
-        private void lb_accounts_cm_add_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var newAccountDialog = new NewAccount();
-                newAccountDialog.ShowDialog();
-                if (newAccountDialog.createdAccount != null)
-                {
-                    App.config.Accounts.Add(newAccountDialog.createdAccount);
-                    App.config.UpdateConfig();
-                    Reload_lb_accounts();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
         }
     }
 }
