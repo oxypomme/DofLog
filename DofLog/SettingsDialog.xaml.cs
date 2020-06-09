@@ -22,6 +22,23 @@ namespace DofLog
         public SettingsDialog()
         {
             InitializeComponent();
+
+            tb_al.Text = App.config.AL_Path;
+            cb_staylog.IsChecked = App.config.StayLog;
+            cb_retro.IsChecked = App.config.RetroMode;
+            lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        }
+
+        private void cb_staylog_Checked(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void cb_retro_Checked(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void btn_al_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

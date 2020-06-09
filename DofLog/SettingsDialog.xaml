@@ -7,6 +7,18 @@
         mc:Ignorable="d" ResizeMode="CanMinimize" WindowStartupLocation="CenterOwner"
         Title="Paramètres" SizeToContent="WidthAndHeight"
         Background="{StaticResource BackgroundColor}">
-    <Grid>
-    </Grid>
+    <StackPanel Margin="5">
+        <StackPanel>
+            <TextBlock Text="Chemin vers le launcher :" />
+            <StackPanel Orientation="Horizontal">
+                <TextBox Name="tb_al" Width="200" />
+                <Button Name="btn_al" Content="Parcourir" Click="btn_al_Click" />
+            </StackPanel>
+            <CheckBox Name="cb_staylog" Content="Rester connecté ?" Checked="cb_staylog_Checked" />
+            <CheckBox Name="cb_retro" Content="Mode retro" Checked="cb_retro_Checked" />
+        </StackPanel>
+        <StackPanel>
+            <Label Name="lbl_version" Content="v" HorizontalAlignment="Right" />
+        </StackPanel>
+    </StackPanel>
 </Window>
