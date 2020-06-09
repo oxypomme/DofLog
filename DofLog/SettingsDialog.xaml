@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DofLog"
         mc:Ignorable="d" ResizeMode="CanMinimize" WindowStartupLocation="CenterOwner"
-        Title="Paramètres" SizeToContent="WidthAndHeight">
+        Title="Paramètres" SizeToContent="WidthAndHeight"
+        Background="{StaticResource BackgroundColor}">
     <Grid>
     </Grid>
 </Window>

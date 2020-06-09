@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DofLog"
         mc:Ignorable="d" ResizeMode="CanMinimize" WindowStartupLocation="CenterOwner"
-        Title="Nouveau compte" SizeToContent="WidthAndHeight">
+        Title="Nouveau compte" SizeToContent="WidthAndHeight"
+        Background="{StaticResource BackgroundColor}">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />

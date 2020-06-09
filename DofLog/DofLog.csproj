@@ -96,6 +96,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Dofus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NewAccountDialog.xaml.cs">
@@ -129,25 +133,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="img\add.png" />
     <Resource Include="img\down.png" />
+    <Resource Include="img\edit.png" />
+    <Resource Include="img\no.png" />
+    <Resource Include="img\ok.png" />
+    <Resource Include="img\organizer.ico" />
+    <Resource Include="img\remove.png" />
+    <Resource Include="img\settings.png" />
     <Resource Include="img\up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\add.png" />
-    <Resource Include="img\remove.png" />
-    <Resource Include="img\settings.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="img\no.png" />
-    <Resource Include="img\ok.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="img\organizer.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="img\edit.png" />
+    <Resource Include="img\checkbox\checkbox_c.jpg" />
+    <Resource Include="img\checkbox\checkbox_DR_c.jpg" />
+    <Resource Include="img\checkbox\checkbox_DR_uc.jpg" />
+    <Resource Include="img\checkbox\checkbox_uc.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

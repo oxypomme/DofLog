@@ -1,0 +1,72 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DofLog">
+    <SolidColorBrush x:Key="BackgroundColor" Color="#181119" />
+    <SolidColorBrush x:Key="ElementBackgroundColor" Color="#2D3027" />
+    <SolidColorBrush x:Key="ElementHoverBackgroundColor" Color="#22231D" />
+    <SolidColorBrush x:Key="ElementBorderColor" Color="#35382F" />
+    <SolidColorBrush x:Key="TextColor" Color="#FFFFFF" />
+
+    <Style x:Key="{x:Type CheckBox}" TargetType="CheckBox">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Name="checkboxImage" Source="../img/checkbox/checkbox_uc.jpg" Width="16" />
+                        <ContentPresenter Margin="5,0" Height="16" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkboxImage" Property="Source" Value="../img/checkbox/checkbox_c.jpg" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type ListBox}" TargetType="ListBox">
+        <Setter Property="Background" Value="{StaticResource ElementBackgroundColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ElementBorderColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
+    <Style x:Key="{x:Type Button}" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Name="button" BorderThickness="1" BorderBrush="{StaticResource ElementBorderColor}" Background="{StaticResource ElementBackgroundColor}" Margin="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="button" Property="Background" Value="{StaticResource ElementHoverBackgroundColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type Label}" TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+    </Style>
+
+    <Style x:Key="{x:Type TextBox}" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+        <Setter Property="Background" Value="{StaticResource ElementBackgroundColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ElementBorderColor}" />
+        <Setter Property="Margin" Value="3" />
+    </Style>
+
+    <Style x:Key="{x:Type PasswordBox}" TargetType="PasswordBox">
+        <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+        <Setter Property="Background" Value="{StaticResource ElementBackgroundColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ElementBorderColor}" />
+        <Setter Property="Margin" Value="3" />
+    </Style>
+</ResourceDictionary>

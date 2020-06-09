@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DofLog"
         mc:Ignorable="d" MinWidth="250" MinHeight="200"
         Title="DofLog 2" Width="250" Height="200"
-        Closing="Window_Closing">
+        Closing="Window_Closing" Background="{StaticResource BackgroundColor}">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -33,9 +33,11 @@
             <Button Name="btn_down" ToolTip="Fait descendre le compte sélectionné" Width="24">
                 <Image Source="img/down.png" />
             </Button>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" />
         </StackPanel>
         <ListBox Name="lb_accounts" SelectionMode="Single" Margin="0,5,5,0" Grid.Column="0" Grid.Row="1">
+            <CheckBox Content="Test Account" IsChecked="True" />
+            <CheckBox Content="Test Account" />
+            <CheckBox Content="Test Account" IsChecked="False" />
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click">
@@ -58,6 +60,10 @@
                 </Button>
                 <Button Name="btn_settings" ToolTip="Affiche les paramètres de l'application" Click="btn_settings_Click">
                     <Image Source="img/settings.png" />
+                </Button>
+                <Button Name="btn_discord" ToolTip="Active ou non l'intégration Discord">
+                    <TextBlock Text="Discord" />
+                    <!-- <Image Source="img/settings.png" /> -->
                 </Button>
             </StackPanel>
         </Grid>
