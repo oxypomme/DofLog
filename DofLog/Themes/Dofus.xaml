@@ -76,7 +76,6 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
-                    <!-- TODO: Non hard-coded background color-->
                     <Border x:Name="Border" Background="{StaticResource ElementBackgroundColor}" BorderThickness="1" BorderBrush="{StaticResource ElementBorderColor}">
                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
                     </Border>
