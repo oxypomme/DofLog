@@ -67,7 +67,6 @@ namespace DofLog
 
         private void btn_al_Click(object sender, RoutedEventArgs e)
         {
-            // TODO File Browser
             var openFileDialog = new Forms.OpenFileDialog();
             openFileDialog.InitialDirectory = App.config.AL_Path;
             openFileDialog.Filter = "Executables (*.exe)|*.exe|Tout les fichiers (*.*)|*.*";
