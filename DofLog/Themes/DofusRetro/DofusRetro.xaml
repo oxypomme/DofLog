@@ -1,4 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:DofLog">
+    <SolidColorBrush x:Key="BackgroundColor" Color="#999477" />
+    <SolidColorBrush x:Key="ElementBackgroundColor" Color="#B7B18F" />
+    <SolidColorBrush x:Key="ElementHoverBackgroundColor" Color="#FAF3EB" />
+    <SolidColorBrush x:Key="ElementBorderColor" Color="#999477" />
+    <SolidColorBrush x:Key="TextColor" Color="#000000" />
+
+    <BitmapImage x:Key="CheckboxUnchecked" UriSource="checkbox_uc.jpg" />
+    <BitmapImage x:Key="CheckboxChecked" UriSource="checkbox_c.jpg" />
 </ResourceDictionary>
