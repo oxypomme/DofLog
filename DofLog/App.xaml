@@ -6,6 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/DofusDark/DofusDark.xaml" />
                 <ResourceDictionary Source="Themes/Dofus.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

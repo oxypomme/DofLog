@@ -13,6 +13,8 @@ namespace DofLog
         public string AL_Path { get; set; }
         public bool StayLog { get; set; }
         public bool RetroMode { get; set; }
+
+        //public bool DiscordEnabled { get; set; }
         public List<Account> Accounts { get; set; }
 
         #endregion Public Fields
@@ -27,6 +29,7 @@ namespace DofLog
             AL_Path = @"C:\Users\" + Environment.GetEnvironmentVariable("USERNAME") + @"\AppData\Local\Programs\zaap\Ankama Launcher.exe";
             StayLog = false;
             RetroMode = false;
+            //DiscordEnabled = true;
             Accounts = new List<Account>();
 
             try

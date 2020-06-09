@@ -35,9 +35,6 @@
             </Button>
         </StackPanel>
         <ListBox Name="lb_accounts" SelectionMode="Single" Margin="0,5,5,0" Grid.Column="0" Grid.Row="1">
-            <CheckBox Content="Test Account" IsChecked="True" />
-            <CheckBox Content="Test Account" />
-            <CheckBox Content="Test Account" IsChecked="False" />
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click">
@@ -62,8 +59,7 @@
                     <Image Source="img/settings.png" />
                 </Button>
                 <Button Name="btn_discord" ToolTip="Active ou non l'intégration Discord">
-                    <TextBlock Text="Discord" />
-                    <!-- <Image Source="img/settings.png" /> -->
+                    <Image Source="img/discord.png" />
                 </Button>
             </StackPanel>
         </Grid>

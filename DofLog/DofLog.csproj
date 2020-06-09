@@ -100,6 +100,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\DofusDark\DofusDark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\DofusRetro\DofusRetro.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NewAccountDialog.xaml.cs">
@@ -144,10 +152,13 @@
     <Resource Include="img\up.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img\checkbox\checkbox_c.jpg" />
-    <Resource Include="img\checkbox\checkbox_DR_c.jpg" />
-    <Resource Include="img\checkbox\checkbox_DR_uc.jpg" />
-    <Resource Include="img\checkbox\checkbox_uc.jpg" />
+    <Resource Include="img\discord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\DofusDark\checkbox_c.jpg" />
+    <Resource Include="Themes\DofusDark\checkbox_uc.jpg" />
+    <Resource Include="Themes\DofusRetro\checkbox_c.jpg" />
+    <Resource Include="Themes\DofusRetro\checkbox_uc.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
