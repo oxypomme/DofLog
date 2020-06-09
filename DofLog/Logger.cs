@@ -34,20 +34,7 @@ namespace DofLog
 
         #region Public Methods
 
-        public Color GetPixel(Point p)
-        {
-            Rectangle rect = new Rectangle(p, new Size(2, 2));
-
-            Bitmap map = CaptureFromScreen(rect);
-
-            Color c = map.GetPixel(1, 1);
-
-            map.Dispose();
-
-            return c;
-        }
-
-        public void LogAccounts(List<Account> accounts)
+        public static void LogAccounts(List<Account> accounts)
         {
             if (!accounts.Any())
                 throw new ArgumentException();
@@ -254,7 +241,20 @@ namespace DofLog
 
         #region Private Methods
 
-        private Bitmap CaptureFromScreen(Rectangle rect)
+        private static Color GetPixel(Point p)
+        {
+            Rectangle rect = new Rectangle(p, new Size(2, 2));
+
+            Bitmap map = CaptureFromScreen(rect);
+
+            Color c = map.GetPixel(1, 1);
+
+            map.Dispose();
+
+            return c;
+        }
+
+        private static Bitmap CaptureFromScreen(Rectangle rect)
         {
             Bitmap bmpScreenCapture;
 
@@ -278,7 +278,7 @@ namespace DofLog
             return bmpScreenCapture;
         }
 
-        private void CustomMouseTo(Point p, InputSimulator iS = null)
+        private static void CustomMouseTo(Point p, InputSimulator iS = null)
         {
             if (iS == null)
                 iS = new InputSimulator();
@@ -292,7 +292,7 @@ namespace DofLog
             iS.Mouse.MoveMouseTo(Convert.ToDouble(X), Convert.ToDouble(Y));
         }
 
-        private void LClickMouseTo(Point p, InputSimulator iS = null)
+        private static void LClickMouseTo(Point p, InputSimulator iS = null)
         {
             if (iS == null)
                 iS = new InputSimulator();
@@ -301,7 +301,7 @@ namespace DofLog
             iS.Mouse.LeftButtonClick().Sleep(PAUSE);
         }
 
-        private void WriteLogs(Account account, InputSimulator iS = null)
+        private static void WriteLogs(Account account, InputSimulator iS = null)
         {
             if (iS == null)
                 iS = new InputSimulator();

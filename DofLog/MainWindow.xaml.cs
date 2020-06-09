@@ -19,7 +19,6 @@ namespace DofLog
             InitializeComponent();
             notify = new Forms.NotifyIcon();
 
-            App.config.GenConfig();
             Reload_lb_accounts();
 
             // Creating the context menu of the notify
@@ -47,6 +46,15 @@ namespace DofLog
             notify.ContextMenu = cmNotify;
             notify.Click += NotifyMenu_ShowClick;
             notify.Visible = true;
+
+            ReloadTheme();
+        }
+
+        public void ReloadTheme()
+        {
+            App.ReloadTheme();
+            Background = (System.Windows.Media.SolidColorBrush)FindResource("BackgroundColor");
+            UpdateDefaultStyle();
         }
 
         private void Reload_lb_accounts()
@@ -209,7 +217,7 @@ namespace DofLog
                     if (acc.IsChecked.HasValue && acc.IsChecked.Value)
                         checkedAccounts.Add((Account)acc.Content);
                 }
-                App.logger.LogAccounts(checkedAccounts);
+                Logger.LogAccounts(checkedAccounts);
 
                 var sb = new System.Text.StringBuilder();
                 foreach (var acc in checkedAccounts)
@@ -252,6 +260,7 @@ namespace DofLog
                 var settingsDialog = new SettingsDialog();
                 settingsDialog.Owner = this;
                 settingsDialog.ShowDialog();
+                ReloadTheme();
             }
             catch (Exception ex)
             {

@@ -10,9 +10,16 @@ namespace DofLog
     /// </summary>
     public partial class App : Application
     {
-        public static LogStream logstream = new LogStream(Path.Combine(Environment.CurrentDirectory, "logs.log"));
-        internal static Config config = new Config();
-        internal static Logger logger = new Logger();
+        public static LogStream logstream;
+        internal static Config config;
+
+        public App()
+        {
+            logstream = new LogStream(Path.Combine(Environment.CurrentDirectory, "logs.log"));
+
+            config = new Config();
+            config.GenConfig();
+        }
 
         /// <summary>
         /// Check if a color is nearly the same of another
@@ -39,6 +46,28 @@ namespace DofLog
         public static int RoundFloat(float value)
         {
             return Convert.ToInt32(Math.Round(value));
+        }
+
+        public static void ReloadTheme()
+        {
+            Current.Resources.MergedDictionaries.Clear();
+
+            var ressource = new ResourceDictionary();
+            if (config.RetroMode)
+            {
+                ressource.Source = new Uri("pack://application:,,,/DofLog;component/Themes/DofusRetro/DofusRetro.xaml", UriKind.RelativeOrAbsolute);
+                Current.Resources.MergedDictionaries.Add(ressource);
+            }
+            else
+            {
+                ressource.Source = new Uri("pack://application:,,,/DofLog;component/Themes/DofusDark/DofusDark.xaml", UriKind.RelativeOrAbsolute);
+                Current.Resources.MergedDictionaries.Add(ressource);
+            }
+
+            ressource = new ResourceDictionary();
+
+            ressource.Source = new Uri("pack://application:,,,/DofLog;component/Themes/Dofus.xaml", UriKind.RelativeOrAbsolute);
+            Current.Resources.MergedDictionaries.Add(ressource);
         }
     }
 }

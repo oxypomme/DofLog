@@ -14,8 +14,8 @@
                 <TextBox Name="tb_al" Width="200" />
                 <Button Name="btn_al" Content="Parcourir" Click="btn_al_Click" />
             </StackPanel>
-            <CheckBox Name="cb_staylog" Content="Rester connecté ?" Checked="cb_staylog_Checked" />
-            <CheckBox Name="cb_retro" Content="Mode retro" Checked="cb_retro_Checked" />
+            <CheckBox Name="cb_staylog" Content="Rester connecté ?" Checked="cb_staylog_Checked" Unchecked="cb_staylog_Unchecked" />
+            <CheckBox Name="cb_retro" Content="Mode retro" Checked="cb_retro_Checked" Unchecked="cb_retro_Unchecked" />
         </StackPanel>
         <StackPanel>
             <Label Name="lbl_version" Content="v" HorizontalAlignment="Right" />
