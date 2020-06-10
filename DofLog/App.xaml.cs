@@ -15,10 +15,14 @@ namespace DofLog
 
         public App()
         {
-            logstream = new LogStream(Path.Combine(Environment.CurrentDirectory, "logs.log"));
+            try
+            {
+                logstream = new LogStream(Path.Combine(Environment.CurrentDirectory, "logs.log"));
 
-            config = new Config();
-            config.GenConfig();
+                config = new Config();
+                config.GenConfig();
+            }
+            catch (Exception e) { logstream.Error(e); }
         }
 
         /// <summary>
@@ -48,6 +52,9 @@ namespace DofLog
             return Convert.ToInt32(Math.Round(value));
         }
 
+        /// <summary>
+        /// Reload the WPF theme
+        /// </summary>
         public static void ReloadTheme()
         {
             Current.Resources.MergedDictionaries.Clear();
@@ -68,6 +75,28 @@ namespace DofLog
 
             ressource.Source = new Uri("pack://application:,,,/DofLog;component/Themes/Dofus.xaml", UriKind.RelativeOrAbsolute);
             Current.Resources.MergedDictionaries.Add(ressource);
+        }
+
+        /// <summary>
+        /// Check if there's a new update on GitHub
+        /// </summary>
+        public async static void Updater()
+        {
+            try
+            {
+                /* Credits to WildGoat07 : https://github.com/WildGoat07 */
+                var github = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("DofLog"));
+                var lastRelease = await github.Repository.Release.GetLatest(270258000);
+                var current = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                logstream.Log($"Versions : Current = {current}, Latest = {lastRelease.TagName}");
+                if (new Version(lastRelease.TagName) > current)
+                {
+                    var result = MessageBox.Show("Une nouvelle version est disponible. Voulez-vous la télécharger ?", "Updater", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                    if (result == MessageBoxResult.Yes)
+                        System.Diagnostics.Process.Start("https://github.com/oxypomme/DofLog/releases/latest");
+                }
+            }
+            catch (Exception e) { logstream.Error(e); }
         }
     }
 }
