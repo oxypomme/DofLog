@@ -34,9 +34,23 @@ namespace DofLog
 
         #region Public Methods
 
-        public static void LogAccounts(List<Account> accounts)
+        public static void Connect(List<Account> accounts)
         {
-            //TODO: timeout
+            int timeoutLimit = PAUSE * 400 * accounts.Count;
+
+            var logThread = new Thread(LogAccounts);
+            logThread.Start(accounts);
+
+            if (!logThread.Join(timeoutLimit))
+            {
+                logThread.Abort();
+                throw new TimeoutException();
+            }
+        }
+
+        private static void LogAccounts(object obj)
+        {
+            var accounts = (List<Account>)obj;
 
             if (!accounts.Any())
                 throw new ArgumentException();

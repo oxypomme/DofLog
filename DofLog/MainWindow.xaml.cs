@@ -219,7 +219,8 @@ namespace DofLog
                     if (acc.IsChecked.HasValue && acc.IsChecked.Value)
                         checkedAccounts.Add((Account)acc.Content);
                 }
-                Logger.LogAccounts(checkedAccounts);
+
+                Logger.Connect(checkedAccounts);
 
                 var sb = new System.Text.StringBuilder();
                 foreach (var acc in checkedAccounts)
@@ -250,6 +251,11 @@ namespace DofLog
             catch (System.IO.FileNotFoundException ex)
             {
                 MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+            catch (TimeoutException ex)
+            {
+                MessageBox.Show("La connexion à sûrement échouée, vérifier votre connexion internet et que vous n'avez pas bougé la souris pendant la connexion. Si ce problème persiste contacter l'équipe de développement.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
             catch (Exception ex)
