@@ -74,9 +74,11 @@ namespace DofLog
             if (AL_Process.Length <= 0)
             {
                 // Starting AL
-                // TODO : AL is currently bind to DofLog process
+                // TODO : AL is currently bind to DofLog process (TBV)
                 var startInfo = new ProcessStartInfo(App.config.AL_Path);
                 startInfo.WorkingDirectory = System.IO.Directory.GetParent(App.config.AL_Path).FullName;
+                startInfo.RedirectStandardOutput = false;
+                startInfo.RedirectStandardError = false;
                 Process.Start(startInfo);
                 AL_Process = Process.GetProcessesByName("ankama launcher");
             }

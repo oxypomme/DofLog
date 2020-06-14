@@ -192,6 +192,9 @@ namespace DofLog
 
         private void NotifyMenu_QuitClick(object sender, EventArgs e)
         {
+            var Org_Process = System.Diagnostics.Process.GetProcessesByName("Organizer");
+            foreach (var proc in Org_Process)
+                proc.Kill();
             App.logstream.Close();
             Environment.Exit(1);
         }
