@@ -4,13 +4,14 @@
 [![version](https://img.shields.io/github/v/release/oxypomme/DofLog?label=Version&style=for-the-badge)](https://shields.io)
 <a href="https://forthebadge.com/"><img src="https://forthebadge.com/images/badges/made-with-c-sharp.svg" alt="forthebadge" height="28"/></a>
 
-> DofLog est un outil de connexion automatique pour Dofus 64bits développé en c#.
+> DofLog est un outil de connexion automatique pour Dofus développé en C#.
 
 <img src="DofLog/icon.ico" alt="drawing" width="124"/>
 
 - [DofLog](#doflog)
   - [Pourquoi faire](#pourquoi-faire)
   - [Installation](#installation)
+  - [Utilisation](#utilisation)
   - [Développé avec](#développé-avec)
   - [Versioning](#versioning)
   - [Historique des Versions](#historique-des-versions)
@@ -20,14 +21,14 @@
 
 ## Pourquoi faire
 
-Marre d'avoir des crash toutes les 5 minutes de jeu ? Vous avez un ordinateur tournant en 64 Bits ? Alors la version de Dofus en 64 Bits peut vous intéresser !
+Dofus est un jeu où le multi compte est, s'il n'est pas encouragé, assez optimisé.
 
 Malheureusement, connecter plusieurs comptes est long et fastidieux...\
-Mais pour cela il existe des outils, notamment le [nAiO](https://naio.fr/), de ZDS, qui connecte à notre place tout nos comptes. Mais il marche assez mal.
+Mais pour cela il existe des outils, notamment le [nAiO](https://naio.fr/), de ZDS, qui connecte à notre place tout nos comptes. Mais il marche assez mal avec l'Ankama Launcher. Ce dernier possède aussi une fonctionnalité pour le multi compte, mais elle est trop incomplète...
 
 C'est pourquoi j'ai développé `DofLog`, un outil pour se connecter automatiquement à Dofus en passant par l'Ankama Launcher !
 
-![Header](SOMEFILE)
+![Header](https://i.imgur.com/uASiRSs.png)<br/>
 <font size="2">*DofLog dans sa version 2.0.0*</font>
 
 Les fonctionnalités diverses sont détaillées sur le [site web](https://oxypomme.github.io/DofLog).
@@ -40,7 +41,6 @@ Connectez vous avec un compte (n'importe lequel, on va régler 2~3 trucs).
 Installez Dofus.
 Pendant ce temps, cliquez sur la petite roue dentée (Paramètres) et
     Vérifiez que le Launcher ne se réduit pas dans la zone de notification après le lancement d'un jeu.
-    Vérifiez qu'a la réduction d'Ankama Launcher, il se réduise dans la barre des tâches.
 Déconnectez vous.
 ```
 
@@ -60,9 +60,41 @@ Installez.
 Jouez !
 ```
 
+## Utilisation
+
+![Create](https://i.imgur.com/B8zNWjk.gif)
+
+Création rapide et simple d'un compte
+
+![Edit](https://i.imgur.com/qK9EKQF.gif)
+
+Possibilité d'édition des comptes
+
+![Delete](https://i.imgur.com/LqDixtt.gif)
+
+Vous ne jouez plus un compte ? Vous pouvez le supprimer simplement.
+
+![Order](https://i.imgur.com/GNg7I2q.gif)
+
+Le changement de place dans la liste est possible.
+
+![Reduce](https://i.imgur.com/NPy6dQq.png)
+
+Réduction dans la zone des notifications quand vous le voulez.
+
+![Order2](https://i.imgur.com/9qntTXO.gif)
+
+L'ordre est important ! DofLog sauvegarde dans quel ordre vous avez coché vos compte pour les connecter dans l'ordre.
+
+![Discord](https://i.imgur.com/U67WS0N.png)
+
+Vous aimez faire savoir à tout le monde que vous jouer à Dofus ? DofLog le fait pour vous.
+
 ## Développé avec
 
 - [Octokit.net](https://github.com/octokit/octokit.net)
+- [Discord RPC C#](https://github.com/Lachee/discord-rpc-csharp)
+- [Json.NET](https://www.newtonsoft.com/json)
 
 ## Versioning
 
@@ -71,7 +103,11 @@ J'utilise [SemVer](http://semver.org/) pour le versioning. Pour la liste complè
 ## Historique des Versions
 
 - 2.0.0
-  - Bla !
+  - Sortie officielle de DofLog !
+    - Possibilité d'ajouter, retirer et éditer les comptes
+    - Raccourci vers l'[Organizer](http://update.naio.fr/v2/Organizer/1.4/Organizer.zip) de ZDS
+    - Intégration discord
+    - Compatible Dofus 2 / Dofus retro
 
 ## Auteur
 
@@ -91,6 +127,6 @@ Lisez la liste des [contributeurs](https://github.com/oxypomme/DofLog/contributo
 
 ## Remerciements
 
-- Le [nAiO](https://naio.fr/), de ZDS, pour son concept.
+- Le [nAiO](https://naio.fr/), de ZDS, pour son concept te pour l'Organizer.
 - [Dofus](https://dofus.com/fr), développé par Ankama, pour continuer à nous amusez après tant d'années.
 - [shields.io](https://shields.io) and [ForTheBadge](https://forthebadge.com) for those quality badges.

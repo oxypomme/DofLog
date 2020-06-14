@@ -155,7 +155,7 @@ namespace DofLog
             while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
                 Thread.Sleep(PAUSE * 2);
             App.logstream.Log("Game button found !");
-            if (!App.config.RetroMode)
+            if (!App.config.RetroMode) // TODO: Retro Mode
             {
                 LClickMouseTo(al.dofusBtn, input);
             }
