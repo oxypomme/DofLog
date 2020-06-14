@@ -69,5 +69,17 @@ namespace DofLog
                 App.config.UpdateConfig();
             }
         }
+
+        private void cb_organizer_Checked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoOrganizer = true;
+            App.config.UpdateConfig();
+        }
+
+        private void cb_organizer_Unchecked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoOrganizer = false;
+            App.config.UpdateConfig();
+        }
     }
 }

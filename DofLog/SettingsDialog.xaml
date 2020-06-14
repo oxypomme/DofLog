@@ -14,8 +14,9 @@
                 <TextBox Name="tb_al" Width="200" />
                 <Button Name="btn_al" Content="Parcourir" Click="btn_al_Click" />
             </StackPanel>
-            <CheckBox Name="cb_staylog" Content="Rester connecté ?" Checked="cb_staylog_Checked" Unchecked="cb_staylog_Unchecked" />
-            <CheckBox Name="cb_retro" Content="Mode retro" Checked="cb_retro_Checked" Unchecked="cb_retro_Unchecked" />
+            <CheckBox Name="cb_staylog" Content="Rester connecté ?" ToolTip="DofLog doit il vous déconnecter de l'AL après la connexion des comptes ?" Checked="cb_staylog_Checked" Unchecked="cb_staylog_Unchecked" />
+            <CheckBox Name="cb_organizer" Content="Organizer au lancement" ToolTip="DofLog doit il lancer Organizer après la connexion ?" Checked="cb_organizer_Checked" Unchecked="cb_organizer_Unchecked" />
+            <CheckBox Name="cb_retro" ToolTip="Voulez vous connecter à Dofus 2 ou Dofus Retro ?" Content="Mode retro" Checked="cb_retro_Checked" Unchecked="cb_retro_Unchecked" />
         </StackPanel>
         <StackPanel>
             <Label Name="lbl_version" Content="v" HorizontalAlignment="Right" />
