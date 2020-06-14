@@ -12,11 +12,17 @@ namespace DofLog
 {
     public class Logger
     {
+        #region DLL Imports
+
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         internal static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         internal static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+        #endregion DLL Imports
+
+        #region Structs / Enums
 
         internal struct Rect
         {
@@ -34,10 +40,20 @@ namespace DofLog
             CONNECTED
         }
 
+        #endregion Structs / Enums
+
+        #region Internal Fields
+
         internal static List<Account> accounts = new List<Account>();
         internal static LoggerState state = LoggerState.IDLE;
 
+        #endregion Internal Fields
+
+        #region Constants
+
         public const int PAUSE = 100;
+
+        #endregion Constants
 
         #region Public Methods
 

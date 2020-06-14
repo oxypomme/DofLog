@@ -16,9 +16,7 @@ namespace DofLog
     /// </summary>
     public partial class App : Application
     {
-        public static LogStream logstream;
-        internal static Config config;
-        private static CancellationTokenSource rpcUpdaterToken;
+        internal static Config config { get; set; }
 
         public App()
         {
@@ -35,6 +33,10 @@ namespace DofLog
             }
             catch (Exception e) { logstream.Error(e); }
         }
+
+        #region Utils
+
+        public static LogStream logstream { get; set; }
 
         /// <summary>
         /// Check if a color is nearly the same of another
@@ -110,6 +112,10 @@ namespace DofLog
             catch (Exception e) { logstream.Error(e); }
         }
 
+        #endregion Utils
+
+        #region Organizer
+
         /// <summary>
         /// Launch the Organizer module
         /// </summary>
@@ -135,6 +141,12 @@ namespace DofLog
             logstream.Log("Organizer extracted");
             File.Delete("Organizer.zip");
         }
+
+        #endregion Organizer
+
+        #region Discord
+
+        private static CancellationTokenSource rpcUpdaterToken;
 
         public static void StartRPC()
         {
@@ -212,5 +224,7 @@ namespace DofLog
             rpcUpdaterToken.Cancel();
             rpcUpdaterToken.Dispose();
         }
+
+        #endregion Discord
     }
 }

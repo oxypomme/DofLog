@@ -64,19 +64,5 @@ namespace DofLog
         }
 
         #endregion Public Methods
-
-        #region Private Methods
-
-        private string GetUsername(string rawUsername)
-        {
-            return rawUsername;
-        }
-
-        private string GetPassword(string rawPassword)
-        {
-            return rawPassword;
-        }
-
-        #endregion Private Methods
     }
 }

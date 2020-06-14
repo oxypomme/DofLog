@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 
 namespace DofLog
 {
@@ -77,30 +76,15 @@ namespace DofLog
 
         #region Public Methods
 
-        public bool IsFbBtn(Color pixelColor)
-        {
-            return App.IsAroundColor(fbColor, pixelColor);
-        }
+        public bool IsFbBtn(Color pixelColor) => App.IsAroundColor(fbColor, pixelColor);
 
-        public bool IsConnectBtn(Color pixelColor)
-        {
-            return App.IsAroundColor(connectCol, pixelColor);
-        }
+        public bool IsConnectBtn(Color pixelColor) => App.IsAroundColor(connectCol, pixelColor);
 
-        public bool IsGamesBtn(Color pixelColor)
-        {
-            return App.IsAroundColor(gamesCol, pixelColor);
-        }
+        public bool IsGamesBtn(Color pixelColor) => App.IsAroundColor(gamesCol, pixelColor);
 
-        public bool IsStartBtn(Color pixelColor)
-        {
-            return App.IsAroundColor(startCol, pixelColor);
-        }
+        public bool IsStartBtn(Color pixelColor) => App.IsAroundColor(startCol, pixelColor);
 
-        public bool IsUnlogBtn(Color pixelColor)
-        {
-            return App.IsAroundColor(unlogCol, pixelColor);
-        }
+        public bool IsUnlogBtn(Color pixelColor) => App.IsAroundColor(unlogCol, pixelColor);
 
         #endregion Public Methods
     }

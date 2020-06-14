@@ -10,10 +10,20 @@ namespace DofLog
 {
     public abstract class AppInstance
     {
-        protected static Point Origin;
-        protected SizeModifier sizeModifier;
+        #region Protected Fields
 
-        public Process process;
+        protected static Point Origin { get; set; }
+        protected SizeModifier sizeModifier { get; set; }
+
+        #endregion Protected Fields
+
+        #region Public Fields
+
+        public Process process { get; set; }
+
+        #endregion Public Fields
+
+        #region Structs
 
         protected struct SizeModifier
         {
@@ -26,6 +36,10 @@ namespace DofLog
                 Y = y;
             }
         }
+
+        #endregion Structs
+
+        #region Constructors
 
         public AppInstance(Process pro, Point orig, Size size, Size sizeBase)
         {
@@ -41,5 +55,7 @@ namespace DofLog
 
             sizeModifier = new SizeModifier(size.Width / sizeBase.Width, size.Height / sizeBase.Height);
         }
+
+        #endregion Constructors
     }
 }

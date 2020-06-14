@@ -14,7 +14,11 @@ namespace DofLog
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Private Fields
+
         private Forms.NotifyIcon notify;
+
+        #endregion Private Fields
 
         public MainWindow()
         {
@@ -54,12 +58,18 @@ namespace DofLog
             ReloadTheme();
         }
 
+        #region WPF
+
         public void ReloadTheme()
         {
             App.ReloadTheme();
             Background = (System.Windows.Media.SolidColorBrush)FindResource("BackgroundColor");
             UpdateDefaultStyle();
         }
+
+        #endregion WPF
+
+        #region Account List
 
         //TODO : optimisation : remove/add item to list w/o reload the whole list
         private void Reload_lb_accounts()
@@ -128,6 +138,10 @@ namespace DofLog
                 App.logstream.Error(ex);
             }
         }
+
+        #endregion Account List
+
+        #region Account Buttons
 
         private void AddAccount_Click(object sender, RoutedEventArgs e)
         {
@@ -276,6 +290,10 @@ namespace DofLog
             }
         }
 
+        #endregion Account Buttons
+
+        #region Notify
+
         private void NotifyMenu_ShowClick(object sender, EventArgs e)
         {
             WindowState = WindowState.Normal;
@@ -299,6 +317,10 @@ namespace DofLog
             ShowInTaskbar = false;
             e.Cancel = true;
         }
+
+        #endregion Notify
+
+        #region Other buttons
 
         private void btn_connect_Click(object sender, RoutedEventArgs e)
         {
@@ -399,5 +421,7 @@ namespace DofLog
                 App.logstream.Error(ex);
             }
         }
+
+        #endregion Other buttons
     }
 }

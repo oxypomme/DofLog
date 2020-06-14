@@ -5,12 +5,22 @@ namespace DofLog
 {
     public class LogStream
     {
+        #region Private Fields
+
         private TextWriter writer;
+
+        #endregion Private Fields
+
+        #region Constructor
 
         public LogStream(string path)
         {
             writer = new StreamWriter(new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read)) { AutoFlush = true };
         }
+
+        #endregion Constructor
+
+        #region Public Methods
 
         public void Close()
         {
@@ -59,5 +69,7 @@ namespace DofLog
 
         [Obsolete]
         public void WriteLine(object value, string status = "INFO") => Log(value, status);
+
+        #endregion Public Methods
     }
 }

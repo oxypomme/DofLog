@@ -9,6 +9,8 @@ namespace DofLog
     /// </summary>
     public partial class SettingsDialog : Window
     {
+        #region Constructor
+
         public SettingsDialog()
         {
             InitializeComponent();
@@ -21,12 +23,20 @@ namespace DofLog
             ReloadTheme();
         }
 
+        #endregion Constructor
+
+        #region WPF
+
         private void ReloadTheme()
         {
             App.ReloadTheme();
             Background = (SolidColorBrush)FindResource("BackgroundColor");
             UpdateDefaultStyle();
         }
+
+        #endregion WPF
+
+        #region Checkbox events
 
         private void cb_staylog_Checked(object sender, RoutedEventArgs e)
         {
@@ -54,6 +64,22 @@ namespace DofLog
             ReloadTheme();
         }
 
+        private void cb_organizer_Checked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoOrganizer = true;
+            App.config.UpdateConfig();
+        }
+
+        private void cb_organizer_Unchecked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoOrganizer = false;
+            App.config.UpdateConfig();
+        }
+
+        #endregion Checkbox events
+
+        #region Buttons events
+
         private void btn_al_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new Forms.OpenFileDialog();
@@ -70,16 +96,6 @@ namespace DofLog
             }
         }
 
-        private void cb_organizer_Checked(object sender, RoutedEventArgs e)
-        {
-            App.config.AutoOrganizer = true;
-            App.config.UpdateConfig();
-        }
-
-        private void cb_organizer_Unchecked(object sender, RoutedEventArgs e)
-        {
-            App.config.AutoOrganizer = false;
-            App.config.UpdateConfig();
-        }
+        #endregion Buttons events
     }
 }

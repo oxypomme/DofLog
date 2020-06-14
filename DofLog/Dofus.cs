@@ -22,6 +22,8 @@ namespace DofLog
 
         #endregion Public Fields
 
+        #region Constructor
+
         // Coordinates are measured with a resolution of 1920x1040
         public Dofus(Process pro, Point orig, Size size) : base(pro, orig, size, new Size(1920, 1040))
         {
@@ -38,6 +40,8 @@ namespace DofLog
                 App.RoundFloat(Origin.Y + 815 * sizeModifier.Y)
             );
         }
+
+        #endregion Constructor
 
         #region Public Methods
 

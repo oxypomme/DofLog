@@ -7,7 +7,13 @@ namespace DofLog
     /// </summary>
     public partial class NewAccountDialog : Window
     {
-        internal Account createdAccount;
+        #region Internal Fields
+
+        internal Account createdAccount { get; set; }
+
+        #endregion Internal Fields
+
+        #region Constructor
 
         public NewAccountDialog()
         {
@@ -23,6 +29,10 @@ namespace DofLog
             tb_password.Password = acc.password;
         }
 
+        #endregion Constructor
+
+        #region Buttons events
+
         private void btn_ok_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Bind enter
@@ -31,5 +41,7 @@ namespace DofLog
         }
 
         private void btn_cancel_Click(object sender, RoutedEventArgs e) => Close();
+
+        #endregion Buttons events
     }
 }
