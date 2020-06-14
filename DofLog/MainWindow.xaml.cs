@@ -278,9 +278,15 @@ namespace DofLog
             App.LaunchOrganizer();
         }
 
-        private void btn_discord_Click(object sender, RoutedEventArgs e)
+        private void btn_discord_Checked(object sender, RoutedEventArgs e)
         {
+            App.config.DiscordEnabled = true;
             //TODO: discord integration
+        }
+
+        private void btn_discord_Unchecked(object sender, RoutedEventArgs e)
+        {
+            App.config.DiscordEnabled = false;
         }
     }
 }
