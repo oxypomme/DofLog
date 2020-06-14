@@ -61,6 +61,7 @@ namespace DofLog
             UpdateDefaultStyle();
         }
 
+        //TODO : optimisation : remove/add item to list w/o reload the whole list
         private void Reload_lb_accounts()
         {
             lb_accounts.Items.Clear();
@@ -198,6 +199,70 @@ namespace DofLog
                 App.config.UpdateConfig();
                 Reload_lb_accounts();
                 App.logstream.Log("Account removed");
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show("Veuillez sélectionner un compte à supprimer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void UpAccount_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Account item;
+                if (sender is MenuItem)
+                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
+                else if (sender is Button)
+                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                else
+                    throw new NullReferenceException();
+
+                int index = App.config.Accounts.IndexOf(item);
+                if (index > 0)
+                {
+                    App.config.Accounts.Remove(item);
+                    App.config.Accounts.Insert(index - 1, item);
+                    Reload_lb_accounts();
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show("Veuillez sélectionner un compte à supprimer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void DownAccount_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Account item;
+                if (sender is MenuItem)
+                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
+                else if (sender is Button)
+                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                else
+                    throw new NullReferenceException();
+
+                int index = App.config.Accounts.IndexOf(item);
+                if (index < App.config.Accounts.Count)
+                {
+                    App.config.Accounts.Remove(item);
+                    App.config.Accounts.Insert(index + 1, item);
+                    Reload_lb_accounts();
+                }
             }
             catch (NullReferenceException ex)
             {

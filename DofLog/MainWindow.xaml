@@ -27,10 +27,10 @@
                 <Image Source="img/edit.png" />
             </Button>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0" />
-            <Button Name="btn_up" ToolTip="Fait monter le compte sélectionné" Width="24">
+            <Button ToolTip="Fait monter le compte sélectionné" Click="UpAccount_Click" Width="24">
                 <Image Source="img/up.png" />
             </Button>
-            <Button Name="btn_down" ToolTip="Fait descendre le compte sélectionné" Width="24">
+            <Button ToolTip="Fait descendre le compte sélectionné" Click="DownAccount_Click" Width="24">
                 <Image Source="img/down.png" />
             </Button>
         </StackPanel>

@@ -199,7 +199,7 @@ namespace DofLog
                         Assets = new Assets()
                         {
                             LargeImageKey = "header",
-                            SmallImageKey = (config.RetroMode ? "dofusLogo" : "dofusRLogo"),
+                            SmallImageKey = (config.RetroMode ? "dofusLogo" : "dofusRLogo"), //TODO: BUG, ne s'affiche pas
                             SmallImageText = (config.RetroMode ? "Dofus 2" : "Dofus Retro")
                         }
                     });
