@@ -21,6 +21,8 @@ namespace DofLog
 
                 config = new Config();
                 config.GenConfig();
+
+                Updater();
             }
             catch (Exception e) { logstream.Error(e); }
         }
