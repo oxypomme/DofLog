@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net;
 using System.Windows;
 
 namespace DofLog
@@ -99,6 +101,32 @@ namespace DofLog
                 }
             }
             catch (Exception e) { logstream.Error(e); }
+        }
+
+        /// <summary>
+        /// Launch the Organizer module
+        /// </summary>
+        /// <returns>The process of the Organizer module</returns>
+        public static Process LaunchOrganizer()
+        {
+            if (!File.Exists("Modules/Organizer.exe"))
+                DownloadOrganizer();
+            var startInfo = new ProcessStartInfo("Modules/Organizer.exe");
+            return Process.Start(startInfo);
+        }
+
+        /// <summary>
+        /// Download the organizer module
+        /// </summary>
+        public static void DownloadOrganizer()
+        {
+            WebClient webClient = new WebClient();
+            logstream.Log("Downloading Organizer");
+            webClient.DownloadFile(new Uri("http://update.naio.fr/v2/Organizer/1.4/Organizer.zip"), "Organizer.zip");
+            logstream.Log("Organizer downloaded, extracting it");
+            System.IO.Compression.ZipFile.ExtractToDirectory("Organizer.zip", Environment.CurrentDirectory);
+            logstream.Log("Organizer extracted");
+            File.Delete("Organizer.zip");
         }
     }
 }

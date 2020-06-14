@@ -233,6 +233,11 @@ namespace DofLog
                             sb.Append(" est");
                 }
                 notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connectés !", Forms.ToolTipIcon.Info);
+                if (App.config.AutoOrganizer)
+                {
+                    App.LaunchOrganizer();
+                    //TODO? Logger.OrganizeAccounts()
+                }
             }
             catch (ArgumentException ex)
             {
@@ -270,7 +275,7 @@ namespace DofLog
 
         private void btn_organizer_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: download + launch + auto launch
+            App.LaunchOrganizer();
         }
 
         private void btn_discord_Click(object sender, RoutedEventArgs e)
