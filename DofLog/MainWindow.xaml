@@ -50,7 +50,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button Name="btn_connect" Content="Connexion" ToolTip="Connecte les comptes cochés" Grid.Row="0" Click="btn_connect_Click" />
+            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click" />
             <StackPanel Grid.Row="1">
                 <Button Name="btn_organizer" ToolTip="Lance le module Organizer">
                     <Image Source="img/organizer.ico" />
