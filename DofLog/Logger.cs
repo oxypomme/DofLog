@@ -26,11 +26,13 @@ namespace DofLog
             public int Bottom;      // y position of lower-right corner
         }
 
+        internal static List<Account> accounts = new List<Account>();
+
         public const int PAUSE = 100;
 
         #region Public Methods
 
-        public static void LogAccounts(List<Account> accounts)
+        public static void LogAccounts()
         {
             if (!accounts.Any())
                 throw new ArgumentException();
@@ -39,9 +41,7 @@ namespace DofLog
             void SetForegroundWindowAL(AnkamaLauncher launcher)
             {
                 foreach (var process in launcher.process)
-                {
                     SetForegroundWindow(process.MainWindowHandle);
-                }
             }
 
             void UnlogFromAL(AnkamaLauncher launcher, InputSimulator controller = null)
@@ -63,7 +63,7 @@ namespace DofLog
                 controller.Mouse.LeftButtonClick().Sleep(PAUSE);
             }
 
-            // Attenmping to get the AL processes
+            // Attempting to get the AL processes
             var AL_Process = Process.GetProcessesByName("ankama launcher");
             if (AL_Process.Length <= 0)
             {

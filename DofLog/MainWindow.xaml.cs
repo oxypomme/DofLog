@@ -93,12 +93,25 @@ namespace DofLog
             // Creating check box for each account saved
             foreach (var account in App.config.Accounts)
             {
-                lb_accounts.Items.Add(new CheckBox
+                var item = new CheckBox
                 {
                     Content = account,
                     ContextMenu = account_cm
-                });
+                };
+                item.Checked += Account_Checked;
+                item.Unchecked += Account_Unchecked;
+                lb_accounts.Items.Add(item);
             }
+        }
+
+        private void Account_Checked(object sender, RoutedEventArgs e)
+        {
+            Logger.accounts.Add((Account)((CheckBox)sender).Content);
+        }
+
+        private void Account_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Logger.accounts.Remove((Account)((CheckBox)sender).Content);
         }
 
         private void AddAccount_Click(object sender, RoutedEventArgs e)
@@ -208,35 +221,27 @@ namespace DofLog
         }
 
         private void btn_connect_Click(object sender, RoutedEventArgs e)
-        { //TODO: ordre
+        {
             try
             {
                 Forms.Cursor.Current = Forms.Cursors.WaitCursor;
 
-                var checkedAccounts = new List<Account>();
-                foreach (CheckBox acc in lb_accounts.Items)
-                {
-                    if (acc.IsChecked.HasValue && acc.IsChecked.Value)
-                        checkedAccounts.Add((Account)acc.Content);
-                }
-
-                //Logger.Connect(checkedAccounts);
-                var logTask = System.Threading.Tasks.Task.Run(() => { Logger.LogAccounts(checkedAccounts); });
-                if (!logTask.Wait(Logger.PAUSE * 400 * checkedAccounts.Count))
+                var logTask = System.Threading.Tasks.Task.Run(() => { Logger.LogAccounts(); });
+                if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
                     throw new TimeoutException();
 
                 Forms.Cursor.Current = Forms.Cursors.Default;
 
                 var sb = new System.Text.StringBuilder();
-                foreach (var acc in checkedAccounts)
+                foreach (var acc in Logger.accounts)
                 {
                     sb.Append(acc);
-                    if (checkedAccounts.IndexOf(acc) + 2 == checkedAccounts.Count)
+                    if (Logger.accounts.IndexOf(acc) + 2 == Logger.accounts.Count)
                         sb.Append(" et ");
-                    else if (checkedAccounts.IndexOf(acc) + 1 != checkedAccounts.Count)
+                    else if (Logger.accounts.IndexOf(acc) + 1 != Logger.accounts.Count)
                         sb.Append(", ");
-                    else if (checkedAccounts.IndexOf(acc) + 1 == checkedAccounts.Count)
-                        if (checkedAccounts.Count > 1)
+                    else if (Logger.accounts.IndexOf(acc) + 1 == Logger.accounts.Count)
+                        if (Logger.accounts.Count > 1)
                             sb.Append(" sont");
                         else
                             sb.Append(" est");
@@ -287,20 +292,19 @@ namespace DofLog
             }
         }
 
-        private void btn_organizer_Click(object sender, RoutedEventArgs e)
-        {
-            App.LaunchOrganizer();
-        }
-
         private void btn_discord_Checked(object sender, RoutedEventArgs e)
         {
             App.config.DiscordEnabled = true;
+            App.config.UpdateConfig();
             //TODO: discord integration
         }
 
         private void btn_discord_Unchecked(object sender, RoutedEventArgs e)
         {
             App.config.DiscordEnabled = false;
+            App.config.UpdateConfig();
         }
+
+        private void btn_organizer_Click(object sender, RoutedEventArgs e) => App.LaunchOrganizer();
     }
 }
