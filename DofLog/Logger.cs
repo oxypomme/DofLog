@@ -36,6 +36,8 @@ namespace DofLog
 
         public static void LogAccounts(List<Account> accounts)
         {
+            //TODO: timeout
+
             if (!accounts.Any())
                 throw new ArgumentException();
             var input = new InputSimulator();
@@ -196,6 +198,7 @@ namespace DofLog
                 {
                     Thread.Sleep(PAUSE * 2);
                     SetForegroundWindow(dofs[i].process.MainWindowHandle);
+                    Thread.Sleep(PAUSE * 4);
                     if (doOnce)
                         App.logstream.Log($"Waiting to detect the connect button (x:{dof.logBtn.X},y:{dof.logBtn.Y})");
                     if (dof.IsLogBtn(GetPixel(dof.logBtn)) && !conectFound)

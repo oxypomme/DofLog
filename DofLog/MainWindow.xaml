@@ -52,7 +52,7 @@
             </Grid.RowDefinitions>
             <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click" />
             <StackPanel Grid.Row="1">
-                <Button Name="btn_organizer" ToolTip="Lance le module Organizer">
+                <Button Name="btn_organizer" ToolTip="Lance le module Organizer" Click="btn_organizer_Click">
                     <Image Source="img/organizer.ico" />
                 </Button>
                 <Button Name="btn_settings" ToolTip="Affiche les paramètres de l'application" Click="btn_settings_Click">

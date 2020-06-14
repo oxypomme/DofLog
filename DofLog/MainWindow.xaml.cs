@@ -186,7 +186,6 @@ namespace DofLog
 
         private void NotifyMenu_ShowClick(object sender, EventArgs e)
         {
-            notify.Visible = false;
             WindowState = WindowState.Normal;
             ShowInTaskbar = true;
         }
@@ -267,6 +266,11 @@ namespace DofLog
                 MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
+        }
+
+        private void btn_organizer_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: download + launch
         }
     }
 }
