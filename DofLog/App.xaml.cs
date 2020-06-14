@@ -1,8 +1,12 @@
-﻿using System;
+﻿using DiscordRPC;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace DofLog
@@ -14,6 +18,7 @@ namespace DofLog
     {
         public static LogStream logstream;
         internal static Config config;
+        private static CancellationTokenSource rpcUpdaterToken;
 
         public App()
         {
@@ -23,6 +28,8 @@ namespace DofLog
 
                 config = new Config();
                 config.GenConfig();
+
+                StartRPC();
 
                 Updater();
             }
@@ -111,7 +118,7 @@ namespace DofLog
         {
             if (!File.Exists("Modules/Organizer.exe"))
                 DownloadOrganizer();
-            var startInfo = new ProcessStartInfo("Modules/Organizer.exe");
+            var startInfo = new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Modules/Organizer.exe"));
             return Process.Start(startInfo);
         }
 
@@ -127,6 +134,83 @@ namespace DofLog
             System.IO.Compression.ZipFile.ExtractToDirectory("Organizer.zip", Environment.CurrentDirectory);
             logstream.Log("Organizer extracted");
             File.Delete("Organizer.zip");
+        }
+
+        public static void StartRPC()
+        {
+            if (config.DiscordEnabled)
+            {
+                var discordClient = new DiscordRpcClient("623896785605361664");
+                discordClient.Initialize();
+
+                rpcUpdaterToken = new CancellationTokenSource();
+                var ct = rpcUpdaterToken.Token;
+                Task.Run(() =>
+                   {
+                       while (config.DiscordEnabled)
+                       {
+                           if (ct.IsCancellationRequested)
+                               break;
+
+                           var dofs = Process.GetProcessesByName("dofus").ToList();
+                           if (Logger.state == Logger.LoggerState.CONNECTING)
+                               UpdateRPC("Se connecte...", "Comptes connectés :", dofs.Count, Logger.accounts.Count);
+                           else if (dofs.Count() > 0)
+                           {
+                               var sb = new System.Text.StringBuilder();
+                               foreach (var process in dofs)
+                               {
+                                   if (!process.MainWindowTitle.StartsWith("Dofus"))
+                                   {
+                                       sb.Append(process.MainWindowTitle.Split('-')[0].Trim());
+
+                                       if (dofs.IndexOf(process) + 2 == dofs.Count)
+                                           sb.Append(" et ");
+                                       else if (dofs.IndexOf(process) + 1 != dofs.Count)
+                                           sb.Append(", ");
+                                   }
+                               }
+                               UpdateRPC("Connecté avec :", sb.ToString(), dofs.Count);
+                           }
+                           else
+                               UpdateRPC("Se prépare...");
+                           Thread.Sleep(1000);
+                       }
+                       discordClient.ClearPresence();
+                       discordClient.Dispose();
+                   }, rpcUpdaterToken.Token);
+
+                void UpdateRPC(string message, string state = "", int accountCount = 0, int maxCount = 8)
+                {
+                    discordClient.SetPresence(new RichPresence()
+                    {
+                        Details = message,
+                        State = state,
+                        Party = new Party()
+                        {
+                            ID = Guid.NewGuid().ToString(),
+                            Size = accountCount,
+                            Max = maxCount
+                        },
+                        Timestamps = new Timestamps()
+                        {
+                            Start = Process.GetCurrentProcess().StartTime.ToUniversalTime()
+                        },
+                        Assets = new Assets()
+                        {
+                            LargeImageKey = "header",
+                            SmallImageKey = (config.RetroMode ? "dofusLogo" : "dofusRLogo"),
+                            SmallImageText = (config.RetroMode ? "Dofus 2" : "Dofus Retro")
+                        }
+                    });
+                }
+            }
+        }
+
+        public static void StopRPC()
+        {
+            rpcUpdaterToken.Cancel();
+            rpcUpdaterToken.Dispose();
         }
     }
 }

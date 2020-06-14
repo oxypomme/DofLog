@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Forms = System.Windows.Forms;
@@ -220,6 +222,7 @@ namespace DofLog
             var Org_Process = System.Diagnostics.Process.GetProcessesByName("Organizer");
             foreach (var proc in Org_Process)
                 proc.Kill();
+            App.StopRPC();
             App.logstream.Close();
             Environment.Exit(1);
         }
@@ -252,13 +255,17 @@ namespace DofLog
                         sb.Append(" et ");
                     else if (Logger.accounts.IndexOf(acc) + 1 != Logger.accounts.Count)
                         sb.Append(", ");
-                    else if (Logger.accounts.IndexOf(acc) + 1 == Logger.accounts.Count)
-                        if (Logger.accounts.Count > 1)
-                            sb.Append(" sont");
-                        else
-                            sb.Append(" est");
                 }
+                if (Logger.accounts.Count > 1)
+                    sb.Append(" sont");
+                else
+                    sb.Append(" est");
                 notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connectés !", Forms.ToolTipIcon.Info);
+                Task.Run(() =>
+                {
+                    Thread.Sleep(5000);
+                    Logger.state = Logger.LoggerState.IDLE;
+                });
                 if (App.config.AutoOrganizer)
                 {
                     App.LaunchOrganizer();
@@ -308,13 +315,14 @@ namespace DofLog
         {
             App.config.DiscordEnabled = true;
             App.config.UpdateConfig();
-            //TODO: discord integration
+            App.StartRPC();
         }
 
         private void btn_discord_Unchecked(object sender, RoutedEventArgs e)
         {
             App.config.DiscordEnabled = false;
             App.config.UpdateConfig();
+            App.StopRPC();
         }
 
         private void btn_organizer_Click(object sender, RoutedEventArgs e)

@@ -26,7 +26,16 @@ namespace DofLog
             public int Bottom;      // y position of lower-right corner
         }
 
+        internal enum LoggerState
+        {
+            IDLE,
+            STARTING,
+            CONNECTING,
+            CONNECTED
+        }
+
         internal static List<Account> accounts = new List<Account>();
+        internal static LoggerState state = LoggerState.IDLE;
 
         public const int PAUSE = 100;
 
@@ -34,6 +43,7 @@ namespace DofLog
 
         public static void LogAccounts()
         {
+            state = LoggerState.STARTING;
             if (!accounts.Any())
                 throw new ArgumentException();
             var input = new InputSimulator();
@@ -103,7 +113,7 @@ namespace DofLog
             SetForegroundWindowAL(al);
 
             Thread.Sleep(PAUSE * 2);
-
+            state = LoggerState.CONNECTING;
             /* CONNECT TO AL */
             App.logstream.Log($"Waiting to detect FB button (x:{al.fbBtn.X},y:{al.fbBtn.Y})");
             while (!al.IsFbBtn(GetPixel(al.fbBtn)))
@@ -233,6 +243,7 @@ namespace DofLog
 
             SetForegroundWindow(dofs[0].process.MainWindowHandle);
 
+            state = LoggerState.CONNECTED;
             App.logstream.Log("Connected and ready to play !");
         }
 
