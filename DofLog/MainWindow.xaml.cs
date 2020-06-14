@@ -270,7 +270,7 @@ namespace DofLog
 
         private void btn_organizer_Click(object sender, RoutedEventArgs e)
         {
-            //TODO: download + launch
+            //TODO: download + launch + auto launch
         }
 
         private void btn_discord_Click(object sender, RoutedEventArgs e)
