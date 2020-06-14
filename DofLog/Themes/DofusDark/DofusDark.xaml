@@ -4,6 +4,7 @@
     <SolidColorBrush x:Key="BackgroundColor" Color="#181119" />
     <SolidColorBrush x:Key="ElementBackgroundColor" Color="#2D3027" />
     <SolidColorBrush x:Key="ElementHoverBackgroundColor" Color="#22231D" />
+    <SolidColorBrush x:Key="ElementCheckedBackgroundColor" Color="#404136" />
     <SolidColorBrush x:Key="ElementBorderColor" Color="#35382F" />
     <SolidColorBrush x:Key="TextColor" Color="#FFFFFF" />
 

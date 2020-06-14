@@ -58,9 +58,9 @@
                 <Button Name="btn_settings" ToolTip="Affiche les paramètres de l'application" Click="btn_settings_Click">
                     <Image Source="img/settings.png" />
                 </Button>
-                <Button Name="btn_discord" ToolTip="Active ou non l'intégration Discord" Click="btn_discord_Click">
+                <ToggleButton Name="btn_discord" ToolTip="Active ou non l'intégration Discord" Click="btn_discord_Click">
                     <Image Source="img/discord.png" />
-                </Button>
+                </ToggleButton>
             </StackPanel>
         </Grid>
     </Grid>

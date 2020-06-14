@@ -46,6 +46,27 @@
         </Setter>
     </Style>
 
+    <Style x:Key="{x:Type ToggleButton}" TargetType="ToggleButton">
+        <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Name="button" BorderThickness="1" BorderBrush="{StaticResource ElementBorderColor}" Background="{StaticResource ElementBackgroundColor}" Margin="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="button" Property="Background" Value="{StaticResource ElementCheckedBackgroundColor}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="button" Property="Background" Value="{StaticResource ElementHoverBackgroundColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="{x:Type Label}" TargetType="Label">
         <Setter Property="Foreground" Value="{StaticResource TextColor}" />
     </Style>
