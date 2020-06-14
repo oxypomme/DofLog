@@ -272,5 +272,10 @@ namespace DofLog
         {
             //TODO: download + launch
         }
+
+        private void btn_discord_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: discord integration
+        }
     }
 }
