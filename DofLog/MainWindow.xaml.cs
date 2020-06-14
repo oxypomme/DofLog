@@ -222,6 +222,8 @@ namespace DofLog
 
                 Logger.Connect(checkedAccounts);
 
+                Forms.Cursor.Current = Forms.Cursors.Default;
+
                 var sb = new System.Text.StringBuilder();
                 foreach (var acc in checkedAccounts)
                 {
