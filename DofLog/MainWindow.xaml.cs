@@ -47,6 +47,8 @@ namespace DofLog
             notify.Click += NotifyMenu_ShowClick;
             notify.Visible = true;
 
+            btn_discord.IsChecked = App.config.DiscordEnabled;
+
             ReloadTheme();
         }
 
@@ -106,12 +108,22 @@ namespace DofLog
 
         private void Account_Checked(object sender, RoutedEventArgs e)
         {
-            Logger.accounts.Add((Account)((CheckBox)sender).Content);
+            try { Logger.accounts.Add((Account)((CheckBox)sender).Content); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
 
         private void Account_Unchecked(object sender, RoutedEventArgs e)
         {
-            Logger.accounts.Remove((Account)((CheckBox)sender).Content);
+            try { Logger.accounts.Remove((Account)((CheckBox)sender).Content); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
 
         private void AddAccount_Click(object sender, RoutedEventArgs e)
@@ -305,6 +317,14 @@ namespace DofLog
             App.config.UpdateConfig();
         }
 
-        private void btn_organizer_Click(object sender, RoutedEventArgs e) => App.LaunchOrganizer();
+        private void btn_organizer_Click(object sender, RoutedEventArgs e)
+        {
+            try { App.LaunchOrganizer(); }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
     }
 }
