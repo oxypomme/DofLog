@@ -220,7 +220,10 @@ namespace DofLog
                         checkedAccounts.Add((Account)acc.Content);
                 }
 
-                Logger.Connect(checkedAccounts);
+                //Logger.Connect(checkedAccounts);
+                var logTask = System.Threading.Tasks.Task.Run(() => { Logger.LogAccounts(checkedAccounts); });
+                if (!logTask.Wait(Logger.PAUSE * 400 * checkedAccounts.Count))
+                    throw new TimeoutException();
 
                 Forms.Cursor.Current = Forms.Cursors.Default;
 

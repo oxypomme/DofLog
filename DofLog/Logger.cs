@@ -26,32 +26,12 @@ namespace DofLog
             public int Bottom;      // y position of lower-right corner
         }
 
-        #region Private Fields
-
-        private const int PAUSE = 100;
-
-        #endregion Private Fields
+        public const int PAUSE = 100;
 
         #region Public Methods
 
-        public static void Connect(List<Account> accounts)
+        public static void LogAccounts(List<Account> accounts)
         {
-            int timeoutLimit = PAUSE * 400 * accounts.Count;
-
-            var logThread = new Thread(LogAccounts);
-            logThread.Start(accounts);
-
-            if (!logThread.Join(timeoutLimit))
-            {
-                logThread.Abort();
-                throw new TimeoutException();
-            }
-        }
-
-        private static void LogAccounts(object obj)
-        {
-            var accounts = (List<Account>)obj;
-
             if (!accounts.Any())
                 throw new ArgumentException();
             var input = new InputSimulator();
