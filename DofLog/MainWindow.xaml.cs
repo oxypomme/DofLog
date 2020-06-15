@@ -407,9 +407,9 @@ namespace DofLog
 
         private void btn_discord_Unchecked(object sender, RoutedEventArgs e)
         {
+            App.StopRPC();
             App.config.DiscordEnabled = false;
             App.config.UpdateConfig();
-            App.StopRPC();
         }
 
         private void btn_organizer_Click(object sender, RoutedEventArgs e)

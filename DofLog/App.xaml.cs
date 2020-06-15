@@ -221,8 +221,11 @@ namespace DofLog
 
         public static void StopRPC()
         {
-            rpcUpdaterToken.Cancel();
-            rpcUpdaterToken.Dispose();
+            if (config.DiscordEnabled)
+            {
+                rpcUpdaterToken.Cancel();
+                rpcUpdaterToken.Dispose();
+            }
         }
 
         #endregion Discord
