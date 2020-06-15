@@ -57,9 +57,10 @@ namespace DofLog
 
         #region Public Methods
 
-        public static void LogAccounts()
+        public static void LogAccounts(CancellationToken ct)
         {
             state = LoggerState.STARTING;
+
             if (!accounts.Any())
                 throw new ArgumentException();
             var input = new InputSimulator();
@@ -80,12 +81,26 @@ namespace DofLog
                 SetForegroundWindowAL(launcher);
                 App.logstream.Log($"Waiting to detect the games button (x:{launcher.gamesBtn.X},y:{launcher.gamesBtn.Y})");
                 while (!launcher.IsGamesBtn(GetPixel(launcher.gamesBtn)))
+                {
                     Thread.Sleep(PAUSE * 2);
+                    if (ct.IsCancellationRequested)
+                    {
+                        state = LoggerState.IDLE;
+                        ct.ThrowIfCancellationRequested();
+                    }
+                }
                 LClickMouseTo(launcher.profileBtn, controller);
                 CustomMouseTo(launcher.unlogBtn, controller);
                 App.logstream.Log($"Waiting to detect the unlog button (x:{launcher.unlogBtn.X},y:{launcher.unlogBtn.Y})");
                 while (!launcher.IsUnlogBtn(GetPixel(launcher.unlogBtn)))
+                {
                     Thread.Sleep(PAUSE * 2);
+                    if (ct.IsCancellationRequested)
+                    {
+                        state = LoggerState.IDLE;
+                        ct.ThrowIfCancellationRequested();
+                    }
+                }
                 controller.Mouse.LeftButtonClick().Sleep(PAUSE);
             }
 
@@ -119,6 +134,11 @@ namespace DofLog
                     }
                     if (AL_Size.Width != 0 && AL_Size.Height != 0)
                         break;
+                    if (ct.IsCancellationRequested)
+                    {
+                        state = LoggerState.IDLE;
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
 
                 App.logstream.Log($"AL orig (x:{AL_Origin.X},y: {AL_Origin.Y})", "DEBUG");
@@ -140,6 +160,11 @@ namespace DofLog
                     UnlogFromAL(al, input);
                     App.logstream.Log("Unlogged from AL");
                 }
+                if (ct.IsCancellationRequested)
+                {
+                    state = LoggerState.IDLE;
+                    ct.ThrowIfCancellationRequested();
+                }
             }
             App.logstream.Log("FB button found !");
             LClickMouseTo(al.usernameField, input);
@@ -155,30 +180,48 @@ namespace DofLog
             while (!al.IsGamesBtn(GetPixel(al.gamesBtn)))
                 Thread.Sleep(PAUSE * 2);
             App.logstream.Log("Game button found !");
-            if (!App.config.RetroMode) // TODO: Retro Mode
-            {
-                LClickMouseTo(al.dofusBtn, input);
-            }
 
-            var dofusProcess = Process.GetProcessesByName("dofus").ToList();
+            List<Process> dofusProcess;
+            if (!App.config.RetroMode)
+                dofusProcess = Process.GetProcessesByName("dofus").ToList();
+            else
+                dofusProcess = Process.GetProcessesByName("Dofus Retro").ToList();
             App.logstream.Log("Starting all the dofus instances");
             // TODO BUG: AL size can't start
+
+            if (!App.config.RetroMode)
+                LClickMouseTo(al.dofusBtn, input);
+            else
+                LClickMouseTo(al.dofusRBtn, input);
+
             var dofs = new List<Dofus>();
             while (dofs.Count < accounts.Count)
             {
                 SetForegroundWindowAL(al); ;
 
                 CustomMouseTo(al.dofusBtn, input);
-                while (!al.IsStartBtn(GetPixel(al.startBtn)))
+
+                while (!al.IsStartBtn(GetPixel(al.startBtn)) && !al.IsStartRBtn(GetPixel(al.startBtn)))
                 {
-                    SetForegroundWindowAL(al); ;
+                    SetForegroundWindowAL(al);
                     Thread.Sleep(PAUSE * 2);
+                    if (ct.IsCancellationRequested)
+                    {
+                        state = LoggerState.IDLE;
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
+
                 LClickMouseTo(al.startBtn, input);
 
-                var TMPdofusProcess = Process.GetProcessesByName("dofus").ToList();
+                List<Process> TMPdofusProcess;
+                if (!App.config.RetroMode)
+                    TMPdofusProcess = Process.GetProcessesByName("dofus").ToList();
+                else
+                    TMPdofusProcess = Process.GetProcessesByName("Dofus Retro").ToList();
                 if (TMPdofusProcess.Count > dofusProcess.Count)
                     foreach (var proc in TMPdofusProcess)
+                    {
                         if (!dofusProcess.Any(item => item.Id == proc.Id))
                         {
                             var procWin = new Rect();
@@ -199,15 +242,35 @@ namespace DofLog
                                 size = new Size(procWin.Right - procWin.Left, procWin.Bottom - procWin.Top);
                                 if (size.Width != 0 && size.Height != 0)
                                     break;
+                                if (ct.IsCancellationRequested)
+                                {
+                                    state = LoggerState.IDLE;
+                                    ct.ThrowIfCancellationRequested();
+                                }
                             }
                             App.logstream.Log($"Dofus orig (x:{procWin.Left},y: {procWin.Top})", "DEBUG");
                             App.logstream.Log($"Dofus size (x:{size.Width},y: {size.Height})", "DEBUG");
 
-                            var dof = new Dofus(proc, new Point(procWin.Left, procWin.Top), size);
+                            Dofus dof;
+                            if (!App.config.RetroMode)
+                                dof = new Dofus2(proc, new Point(procWin.Left, procWin.Top), size);
+                            else
+                                dof = new DofusRetro(proc, new Point(procWin.Left, procWin.Top), size);
                             dofs.Add(dof);
                             App.logstream.Log($"Dofus count : {dofs.Count}");
                             dofusProcess = TMPdofusProcess;
                         }
+                        if (ct.IsCancellationRequested)
+                        {
+                            state = LoggerState.IDLE;
+                            ct.ThrowIfCancellationRequested();
+                        }
+                    }
+                if (ct.IsCancellationRequested)
+                {
+                    state = LoggerState.IDLE;
+                    ct.ThrowIfCancellationRequested();
+                }
             }
             for (int i = 0; i < accounts.Count; i++)
             {
@@ -232,18 +295,30 @@ namespace DofLog
                         App.logstream.Log($"Dofus instance number {i} connected !");
                         conectFound = true;
                         doOnce = true;
+                        if (App.config.RetroMode)
+                            break;
                     }
                     if (doOnce)
                     {
                         App.logstream.Log($"or the play button (x:{dof.playBtn.X},y:{dof.playBtn.Y})");
                         doOnce = false;
                     }
-                    if (dof.IsPlayBtn(GetPixel(dof.playBtn)))
+                    if (dof.IsPlayBtn(GetPixel(dof.playBtn)) && !App.config.RetroMode)
                     {
                         App.logstream.Log("Play button found ! No need to connect");
                         App.logstream.Log($"Dofus instance number {i} connected !");
                         break;
                     }
+                    if (ct.IsCancellationRequested)
+                    {
+                        state = LoggerState.IDLE;
+                        ct.ThrowIfCancellationRequested();
+                    }
+                }
+                if (ct.IsCancellationRequested)
+                {
+                    state = LoggerState.IDLE;
+                    ct.ThrowIfCancellationRequested();
                 }
             }
 
@@ -252,6 +327,11 @@ namespace DofLog
             {
                 Thread.Sleep(PAUSE * 2);
                 SetForegroundWindow(dofs[0].process.MainWindowHandle);
+                if (ct.IsCancellationRequested)
+                {
+                    state = LoggerState.IDLE;
+                    ct.ThrowIfCancellationRequested();
+                }
             }
 
             if (!App.config.StayLog)

@@ -11,6 +11,7 @@ namespace DofLog
         private readonly Color connectCol = Color.FromArgb(255, 168, 44);
         private readonly Color gamesCol = Color.FromArgb(255, 168, 44);
         private readonly Color startCol = Color.FromArgb(255, 255, 255);
+        private readonly Color startRCol = Color.FromArgb(255, 255, 255);
         private readonly Color unlogCol = Color.FromArgb(255, 255, 255);
 
         #endregion Private Fields
@@ -25,6 +26,7 @@ namespace DofLog
         public Point connectBtn;
         public Point gamesBtn;
         public Point dofusBtn;
+        public Point dofusRBtn;
         public Point startBtn;
         public Point profileBtn;
         public Point unlogBtn;
@@ -58,6 +60,10 @@ namespace DofLog
                 App.RoundFloat(Origin.X + 35 * sizeModifier.X),
                 App.RoundFloat(Origin.Y + 95 * sizeModifier.Y)
             );
+            dofusRBtn = new Point(
+                App.RoundFloat(Origin.X + 35 * sizeModifier.X),
+                App.RoundFloat(Origin.Y + 165 * sizeModifier.Y)
+            );
             startBtn = new Point(
                 App.RoundFloat(Origin.X + 1020 * sizeModifier.X),
                 App.RoundFloat(Origin.Y + 590 * sizeModifier.Y)
@@ -83,6 +89,8 @@ namespace DofLog
         public bool IsGamesBtn(Color pixelColor) => App.IsAroundColor(gamesCol, pixelColor);
 
         public bool IsStartBtn(Color pixelColor) => App.IsAroundColor(startCol, pixelColor);
+
+        public bool IsStartRBtn(Color pixelColor) => App.IsAroundColor(startRCol, pixelColor);
 
         public bool IsUnlogBtn(Color pixelColor) => App.IsAroundColor(unlogCol, pixelColor);
 

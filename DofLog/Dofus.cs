@@ -4,12 +4,12 @@ using System.Drawing;
 
 namespace DofLog
 {
-    internal class Dofus : AppInstance
+    internal abstract class Dofus : AppInstance
     {
         #region Private Fields
 
-        private readonly Color logColor = Color.FromArgb(191, 230, 0);
-        private readonly Color playColor = Color.FromArgb(191, 230, 0);
+        protected Color logColor;
+        protected Color playColor;
 
         #endregion Private Fields
 
@@ -25,35 +25,16 @@ namespace DofLog
         #region Constructor
 
         // Coordinates are measured with a resolution of 1920x1040
-        public Dofus(Process pro, Point orig, Size size) : base(pro, orig, size, new Size(1920, 1040))
-        {
-            usernameField = new Point(
-                App.RoundFloat(Origin.X + 915 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 350 * sizeModifier.Y)
-            );
-            logBtn = new Point(
-                App.RoundFloat(Origin.X + 915 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 565 * sizeModifier.Y)
-            );
-            playBtn = new Point(
-                App.RoundFloat(Origin.X + 1150 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 815 * sizeModifier.Y)
-            );
-        }
+        public Dofus(Process pro, Point orig, Size size, Size sizeBase) : base(pro, orig, size, sizeBase)
+        { }
 
         #endregion Constructor
 
         #region Public Methods
 
-        public bool IsLogBtn(Color pixelColor)
-        {
-            return App.IsAroundColor(logColor, pixelColor);
-        }
+        public bool IsLogBtn(Color pixelColor) => App.IsAroundColor(logColor, pixelColor);
 
-        public bool IsPlayBtn(Color pixelColor)
-        {
-            return App.IsAroundColor(playColor, pixelColor);
-        }
+        public bool IsPlayBtn(Color pixelColor) => App.IsAroundColor(playColor, pixelColor);
 
         #endregion Public Methods
     }

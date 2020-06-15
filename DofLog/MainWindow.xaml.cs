@@ -330,9 +330,16 @@ namespace DofLog
             {
                 Forms.Cursor.Current = Forms.Cursors.WaitCursor;
 
-                var logTask = System.Threading.Tasks.Task.Run(() => { Logger.LogAccounts(); });
+                var cancelLogTaskSource = new CancellationTokenSource();
+                var ct = cancelLogTaskSource.Token;
+
+                var logTask = Task.Run(() => { Logger.LogAccounts(ct); }, cancelLogTaskSource.Token);
                 if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
+                {
+                    cancelLogTaskSource.Cancel();
                     throw new TimeoutException();
+                }
+                logTask.Dispose();
 
                 Forms.Cursor.Current = Forms.Cursors.Default;
 
