@@ -8,17 +8,6 @@
 
 <img src="DofLog/icon.ico" alt="drawing" width="124"/>
 
-- [DofLog](#doflog)
-  - [Pourquoi faire](#pourquoi-faire)
-  - [Installation](#installation)
-  - [Utilisation](#utilisation)
-  - [Développé avec](#développé-avec)
-  - [Versioning](#versioning)
-  - [Historique des Versions](#historique-des-versions)
-  - [Auteur](#auteur)
-  - [Contribute](#contribute)
-  - [Remerciements](#remerciements)
-
 ## Pourquoi faire
 
 Dofus est un jeu où le multi compte est, s'il n'est pas encouragé, assez optimisé.
