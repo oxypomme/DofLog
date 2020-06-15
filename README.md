@@ -31,8 +31,6 @@ C'est pourquoi j'ai développé `DofLog`, un outil pour se connecter automatique
 ![Header](https://i.imgur.com/uASiRSs.png)<br/>
 <font size="2">*DofLog dans sa version 2.0.0*</font>
 
-Les fonctionnalités diverses sont détaillées sur le [site web](https://oxypomme.github.io/DofLog).
-
 ## Installation
 
 ```md
@@ -59,6 +57,16 @@ Téléchargez la dernière version.
 Installez.
 Jouez !
 ```
+
+Avant de commencer :
+
+**<font color=red>
+Ne donnez à personne le fichier `config.ser` et ce peu importe les conditions !
+</font>**
+
+Ce fichiers renferme vos paramètres mais aussi les identifiants de vos comptes. L'équipe de développement n'est en aucun cas responsable si vous vous faites pirater votre compte après avoir confié votre fichier `config.ser` à quiconque.
+
+Si un problème survient, n'hésitez pas à contacter l'équipe de développement ou de faire une `issue` sur GitHub. L'équipe de développement ne vous demandera **JAMAIS** votre fichier de configuration.
 
 ## Utilisation
 
@@ -89,6 +97,10 @@ L'ordre est important ! DofLog sauvegarde dans quel ordre vous avez coché vos c
 ![Discord](https://i.imgur.com/U67WS0N.png)
 
 Vous aimez faire savoir à tout le monde que vous jouer à Dofus ? DofLog le fait pour vous.
+
+![Retro](https://i.imgur.com/zheKcWu.gif)
+
+DofLog vous connecte à Dofus... Que ce soit la version 2 ou la version retro.
 
 ## Développé avec
 
