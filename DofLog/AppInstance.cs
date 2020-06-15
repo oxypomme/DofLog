@@ -30,7 +30,7 @@ namespace DofLog
             public float X;
             public float Y;
 
-            public SizeModifier(int x, int y) : this()
+            public SizeModifier(float x, float y) : this()
             {
                 X = x;
                 Y = y;
@@ -46,14 +46,12 @@ namespace DofLog
             process = pro;
             Origin = orig;
 
-            sizeModifier = new SizeModifier(size.Width / sizeBase.Width, size.Height / sizeBase.Height);
+            sizeModifier = new SizeModifier((float)size.Width / sizeBase.Width, (float)size.Height / sizeBase.Height);
         }
 
-        public AppInstance(Point orig, Size size, Size sizeBase)
+        public AppInstance(Point orig)
         {
             Origin = orig;
-
-            sizeModifier = new SizeModifier(size.Width / sizeBase.Width, size.Height / sizeBase.Height);
         }
 
         #endregion Constructors

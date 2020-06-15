@@ -187,12 +187,17 @@ namespace DofLog
             else
                 dofusProcess = Process.GetProcessesByName("Dofus Retro").ToList();
             App.logstream.Log("Starting all the dofus instances");
-            // TODO BUG: AL size can't start
 
             if (!App.config.RetroMode)
+            {
                 LClickMouseTo(al.dofusBtn, input);
+                App.logstream.Log($"Button location (x:{al.dofusBtn.X},y: {al.dofusBtn.Y})");
+            }
             else
+            {
                 LClickMouseTo(al.dofusRBtn, input);
+                App.logstream.Log($"Button location (x:{al.dofusRBtn.X},y: {al.dofusRBtn.Y})");
+            }
 
             var dofs = new List<Dofus>();
             while (dofs.Count < accounts.Count)
@@ -201,6 +206,7 @@ namespace DofLog
 
                 CustomMouseTo(al.dofusBtn, input);
 
+                App.logstream.Log($"Waiting to detect the connect button (x:{al.startBtn.X},y:{al.startBtn.Y})");
                 while (!al.IsStartBtn(GetPixel(al.startBtn)) && !al.IsStartRBtn(GetPixel(al.startBtn)))
                 {
                     SetForegroundWindowAL(al);

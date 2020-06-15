@@ -35,46 +35,46 @@ namespace DofLog
 
         #region Constructor
 
-        public AnkamaLauncher(Process[] pro, Point orig, Size size) : base(orig, size, new Size(1200, 720))
+        public AnkamaLauncher(Process[] pro, Point orig, Size size) : base(orig)
         {
             process = pro;
 
             usernameField = new Point(
-                App.RoundFloat(Origin.X + 325 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 190 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + 325),
+                App.RoundFloat(Origin.Y + 190)
             );
 
             fbBtn = new Point(
-                App.RoundFloat(Origin.X + 120 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 490 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + 120),
+                App.RoundFloat(Origin.Y + 490)
             );
             connectBtn = new Point(
-                App.RoundFloat(Origin.X + 295 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 380 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + 295),
+                App.RoundFloat(Origin.Y + 380)
             );
             gamesBtn = new Point(
-                App.RoundFloat(Origin.X + 130 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 51 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + 130),
+                App.RoundFloat(Origin.Y + 51)
             );
             dofusBtn = new Point(
-                App.RoundFloat(Origin.X + 35 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 95 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + 35),
+                App.RoundFloat(Origin.Y + 95)
             );
             dofusRBtn = new Point(
-                App.RoundFloat(Origin.X + 35 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 165 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + 35),
+                App.RoundFloat(Origin.Y + 165)
             );
             startBtn = new Point(
-                App.RoundFloat(Origin.X + 1020 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 590 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + size.Width - 180),
+                App.RoundFloat(Origin.Y + size.Height - 130)
             );
             profileBtn = new Point(
-                App.RoundFloat(Origin.X + 1140 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 55 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + size.Width - 60),
+                App.RoundFloat(Origin.Y + 55)
             );
             unlogBtn = new Point(
-                App.RoundFloat(Origin.X + 1020 * sizeModifier.X),
-                App.RoundFloat(Origin.Y + 440 * sizeModifier.Y)
+                App.RoundFloat(Origin.X + size.Width - 180),
+                App.RoundFloat(Origin.Y + 440)
             );
         }
 
