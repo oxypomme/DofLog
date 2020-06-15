@@ -25,7 +25,9 @@ namespace DofLog
             InitializeComponent();
             notify = new Forms.NotifyIcon();
 
-            Reload_lb_accounts();
+            // Creating check box for each account saved
+            foreach (var account in App.config.Accounts)
+                lb_accounts.Items.Add(CreateAccountCheckBox(account));
 
             // Creating the context menu of the notify
             var cmNotify = new Forms.ContextMenu();
@@ -71,13 +73,9 @@ namespace DofLog
 
         #region Account List
 
-        //TODO : optimisation : remove/add item to list w/o reload the whole list
-        private void Reload_lb_accounts()
+        private ContextMenu CreateAccountContextMenu()
         {
-            lb_accounts.Items.Clear();
-
-            // Creating the context menu of each check box
-            var account_cm = new ContextMenu();
+            var item_cm = new ContextMenu();
             {
                 {
                     var item = new MenuItem()
@@ -89,7 +87,7 @@ namespace DofLog
                         }
                     };
                     item.Click += EditAccount_Click;
-                    account_cm.Items.Add(item);
+                    item_cm.Items.Add(item);
                 }
                 {
                     var item = new MenuItem()
@@ -101,22 +99,22 @@ namespace DofLog
                         }
                     };
                     item.Click += DeleteAccount_Click;
-                    account_cm.Items.Add(item);
+                    item_cm.Items.Add(item);
                 }
             }
+            return item_cm;
+        }
 
-            // Creating check box for each account saved
-            foreach (var account in App.config.Accounts)
+        private CheckBox CreateAccountCheckBox(Account account)
+        {
+            var item = new CheckBox
             {
-                var item = new CheckBox
-                {
-                    Content = account,
-                    ContextMenu = account_cm
-                };
-                item.Checked += Account_Checked;
-                item.Unchecked += Account_Unchecked;
-                lb_accounts.Items.Add(item);
-            }
+                Content = account,
+                ContextMenu = CreateAccountContextMenu()
+            };
+            item.Checked += Account_Checked;
+            item.Unchecked += Account_Unchecked;
+            return item;
         }
 
         private void Account_Checked(object sender, RoutedEventArgs e)
@@ -153,8 +151,8 @@ namespace DofLog
                 if (newAccountDialog.createdAccount != null)
                 {
                     App.config.Accounts.Add(newAccountDialog.createdAccount);
+                    lb_accounts.Items.Add(CreateAccountCheckBox(newAccountDialog.createdAccount));
                     App.config.UpdateConfig();
-                    Reload_lb_accounts();
                 }
             }
             catch (Exception ex)
@@ -168,22 +166,22 @@ namespace DofLog
         {
             try
             {
-                Account item;
+                CheckBox realSender;
                 if (sender is MenuItem)
-                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
+                    realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
                 else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
-                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                    realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
-                var newAccountDialog = new NewAccountDialog(item);
+                var newAccountDialog = new NewAccountDialog((Account)realSender.Content);
                 newAccountDialog.Owner = this;
                 newAccountDialog.ShowDialog();
-                if (!item.Equals(newAccountDialog.createdAccount) && newAccountDialog.createdAccount != null)
+                if (!realSender.Content.Equals(newAccountDialog.createdAccount) && newAccountDialog.createdAccount != null)
                 {
-                    var index = App.config.Accounts.IndexOf(item);
+                    var index = App.config.Accounts.IndexOf((Account)realSender.Content);
                     App.config.Accounts[index] = new Account(newAccountDialog.createdAccount);
+                    lb_accounts.Items[index] = CreateAccountCheckBox(newAccountDialog.createdAccount);
                     App.config.UpdateConfig();
-                    Reload_lb_accounts();
                 }
             }
             catch (NullReferenceException ex)
@@ -202,16 +200,16 @@ namespace DofLog
         {
             try
             {
-                Account item;
+                CheckBox realSender;
                 if (sender is MenuItem)
-                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
-                else if (sender is Button)
-                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                    realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
+                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
+                    realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
-                App.config.Accounts.Remove(item);
+                App.config.Accounts.Remove((Account)realSender.Content);
+                lb_accounts.Items.Remove(realSender);
                 App.config.UpdateConfig();
-                Reload_lb_accounts();
                 App.logstream.Log("Account removed");
             }
             catch (NullReferenceException ex)
@@ -230,20 +228,22 @@ namespace DofLog
         {
             try
             {
-                Account item;
+                CheckBox realSender;
                 if (sender is MenuItem)
-                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
-                else if (sender is Button)
-                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                    realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
+                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
+                    realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
 
-                int index = App.config.Accounts.IndexOf(item);
+                int index = App.config.Accounts.IndexOf((Account)realSender.Content);
                 if (index > 0)
                 {
-                    App.config.Accounts.Remove(item);
-                    App.config.Accounts.Insert(index - 1, item);
-                    Reload_lb_accounts();
+                    App.config.Accounts.Remove((Account)realSender.Content);
+                    App.config.Accounts.Insert(index - 1, (Account)realSender.Content);
+                    lb_accounts.Items.Remove(realSender);
+                    lb_accounts.Items.Insert(index - 1, realSender);
+                    App.config.UpdateConfig();
                 }
             }
             catch (NullReferenceException ex)
@@ -262,20 +262,22 @@ namespace DofLog
         {
             try
             {
-                Account item;
+                CheckBox realSender;
                 if (sender is MenuItem)
-                    item = (Account)((CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget).Content;
-                else if (sender is Button)
-                    item = (Account)((CheckBox)lb_accounts.SelectedItem).Content;
+                    realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
+                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
+                    realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
 
-                int index = App.config.Accounts.IndexOf(item);
+                int index = App.config.Accounts.IndexOf((Account)realSender.Content);
                 if (index < App.config.Accounts.Count)
                 {
-                    App.config.Accounts.Remove(item);
-                    App.config.Accounts.Insert(index + 1, item);
-                    Reload_lb_accounts();
+                    App.config.Accounts.Remove((Account)realSender.Content);
+                    App.config.Accounts.Insert(index + 1, (Account)realSender.Content);
+                    lb_accounts.Items.Remove(realSender);
+                    lb_accounts.Items.Insert(index + 1, realSender);
+                    App.config.UpdateConfig();
                 }
             }
             catch (NullReferenceException ex)
