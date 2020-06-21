@@ -16,6 +16,7 @@ namespace DofLog
             InitializeComponent();
 
             tb_al.Text = App.config.AL_Path;
+            cb_organizer.IsChecked = App.config.AutoOrganizer;
             cb_staylog.IsChecked = App.config.StayLog;
             cb_retro.IsChecked = App.config.RetroMode;
             lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
