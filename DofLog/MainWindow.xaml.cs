@@ -39,12 +39,12 @@ namespace DofLog
                 cmNotify.MenuItems.Add(item);
 
                 item = new Forms.MenuItem();
-                item.Text = "&Show";
+                item.Text = "&Afficher";
                 item.Click += NotifyMenu_ShowClick;
                 cmNotify.MenuItems.Add(item);
 
                 item = new Forms.MenuItem();
-                item.Text = "&Quit";
+                item.Text = "&Quitter";
                 item.Click += NotifyMenu_QuitClick;
                 cmNotify.MenuItems.Add(item);
             }
