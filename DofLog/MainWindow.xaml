@@ -42,6 +42,7 @@
                             <Image Source="img/add.png" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Name="lb_accounts_cm_clear" Header="Tout décocher" Click="ClearSlectedAccounts_Click" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

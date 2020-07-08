@@ -5,8 +5,11 @@ namespace DofLog
     /// <summary>
     /// Logique d'interaction pour NewAccount.xaml
     /// </summary>
+    ///
     public partial class NewAccountDialog : Window
     {
+        //TODO: Raccourcis claviers
+
         #region Internal Fields
 
         internal Account createdAccount { get; set; }
@@ -35,7 +38,6 @@ namespace DofLog
 
         private void btn_ok_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Bind enter
             createdAccount = new Account(tb_nickname.Text, tb_username.Text, tb_password.Password);
             Close();
         }

@@ -14,6 +14,8 @@ namespace DofLog
     /// </summary>
     public partial class MainWindow : Window
     {
+        //TODO: Raccourcis claviers
+
         #region Private Fields
 
         private Forms.NotifyIcon notify;
@@ -222,6 +224,13 @@ namespace DofLog
                 MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
+        }
+
+        private void ClearSlectedAccounts_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (CheckBox item in lb_accounts.Items)
+                if (item.IsChecked.Value)
+                    item.IsChecked = false;
         }
 
         private void UpAccount_Click(object sender, RoutedEventArgs e)
