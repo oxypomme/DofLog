@@ -228,9 +228,17 @@ namespace DofLog
 
         private void ClearSlectedAccounts_Click(object sender, RoutedEventArgs e)
         {
-            foreach (CheckBox item in lb_accounts.Items)
-                if (item.IsChecked.Value)
-                    item.IsChecked = false;
+            try
+            {
+                foreach (CheckBox item in lb_accounts.Items)
+                    if (item.IsChecked.Value)
+                        item.IsChecked = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
 
         private void UpAccount_Click(object sender, RoutedEventArgs e)
