@@ -185,6 +185,7 @@ namespace DofLog
                     lb_accounts.Items[index] = CreateAccountCheckBox(newAccountDialog.createdAccount);
                     App.config.UpdateConfig();
                 }
+                lb_accounts.SelectedItem = realSender;
             }
             catch (NullReferenceException ex)
             {
@@ -262,6 +263,7 @@ namespace DofLog
                     lb_accounts.Items.Insert(index - 1, realSender);
                     App.config.UpdateConfig();
                 }
+                lb_accounts.SelectedItem = realSender;
             }
             catch (NullReferenceException ex)
             {
@@ -296,6 +298,7 @@ namespace DofLog
                     lb_accounts.Items.Insert(index + 1, realSender);
                     App.config.UpdateConfig();
                 }
+                lb_accounts.SelectedItem = realSender;
             }
             catch (NullReferenceException ex)
             {
