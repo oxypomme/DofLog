@@ -59,6 +59,9 @@ namespace DofLog
 
             btn_discord.IsChecked = App.config.DiscordEnabled;
 
+            Width = App.config.SavedSize.Width;
+            Height = App.config.SavedSize.Height;
+
             ReloadTheme();
         }
 
@@ -69,6 +72,12 @@ namespace DofLog
             App.ReloadTheme();
             Background = (System.Windows.Media.SolidColorBrush)FindResource("BackgroundColor");
             UpdateDefaultStyle();
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            App.config.SavedSize = new System.Drawing.Size((int)Width, (int)Height);
+            App.config.UpdateConfig();
         }
 
         #endregion WPF

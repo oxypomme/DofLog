@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -18,6 +19,7 @@ namespace DofLog
 
         public bool AutoOrganizer { get; set; }
         public List<Account> Accounts { get; set; }
+        public Size SavedSize { get; set; }
 
         #endregion Public Fields
 
@@ -33,6 +35,7 @@ namespace DofLog
             RetroMode = false;
             DiscordEnabled = false;
             AutoOrganizer = false;
+            SavedSize = new Size(250, 200);
             Accounts = new List<Account>();
 
             try
