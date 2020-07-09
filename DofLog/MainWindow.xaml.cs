@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Forms = System.Windows.Forms;
 
 namespace DofLog
@@ -25,6 +26,33 @@ namespace DofLog
         public MainWindow()
         {
             InitializeComponent();
+            // inspired by https://stackoverflow.com/a/33450624
+            RoutedCommand keyShortcut = new RoutedCommand();
+
+            /* NEW ACCOUNT SHORTCUT (Ctrl+N) */
+            keyShortcut.InputGestures.Add(new KeyGesture(Key.N, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(keyShortcut, AddAccount_Click));
+
+            /* REM ACCOUNT SHORTCUT (Delete) */
+            keyShortcut = new RoutedCommand();
+            keyShortcut.InputGestures.Add(new KeyGesture(Key.Delete));
+            CommandBindings.Add(new CommandBinding(keyShortcut, DeleteAccount_Click));
+
+            /* UP ACCOUNT SHORTCUT (Ctrl + Up Arrow) */
+            keyShortcut = new RoutedCommand();
+            keyShortcut.InputGestures.Add(new KeyGesture(Key.Up, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(keyShortcut, UpAccount_Click));
+
+            /* DOWN ACCOUNT SHORTCUT (Ctrl + Down Arrow) */
+            keyShortcut = new RoutedCommand();
+            keyShortcut.InputGestures.Add(new KeyGesture(Key.Down, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(keyShortcut, DownAccount_Click));
+
+            /* EDIT ACCOUNT SHORTCUT (Ctrl + E) */
+            keyShortcut = new RoutedCommand();
+            keyShortcut.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(keyShortcut, EditAccount_Click));
+
             notify = new Forms.NotifyIcon();
 
             // Creating check box for each account saved
@@ -180,7 +208,7 @@ namespace DofLog
                 CheckBox realSender;
                 if (sender is MenuItem)
                     realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
-                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
+                else if ((sender is Button || sender is MainWindow) && lb_accounts.SelectedItems.Count > 0)
                     realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
@@ -215,7 +243,7 @@ namespace DofLog
                 CheckBox realSender;
                 if (sender is MenuItem)
                     realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
-                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
+                else if ((sender is Button || sender is MainWindow) && lb_accounts.SelectedItems.Count > 0)
                     realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
@@ -258,7 +286,7 @@ namespace DofLog
                 CheckBox realSender;
                 if (sender is MenuItem)
                     realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
-                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
+                else if ((sender is Button || sender is MainWindow) && lb_accounts.SelectedItems.Count > 0)
                     realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
@@ -293,13 +321,13 @@ namespace DofLog
                 CheckBox realSender;
                 if (sender is MenuItem)
                     realSender = (CheckBox)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
-                else if (sender is Button && lb_accounts.SelectedItems.Count > 0)
+                else if ((sender is Button || sender is MainWindow) && lb_accounts.SelectedItems.Count > 0)
                     realSender = (CheckBox)lb_accounts.SelectedItem;
                 else
                     throw new NullReferenceException();
 
                 int index = App.config.Accounts.IndexOf((Account)realSender.Content);
-                if (index < App.config.Accounts.Count)
+                if (index < App.config.Accounts.Count - 1)
                 {
                     App.config.Accounts.Remove((Account)realSender.Content);
                     App.config.Accounts.Insert(index + 1, (Account)realSender.Content);

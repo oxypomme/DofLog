@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace DofLog
 {
@@ -8,8 +9,6 @@ namespace DofLog
     ///
     public partial class NewAccountDialog : Window
     {
-        //TODO #4 : Raccourcis claviers
-
         #region Internal Fields
 
         internal Account createdAccount { get; set; }
@@ -21,11 +20,15 @@ namespace DofLog
         public NewAccountDialog()
         {
             InitializeComponent();
+            InitShortcuts();
+
+            tb_nickname.Focus();
         }
 
         public NewAccountDialog(Account acc)
         {
             InitializeComponent();
+            InitShortcuts();
 
             tb_nickname.Text = acc.nickname;
             tb_username.Text = acc.username;
@@ -35,6 +38,21 @@ namespace DofLog
         #endregion Constructor
 
         #region Buttons events
+
+        private void InitShortcuts()
+        {
+            // inspired by https://stackoverflow.com/a/33450624
+            RoutedCommand keyShortcut = new RoutedCommand();
+
+            /* OK SHORTCUT (Enter) */
+            keyShortcut.InputGestures.Add(new KeyGesture(Key.Enter));
+            CommandBindings.Add(new CommandBinding(keyShortcut, btn_ok_Click));
+
+            /* CANCEL SHORTCUT (Escape) */
+            keyShortcut = new RoutedCommand();
+            keyShortcut.InputGestures.Add(new KeyGesture(Key.Escape));
+            CommandBindings.Add(new CommandBinding(keyShortcut, btn_cancel_Click));
+        }
 
         private void btn_ok_Click(object sender, RoutedEventArgs e)
         {
