@@ -102,6 +102,8 @@ namespace DofLog
                     }
                 }
                 controller.Mouse.LeftButtonClick().Sleep(PAUSE);
+                CustomMouseTo(launcher.usernameField, controller);
+                Thread.Sleep(PAUSE);
             }
 
             // Attempting to get the AL processes

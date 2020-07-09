@@ -176,5 +176,8 @@
     <Resource Include="Themes\DofusRetro\checkbox_c.jpg" />
     <Resource Include="Themes\DofusRetro\checkbox_uc.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\clean.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DofLog"
         mc:Ignorable="d" MinWidth="250" MinHeight="200"
         Title="DofLog 2" Width="250" Height="200"
-        Closing="Window_Closing" Background="{StaticResource BackgroundColor}">
+        Closing="Window_Closing" Background="{StaticResource BackgroundColor}" SizeChanged="Window_SizeChanged">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -40,6 +40,11 @@
                     <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click">
                         <MenuItem.Icon>
                             <Image Source="img/add.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Name="lb_accounts_cm_clear" Header="Tout décocher" Click="ClearSlectedAccounts_Click">
+                        <MenuItem.Icon>
+                            <Image Source="img/clean.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>

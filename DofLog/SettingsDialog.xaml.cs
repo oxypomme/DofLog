@@ -16,6 +16,7 @@ namespace DofLog
             InitializeComponent();
 
             tb_al.Text = App.config.AL_Path;
+            cb_organizer.IsChecked = App.config.AutoOrganizer;
             cb_staylog.IsChecked = App.config.StayLog;
             cb_retro.IsChecked = App.config.RetroMode;
             lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -73,6 +74,18 @@ namespace DofLog
         private void cb_organizer_Unchecked(object sender, RoutedEventArgs e)
         {
             App.config.AutoOrganizer = false;
+            App.config.UpdateConfig();
+        }
+
+        private void cb_uncheck_Checked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoUncheckAccount = true;
+            App.config.UpdateConfig();
+        }
+
+        private void cb_uncheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoUncheckAccount = false;
             App.config.UpdateConfig();
         }
 
