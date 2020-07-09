@@ -77,6 +77,18 @@ namespace DofLog
             App.config.UpdateConfig();
         }
 
+        private void cb_uncheck_Checked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoUncheckAccount = true;
+            App.config.UpdateConfig();
+        }
+
+        private void cb_uncheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            App.config.AutoUncheckAccount = false;
+            App.config.UpdateConfig();
+        }
+
         #endregion Checkbox events
 
         #region Buttons events

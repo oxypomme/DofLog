@@ -424,6 +424,10 @@ namespace DofLog
                     App.LaunchOrganizer();
                     //TODO? #3 : Logger.OrganizeAccounts()
                 }
+                if (App.config.AutoUncheckAccount)
+                {
+                    ClearSlectedAccounts_Click(sender, e);
+                }
             }
             catch (ArgumentException ex)
             {

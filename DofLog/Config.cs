@@ -18,6 +18,7 @@ namespace DofLog
         public bool DiscordEnabled { get; set; }
 
         public bool AutoOrganizer { get; set; }
+        public bool AutoUncheckAccount { get; set; }
         public List<Account> Accounts { get; set; }
         public Size SavedSize { get; set; }
 
@@ -35,6 +36,7 @@ namespace DofLog
             RetroMode = false;
             DiscordEnabled = false;
             AutoOrganizer = false;
+            AutoUncheckAccount = false;
             SavedSize = new Size(250, 200);
             Accounts = new List<Account>();
 
