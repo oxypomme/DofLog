@@ -8,7 +8,7 @@ namespace DofLog
     ///
     public partial class NewAccountDialog : Window
     {
-        //TODO: Raccourcis claviers
+        //TODO #4 : Raccourcis claviers
 
         #region Internal Fields
 

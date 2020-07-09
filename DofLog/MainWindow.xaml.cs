@@ -14,7 +14,7 @@ namespace DofLog
     /// </summary>
     public partial class MainWindow : Window
     {
-        //TODO: Raccourcis claviers
+        //TODO #2 : Raccourcis claviers
 
         #region Private Fields
 
@@ -394,7 +394,7 @@ namespace DofLog
                 if (App.config.AutoOrganizer)
                 {
                     App.LaunchOrganizer();
-                    //TODO? Logger.OrganizeAccounts()
+                    //TODO? #3 : Logger.OrganizeAccounts()
                 }
             }
             catch (ArgumentException ex)

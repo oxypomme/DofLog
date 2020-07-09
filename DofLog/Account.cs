@@ -5,7 +5,7 @@ namespace DofLog
     [Serializable()]
     public class Account
     {
-        // TODO : Security
+        // TODO #1 : Security
 
         #region Public Fields
 
