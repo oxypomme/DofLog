@@ -15,10 +15,13 @@ namespace DofLog
         {
             InitializeComponent();
 
+            // TODO #7 : Reflection ici, ça peut être cool
+
             tb_al.Text = App.config.AL_Path;
             cb_organizer.IsChecked = App.config.AutoOrganizer;
             cb_staylog.IsChecked = App.config.StayLog;
             cb_retro.IsChecked = App.config.RetroMode;
+            cb_uncheck.IsChecked = App.config.AutoUncheckAccount;
             lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
             ReloadTheme();
