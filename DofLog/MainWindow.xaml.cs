@@ -15,8 +15,6 @@ namespace DofLog
     /// </summary>
     public partial class MainWindow : Window
     {
-        //TODO #2 : Raccourcis claviers
-
         #region Private Fields
 
         private Forms.NotifyIcon notify;
