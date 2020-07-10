@@ -106,10 +106,24 @@ namespace DofLog
                 {
                     var result = MessageBox.Show("Une nouvelle version est disponible. Voulez-vous la télécharger ?", "Updater", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
-                        System.Diagnostics.Process.Start("https://github.com/oxypomme/DofLog/releases/latest");
+                        Process.Start("https://github.com/oxypomme/DofLog/releases/latest");
+                }
+                else if (new Version(lastRelease.TagName) < current)
+                {
+                    var result = MessageBox.Show("Cette version de DofLog est expérimentale : de nombreux bugs peuvent survenir et les nouvelles fonctionnalités peuvent ne pas être prêtes à l'utilisation. Voulez-vous continuer ?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes);
+                    if (result == MessageBoxResult.No)
+                    {
+                        StopRPC();
+                        logstream.Close();
+                        Environment.Exit(1);
+                    }
                 }
             }
             catch (Exception e) { logstream.Error(e); }
+            finally
+            {
+                //Current.MainWindow.Show();
+            }
         }
 
         #endregion Utils
