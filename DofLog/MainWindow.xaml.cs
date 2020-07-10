@@ -83,7 +83,7 @@ namespace DofLog
             notify.Click += NotifyMenu_ShowClick;
             notify.Visible = true;
 
-            btn_discord.IsChecked = App.config.DiscordEnabled;
+            btn_discordenabled.IsChecked = App.config.DiscordEnabled;
 
             Width = App.config.SavedSize.Width;
             Height = App.config.SavedSize.Height;

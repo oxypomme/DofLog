@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using Forms = System.Windows.Forms;
 
@@ -17,11 +19,19 @@ namespace DofLog
 
             // TODO #7 : Reflection ici, ça peut être cool
 
-            tb_al.Text = App.config.AL_Path;
-            cb_organizer.IsChecked = App.config.AutoOrganizer;
-            cb_staylog.IsChecked = App.config.StayLog;
-            cb_retro.IsChecked = App.config.RetroMode;
-            cb_uncheck.IsChecked = App.config.AutoUncheckAccount;
+            foreach (var field in App.config.GetType().GetFields())
+            {
+                if (field.DeclaringType == typeof(bool))
+                {
+                    Array.Find(GetType().GetFields(), f => f.Name.Contains(field.Name.ToLower())).SetValue(this, field.GetValue(App.config));
+                }
+            }
+
+            tb_al_path.Text = App.config.AL_Path;
+            //cb_autoorganizer.IsChecked = App.config.AutoOrganizer;
+            //cb_staylog.IsChecked = App.config.StayLog;
+            //cb_retromode.IsChecked = App.config.RetroMode;
+            //cb_autouncheckaccount.IsChecked = App.config.AutoUncheckAccount;
             lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
             ReloadTheme();
@@ -107,7 +117,7 @@ namespace DofLog
             if (openFileDialog.ShowDialog() == Forms.DialogResult.OK)
             {
                 App.config.AL_Path = openFileDialog.FileName;
-                tb_al.Text = openFileDialog.FileName;
+                tb_al_path.Text = openFileDialog.FileName;
                 App.config.UpdateConfig();
             }
         }
