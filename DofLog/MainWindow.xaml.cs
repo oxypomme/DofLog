@@ -384,6 +384,8 @@ namespace DofLog
         {
             try
             {
+                Hide();
+
                 Forms.Cursor.Current = Forms.Cursors.WaitCursor;
 
                 var cancelLogTaskSource = new CancellationTokenSource();
@@ -398,7 +400,7 @@ namespace DofLog
 
                 Forms.Cursor.Current = Forms.Cursors.Default;
 
-                var sb = new System.Text.StringBuilder();
+                var sb = new StringBuilder();
                 foreach (var acc in Logger.accounts)
                 {
                     sb.Append(acc);
@@ -424,6 +426,7 @@ namespace DofLog
                 }
                 if (App.config.AutoUncheckAccount)
                     ClearSlectedAccounts_Click(sender, e);
+                Show();
             }
             catch (ArgumentException ex)
             {
@@ -490,66 +493,160 @@ namespace DofLog
 
         #endregion Other buttons
 
-        private void btn_connect_cm_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            btn_connect_cm.Items.Clear();
-            foreach (var group in App.config.Groups)
-            {
-                var grpItem = new MenuItem()
-                {
-                    Header = group
-                };
-
-                foreach (var acc in group.accounts)
-                {
-                    var accItem = new MenuItem()
-                    {
-                        Header = acc
-                    };
-                    grpItem.Items.Add(accItem);
-                }
-                grpItem.Items.Add(new Separator());
-
-                var item = new MenuItem()
-                {
-                    Header = "Supprimer",
-                    Icon = new Image()
-                    {
-                        Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/remove.png", UriKind.Relative))
-                    }
-                };
-                item.Click += NewGroup_Click;
-                grpItem.Items.Add(item);
-
-                btn_connect_cm.Items.Add(grpItem);
-            }
-
-            btn_connect_cm.Items.Add(new Separator());
-
-            {
-                var item = new MenuItem()
-                {
-                    Header = "Nouveau groupe",
-                    Icon = new Image()
-                    {
-                        Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/add.png", UriKind.Relative))
-                    }
-                };
-                item.Click += NewGroup_Click;
-                btn_connect_cm.Items.Add(item);
-            }
-        }
-
         private void ConnectGroup(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                foreach (var acc in (Group)((MenuItem)((MenuItem)sender).Parent).Header)
+                    Logger.accounts.Add(acc);
+                btn_connect_Click(sender, e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
 
         private void NewGroup_Click(object sender, RoutedEventArgs e)
         {
-            var group = new List<Account>();
-            group.Add(new Account("test", "test", "terst"));
-            App.config.Groups.Add(new Group("testGroup", group));
+            try
+            {
+                var newGroupDialog = new NewGroupDialog();
+                newGroupDialog.Owner = this;
+                newGroupDialog.ShowDialog();
+                if (newGroupDialog.createdGroup != null)
+                {
+                    App.config.Groups.Add(newGroupDialog.createdGroup);
+                    App.config.UpdateConfig();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void EditGroup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var realSender = (MenuItem)((MenuItem)sender).Parent;
+                var newGroupDialog = new NewGroupDialog((Group)(realSender).Header);
+                newGroupDialog.Owner = this;
+                newGroupDialog.ShowDialog();
+                if (!realSender.Header.Equals(newGroupDialog.createdGroup) && newGroupDialog.createdGroup != null)
+                {
+                    var index = App.config.Groups.IndexOf((Group)realSender.Header);
+                    App.config.Groups[index] = new Group(newGroupDialog.createdGroup);
+                    App.config.UpdateConfig();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void DelGroup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                App.config.Groups.Remove((Group)((MenuItem)((MenuItem)sender).Parent).Header);
+                App.config.UpdateConfig();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void btn_connect_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                btn_connect_cm.Items.Clear();
+                foreach (var group in App.config.Groups)
+                {
+                    var grpItem = new MenuItem()
+                    {
+                        Header = group
+                    };
+
+                    {
+                        var item = new MenuItem()
+                        {
+                            Header = "Connexion",
+                            Icon = new Image()
+                            {
+                                Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/run.png", UriKind.Relative))
+                            }
+                        };
+                        item.Click += ConnectGroup;
+                        grpItem.Items.Add(item);
+                    }
+                    {
+                        var item = new MenuItem()
+                        {
+                            Header = "Editer",
+                            Icon = new Image()
+                            {
+                                Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/edit.png", UriKind.Relative))
+                            }
+                        };
+                        item.Click += EditGroup_Click;
+                        grpItem.Items.Add(item);
+                    }
+                    {
+                        var item = new MenuItem()
+                        {
+                            Header = "Supprimer",
+                            Icon = new Image()
+                            {
+                                Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/remove.png", UriKind.Relative))
+                            }
+                        };
+                        item.Click += DelGroup_Click;
+                        grpItem.Items.Add(item);
+                    }
+
+                    grpItem.Items.Add(new Separator());
+
+                    foreach (var acc in group)
+                    {
+                        var accItem = new MenuItem()
+                        {
+                            Header = acc
+                        };
+                        grpItem.Items.Add(accItem);
+                    }
+
+                    btn_connect_cm.Items.Add(grpItem);
+                }
+
+                btn_connect_cm.Items.Add(new Separator());
+
+                {
+                    var item = new MenuItem()
+                    {
+                        Header = "Nouveau groupe",
+                        Icon = new Image()
+                        {
+                            Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/add.png", UriKind.Relative))
+                        }
+                    };
+                    item.Click += NewGroup_Click;
+                    btn_connect_cm.Items.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
         }
     }
 }

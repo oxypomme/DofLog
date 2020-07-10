@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace DofLog
 {
+    [Serializable()]
     public class Group : IList<Account>
     {
         public string name;
-        public List<Account> accounts;
+        private List<Account> accounts;
 
         #region Constructors
 

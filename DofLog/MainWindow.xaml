@@ -55,9 +55,9 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click">
+            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click" MouseDown="btn_connect_MouseDown">
                 <Button.ContextMenu>
-                    <ContextMenu Name="btn_connect_cm" ContextMenuOpening="btn_connect_cm_ContextMenuOpening" />
+                    <ContextMenu Name="btn_connect_cm" />
                 </Button.ContextMenu>
             </Button>
             <StackPanel Grid.Row="1">
