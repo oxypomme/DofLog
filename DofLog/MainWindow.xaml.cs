@@ -386,9 +386,8 @@ namespace DofLog
                 Forms.Cursor.Current = Forms.Cursors.WaitCursor;
 
                 var cancelLogTaskSource = new CancellationTokenSource();
-                var ct = cancelLogTaskSource.Token;
 
-                var logTask = Task.Run(() => { Logger.LogAccounts(ct); }, cancelLogTaskSource.Token);
+                var logTask = Task.Run(() => { Logger.LogAccounts(cancelLogTaskSource.Token); }, cancelLogTaskSource.Token);
                 if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
                 {
                     cancelLogTaskSource.Cancel();
@@ -423,9 +422,7 @@ namespace DofLog
                     //TODO? #3 : Logger.OrganizeAccounts()
                 }
                 if (App.config.AutoUncheckAccount)
-                {
                     ClearSlectedAccounts_Click(sender, e);
-                }
             }
             catch (ArgumentException ex)
             {

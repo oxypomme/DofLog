@@ -124,8 +124,9 @@ namespace DofLog
         {
             if (!File.Exists("Modules/Organizer.exe"))
                 DownloadOrganizer();
-            var startInfo = new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Modules/Organizer.exe"));
-            return Process.Start(startInfo);
+            foreach (var proc in Process.GetProcessesByName("Organizer"))
+                proc.Kill();
+            return Process.Start(new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Modules/Organizer.exe")));
         }
 
         /// <summary>
