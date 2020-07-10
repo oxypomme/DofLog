@@ -35,10 +35,7 @@ namespace DofLog
 
         #region Public Methods
 
-        public override string ToString()
-        {
-            return nickname;
-        }
+        public override string ToString() => nickname;
 
         public override bool Equals(object obj)
         {

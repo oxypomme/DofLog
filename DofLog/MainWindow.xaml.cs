@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -410,7 +411,7 @@ namespace DofLog
                     sb.Append(" sont");
                 else
                     sb.Append(" est");
-                notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connectés !", Forms.ToolTipIcon.Info);
+                notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connecté" + (Logger.accounts.Count > 1 ? "s" : "") + " !", Forms.ToolTipIcon.Info);
                 Task.Run(() =>
                 {
                     Thread.Sleep(5000);
@@ -488,5 +489,67 @@ namespace DofLog
         }
 
         #endregion Other buttons
+
+        private void btn_connect_cm_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            btn_connect_cm.Items.Clear();
+            foreach (var group in App.config.Groups)
+            {
+                var grpItem = new MenuItem()
+                {
+                    Header = group
+                };
+
+                foreach (var acc in group.accounts)
+                {
+                    var accItem = new MenuItem()
+                    {
+                        Header = acc
+                    };
+                    grpItem.Items.Add(accItem);
+                }
+                grpItem.Items.Add(new Separator());
+
+                var item = new MenuItem()
+                {
+                    Header = "Supprimer",
+                    Icon = new Image()
+                    {
+                        Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/remove.png", UriKind.Relative))
+                    }
+                };
+                item.Click += NewGroup_Click;
+                grpItem.Items.Add(item);
+
+                btn_connect_cm.Items.Add(grpItem);
+            }
+
+            btn_connect_cm.Items.Add(new Separator());
+
+            {
+                var item = new MenuItem()
+                {
+                    Header = "Nouveau groupe",
+                    Icon = new Image()
+                    {
+                        Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/add.png", UriKind.Relative))
+                    }
+                };
+                item.Click += NewGroup_Click;
+                btn_connect_cm.Items.Add(item);
+            }
+        }
+
+        private void ConnectGroup(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void NewGroup_Click(object sender, RoutedEventArgs e)
+        {
+            var group = new List<Account>();
+            group.Add(new Account("test", "test", "terst"));
+            App.config.Groups.Add(new Group("testGroup", group));
+        }
     }
 }

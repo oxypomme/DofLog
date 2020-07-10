@@ -110,13 +110,15 @@ namespace DofLog
                 }
                 else if (new Version(lastRelease.TagName) < current)
                 {
-                    var result = MessageBox.Show("Cette version de DofLog est expérimentale : de nombreux bugs peuvent survenir et les nouvelles fonctionnalités peuvent ne pas être prêtes à l'utilisation. Voulez-vous continuer ?", "Update", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes);
+#if !DEBUG
+                    var result = MessageBox.Show("Cette version de DofLog est expérimentale : de nombreux bugs peuvent survenir et les nouvelles fonctionnalités peuvent ne pas être prêtes à l'utilisation. Voulez-vous continuer ?", "Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes);
                     if (result == MessageBoxResult.No)
                     {
                         StopRPC();
                         logstream.Close();
                         Environment.Exit(1);
                     }
+#endif
                 }
             }
             catch (Exception e) { logstream.Error(e); }

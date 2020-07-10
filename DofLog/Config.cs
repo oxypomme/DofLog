@@ -19,8 +19,9 @@ namespace DofLog
 
         public bool AutoOrganizer { get; set; }
         public bool AutoUncheckAccount { get; set; }
-        public List<Account> Accounts { get; set; }
         public Size SavedSize { get; set; }
+        public List<Account> Accounts { get; set; }
+        public List<Group> Groups { get; set; }
 
         #endregion Public Fields
 
@@ -39,6 +40,7 @@ namespace DofLog
             AutoUncheckAccount = false;
             SavedSize = new Size(250, 200);
             Accounts = new List<Account>();
+            Groups = new List<Group>();
 
             try
             {

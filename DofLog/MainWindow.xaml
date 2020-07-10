@@ -55,7 +55,11 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click" />
+            <Button Name="btn_connect" Content="Connexion" Grid.Row="0" Click="btn_connect_Click">
+                <Button.ContextMenu>
+                    <ContextMenu Name="btn_connect_cm" ContextMenuOpening="btn_connect_cm_ContextMenuOpening" />
+                </Button.ContextMenu>
+            </Button>
             <StackPanel Grid.Row="1">
                 <Button Name="btn_organizer" ToolTip="Lance le module Organizer" Click="btn_organizer_Click">
                     <Image Source="img/organizer.ico" />
