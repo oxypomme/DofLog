@@ -92,6 +92,8 @@ namespace DofLog
                 {
                     GetType().GetProperty(field.Name).SetValue(this, field.GetValue(config));
                     App.logstream.Log(field.Name + " loaded");
+                    if (GetType().GetProperty(field.Name).GetValue(this) == null) // If the field is null we initialize it
+                        GetType().GetProperty(field.Name).SetValue(this, Activator.CreateInstance(GetType().GetProperty(field.Name).PropertyType));
                 }
             }
         }
