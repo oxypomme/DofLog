@@ -62,6 +62,8 @@ namespace DofLog
 
         IEnumerator IEnumerable.GetEnumerator() => accounts.GetEnumerator();
 
+        public List<Account> GetList() => accounts;
+
         #endregion Public Methods
     }
 }

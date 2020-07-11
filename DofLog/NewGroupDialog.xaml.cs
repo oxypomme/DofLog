@@ -25,16 +25,28 @@ namespace DofLog
 
         #endregion Internal Fields
 
+        #region Private Fields
+
+        private List<Account> accounts { get; set; }
+
+        #endregion Private Fields
+
         public NewGroupDialog()
         {
             InitializeComponent();
             InitShortcuts();
+            accounts = new List<Account>();
 
             foreach (var acc in App.config.Accounts)
-                lb_accounts.Items.Add(new CheckBox
+            {
+                var item = new CheckBox
                 {
                     Content = acc
-                });
+                };
+                item.Checked += Account_Checked;
+                item.Unchecked += Account_Unchecked;
+                lb_accounts.Items.Add(item);
+            }
 
             tb_name.Focus();
         }
@@ -43,20 +55,21 @@ namespace DofLog
         {
             InitializeComponent();
             InitShortcuts();
+            accounts = grp.GetList();
 
             foreach (var acc in App.config.Accounts)
-                lb_accounts.Items.Add(new CheckBox
+            {
+                var item = new CheckBox
                 {
-                    Content = acc
-                });
+                    Content = acc,
+                    IsChecked = grp.Contains(acc)
+                };
+                item.Checked += Account_Checked;
+                item.Unchecked += Account_Unchecked;
+                lb_accounts.Items.Add(item);
+            }
 
             tb_name.Text = grp.name;
-
-            foreach (CheckBox account in lb_accounts.Items)
-            {
-                if (grp.Contains(account.Content))
-                    account.IsChecked = true;
-            }
         }
 
         #region Buttons events
@@ -78,12 +91,6 @@ namespace DofLog
 
         private void btn_ok_Click(object sender, RoutedEventArgs e)
         {
-            var accounts = new List<Account>();
-            foreach (CheckBox acc in lb_accounts.Items)
-            {
-                if (acc.IsChecked.Value)
-                    accounts.Add((Account)acc.Content);
-            }
             createdGroup = new Group(tb_name.Text, accounts);
             Close();
         }
@@ -91,5 +98,9 @@ namespace DofLog
         private void btn_cancel_Click(object sender, RoutedEventArgs e) => Close();
 
         #endregion Buttons events
+
+        private void Account_Unchecked(object sender, RoutedEventArgs e) => accounts.Remove((Account)((CheckBox)sender).Content);
+
+        private void Account_Checked(object sender, RoutedEventArgs e) => accounts.Add((Account)((CheckBox)sender).Content);
     }
 }
