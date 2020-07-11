@@ -391,7 +391,28 @@ namespace DofLog
 
                 var cancelLogTaskSource = new CancellationTokenSource();
 
-                var logTask = Task.Run(() => { Logger.LogAccounts(cancelLogTaskSource.Token); }, cancelLogTaskSource.Token);
+                var logTask = Task.Run(() =>
+                {
+                    try
+                    {
+                        Logger.LogAccounts(cancelLogTaskSource.Token);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (System.IO.FileNotFoundException ex)
+                    {
+                        MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                }, cancelLogTaskSource.Token);
                 var timoutTask = Task.Run(() =>
                 {
                     try
@@ -399,7 +420,9 @@ namespace DofLog
                         if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
                         {
                             cancelLogTaskSource.Cancel();
-                            throw new TimeoutException();
+                            if (logTask.Exception != null)
+                                throw new TimeoutException();
+                            return;
                         }
                         logTask.Dispose();
 
@@ -429,24 +452,22 @@ namespace DofLog
                         }
                         if (App.config.AutoUncheckAccount)
                             Dispatcher.Invoke(new Action(() => ClearSlectedAccounts_Click(sender, e)));
-                        Dispatcher.Invoke(new Action(() => Show()));
                     }
                     catch (TimeoutException ex)
                     {
                         MessageBox.Show("La connexion à sûrement échouée, vérifier votre connexion internet et que vous n'avez pas bougé la souris pendant la connexion. Si ce problème persiste contacter l'équipe de développement.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                         App.logstream.Error(ex);
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    finally
+                    {
+                        Dispatcher.Invoke(new Action(() => Show()));
+                    }
                 });
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-            catch (System.IO.FileNotFoundException ex)
-            {
-                MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
             }
             catch (Exception ex)
             {
