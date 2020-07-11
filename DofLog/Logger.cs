@@ -92,6 +92,7 @@ namespace DofLog
                 LClickMouseTo(launcher.profileBtn, controller);
                 CustomMouseTo(launcher.unlogBtn, controller);
                 App.logstream.Log($"Waiting to detect the unlog button (x:{launcher.unlogBtn.X},y:{launcher.unlogBtn.Y})");
+                /* AL Unlog Verification
                 while (!launcher.IsUnlogBtn(GetPixel(launcher.unlogBtn)))
                 {
                     Thread.Sleep(PAUSE * 2);
@@ -101,6 +102,8 @@ namespace DofLog
                         ct.ThrowIfCancellationRequested();
                     }
                 }
+                */
+                Thread.Sleep(PAUSE * 2);
                 controller.Mouse.LeftButtonClick().Sleep(PAUSE);
                 CustomMouseTo(launcher.usernameField, controller);
                 Thread.Sleep(PAUSE);
