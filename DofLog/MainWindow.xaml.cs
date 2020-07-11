@@ -386,47 +386,54 @@ namespace DofLog
             {
                 Hide();
 
-                Forms.Cursor.Current = Forms.Cursors.WaitCursor;
-
                 var cancelLogTaskSource = new CancellationTokenSource();
 
                 var logTask = Task.Run(() => { Logger.LogAccounts(cancelLogTaskSource.Token); }, cancelLogTaskSource.Token);
-                if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
+                var timoutTask = Task.Run(() =>
                 {
-                    cancelLogTaskSource.Cancel();
-                    throw new TimeoutException();
-                }
-                logTask.Dispose();
+                    try
+                    {
+                        if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
+                        {
+                            cancelLogTaskSource.Cancel();
+                            throw new TimeoutException();
+                        }
+                        logTask.Dispose();
 
-                Forms.Cursor.Current = Forms.Cursors.Default;
-
-                var sb = new StringBuilder();
-                foreach (var acc in Logger.accounts)
-                {
-                    sb.Append(acc);
-                    if (Logger.accounts.IndexOf(acc) + 2 == Logger.accounts.Count)
-                        sb.Append(" et ");
-                    else if (Logger.accounts.IndexOf(acc) + 1 != Logger.accounts.Count)
-                        sb.Append(", ");
-                }
-                if (Logger.accounts.Count > 1)
-                    sb.Append(" sont");
-                else
-                    sb.Append(" est");
-                notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connecté" + (Logger.accounts.Count > 1 ? "s" : "") + " !", Forms.ToolTipIcon.Info);
-                Task.Run(() =>
-                {
-                    Thread.Sleep(5000);
-                    Logger.state = Logger.LoggerState.IDLE;
+                        var sb = new StringBuilder();
+                        foreach (var acc in Logger.accounts)
+                        {
+                            sb.Append(acc);
+                            if (Logger.accounts.IndexOf(acc) + 2 == Logger.accounts.Count)
+                                sb.Append(" et ");
+                            else if (Logger.accounts.IndexOf(acc) + 1 != Logger.accounts.Count)
+                                sb.Append(", ");
+                        }
+                        if (Logger.accounts.Count > 1)
+                            sb.Append(" sont");
+                        else
+                            sb.Append(" est");
+                        notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connecté" + (Logger.accounts.Count > 1 ? "s" : "") + " !", Forms.ToolTipIcon.Info);
+                        Task.Run(() =>
+                        {
+                            Thread.Sleep(5000);
+                            Logger.state = Logger.LoggerState.IDLE;
+                        });
+                        if (App.config.AutoOrganizer)
+                        {
+                            App.LaunchOrganizer();
+                            //TODO? #3 : Logger.OrganizeAccounts()
+                        }
+                        if (App.config.AutoUncheckAccount)
+                            Dispatcher.Invoke(new Action(() => ClearSlectedAccounts_Click(sender, e)));
+                        Dispatcher.Invoke(new Action(() => Show()));
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        MessageBox.Show("La connexion à sûrement échouée, vérifier votre connexion internet et que vous n'avez pas bougé la souris pendant la connexion. Si ce problème persiste contacter l'équipe de développement.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
                 });
-                if (App.config.AutoOrganizer)
-                {
-                    App.LaunchOrganizer();
-                    //TODO? #3 : Logger.OrganizeAccounts()
-                }
-                if (App.config.AutoUncheckAccount)
-                    ClearSlectedAccounts_Click(sender, e);
-                Show();
             }
             catch (ArgumentException ex)
             {
@@ -436,11 +443,6 @@ namespace DofLog
             catch (System.IO.FileNotFoundException ex)
             {
                 MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-            catch (TimeoutException ex)
-            {
-                MessageBox.Show("La connexion à sûrement échouée, vérifier votre connexion internet et que vous n'avez pas bougé la souris pendant la connexion. Si ce problème persiste contacter l'équipe de développement.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
             catch (Exception ex)

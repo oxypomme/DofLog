@@ -18,20 +18,20 @@ namespace DofLog
             InitializeComponent();
 
             // TODO #7 : Reflection ici, ça peut être cool
-
+            /*
             foreach (var field in App.config.GetType().GetFields())
             {
                 if (field.DeclaringType == typeof(bool))
                 {
                     Array.Find(GetType().GetFields(), f => f.Name.Contains(field.Name.ToLower())).SetValue(this, field.GetValue(App.config));
                 }
-            }
+            }*/
 
             tb_al_path.Text = App.config.AL_Path;
-            //cb_autoorganizer.IsChecked = App.config.AutoOrganizer;
-            //cb_staylog.IsChecked = App.config.StayLog;
-            //cb_retromode.IsChecked = App.config.RetroMode;
-            //cb_autouncheckaccount.IsChecked = App.config.AutoUncheckAccount;
+            cb_autoorganizer.IsChecked = App.config.AutoOrganizer;
+            cb_staylog.IsChecked = App.config.StayLog;
+            cb_retromode.IsChecked = App.config.RetroMode;
+            cb_autouncheckaccount.IsChecked = App.config.AutoUncheckAccount;
             lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
             ReloadTheme();
