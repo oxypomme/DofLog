@@ -124,7 +124,7 @@ namespace DofLog
             catch (Exception e) { logstream.Error(e); }
             finally
             {
-                //Current.MainWindow.Show();
+                //Current.MainWindow.Dispatcher.Invoke(new Action(() => Current.MainWindow.Show()));
             }
         }
 

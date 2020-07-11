@@ -25,6 +25,7 @@ namespace DofLog
         public MainWindow()
         {
             InitializeComponent();
+            //Hide();
             // inspired by https://stackoverflow.com/a/33450624
             RoutedCommand keyShortcut = new RoutedCommand();
 
@@ -125,6 +126,7 @@ namespace DofLog
                         }
                     };
                     item.Click += EditAccount_Click;
+                    item.Style = FindResource("MenuItemBaseStyle") as Style;
                     item_cm.Items.Add(item);
                 }
                 {
@@ -137,6 +139,7 @@ namespace DofLog
                         }
                     };
                     item.Click += DeleteAccount_Click;
+                    item.Style = FindResource("MenuItemBaseStyle") as Style;
                     item_cm.Items.Add(item);
                 }
             }
@@ -587,6 +590,7 @@ namespace DofLog
                                 Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/run.png", UriKind.Relative))
                             }
                         };
+                        item.Style = FindResource("MenuItemBaseStyle") as Style;
                         item.Click += ConnectGroup;
                         grpItem.Items.Add(item);
                     }
@@ -599,6 +603,7 @@ namespace DofLog
                                 Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/edit.png", UriKind.Relative))
                             }
                         };
+                        item.Style = FindResource("MenuItemBaseStyle") as Style;
                         item.Click += EditGroup_Click;
                         grpItem.Items.Add(item);
                     }
@@ -611,10 +616,12 @@ namespace DofLog
                                 Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/remove.png", UriKind.Relative))
                             }
                         };
+                        item.Style = FindResource("MenuItemBaseStyle") as Style;
                         item.Click += DelGroup_Click;
                         grpItem.Items.Add(item);
                     }
 
+                    grpItem.Style = FindResource("SubMenuItemBaseStyle") as Style;
                     grpItem.Items.Add(new Separator());
 
                     foreach (var acc in group)
@@ -623,6 +630,8 @@ namespace DofLog
                         {
                             Header = acc
                         };
+                        accItem.IsEnabled = false;
+                        accItem.Style = FindResource("MenuItemBaseStyle") as Style;
                         grpItem.Items.Add(accItem);
                     }
 
@@ -641,6 +650,7 @@ namespace DofLog
                         }
                     };
                     item.Click += NewGroup_Click;
+                    item.Style = FindResource("MenuItemBaseStyle") as Style;
                     btn_connect_cm.Items.Add(item);
                 }
             }

@@ -37,12 +37,12 @@
         <ListBox Name="lb_accounts" SelectionMode="Single" Margin="0,5,5,0" Grid.Column="0" Grid.Row="1">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click">
+                    <MenuItem Name="lb_accounts_cm_add" Header="Ajouter" Click="AddAccount_Click" Style="{StaticResource MenuItemBaseStyle}">
                         <MenuItem.Icon>
                             <Image Source="img/add.png" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Name="lb_accounts_cm_clear" Header="Tout décocher" Click="ClearSlectedAccounts_Click">
+                    <MenuItem Name="lb_accounts_cm_clear" Header="Tout décocher" Click="ClearSlectedAccounts_Click" Style="{StaticResource MenuItemBaseStyle}">
                         <MenuItem.Icon>
                             <Image Source="img/clean.png" />
                         </MenuItem.Icon>
