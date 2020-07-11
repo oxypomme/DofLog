@@ -523,6 +523,7 @@ namespace DofLog
         {
             try
             {
+                Logger.accounts.Clear();
                 foreach (var acc in (Group)((MenuItem)((MenuItem)sender).Parent).Header)
                     Logger.accounts.Add(acc);
                 btn_connect_Click(sender, e);
