@@ -16,7 +16,8 @@ namespace DofLog
     /// </summary>
     public partial class App : Application
     {
-        internal static Config config { get; set; }
+        internal static Config config { get; private set; }
+        internal static Logger Logger { get; private set; }
         internal static DateTime startTime;
 
         public App()
@@ -27,6 +28,8 @@ namespace DofLog
 
                 config = new Config();
                 config.GenConfig();
+
+                Logger = new Logger();
 
                 startTime = DateTime.Now;
                 StartRPC();
@@ -184,8 +187,8 @@ namespace DofLog
                                break;
 
                            var dofs = Process.GetProcessesByName("dofus").ToList();
-                           if (Logger.state == Logger.LoggerState.CONNECTING)
-                               UpdateRPC("Se connecte...", "Comptes connectés :", dofs.Count, Logger.accounts.Count);
+                           if (Logger.State == Logger.LoggerState.CONNECTING)
+                               UpdateRPC("Se connecte...", "Comptes connectés :", dofs.Count, Logger.Accounts.Count);
                            else if (dofs.Count() > 0)
                            {
                                var sb = new System.Text.StringBuilder();
@@ -225,7 +228,7 @@ namespace DofLog
                         },
                         Timestamps = new Timestamps()
                         {
-                            Start = (Process.GetProcessesByName("dofus").ToList().Count > 0 && Logger.state != Logger.LoggerState.CONNECTING ? startTime.ToUniversalTime() : DateTime.Now.AddSeconds(1).ToUniversalTime())
+                            Start = (Process.GetProcessesByName("dofus").ToList().Count > 0 && Logger.State != Logger.LoggerState.CONNECTING ? startTime.ToUniversalTime() : DateTime.Now.AddSeconds(1).ToUniversalTime())
                         },
                         Assets = new Assets()
                         {

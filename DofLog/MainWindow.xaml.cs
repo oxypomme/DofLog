@@ -160,7 +160,7 @@ namespace DofLog
 
         private void Account_Checked(object sender, RoutedEventArgs e)
         {
-            try { Logger.accounts.Add((Account)((CheckBox)sender).Content); }
+            try { App.Logger.Accounts.Add((Account)((CheckBox)sender).Content); }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -170,7 +170,7 @@ namespace DofLog
 
         private void Account_Unchecked(object sender, RoutedEventArgs e)
         {
-            try { Logger.accounts.Remove((Account)((CheckBox)sender).Content); }
+            try { App.Logger.Accounts.Remove((Account)((CheckBox)sender).Content); }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -266,20 +266,7 @@ namespace DofLog
             }
         }
 
-        private void ClearSlectedAccounts_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                foreach (CheckBox item in lb_accounts.Items)
-                    if (item.IsChecked.Value)
-                        item.IsChecked = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-        }
+        private void ClearSelectedAccounts_Click(object sender, RoutedEventArgs e) => ClearSelectedAccounts();
 
         private void UpAccount_Click(object sender, RoutedEventArgs e)
         {
@@ -357,6 +344,7 @@ namespace DofLog
 
         private void NotifyMenu_ShowClick(object sender, EventArgs e)
         {
+            Show();
             WindowState = WindowState.Normal;
             ShowInTaskbar = true;
         }
@@ -381,102 +369,9 @@ namespace DofLog
 
         #endregion Notify
 
-        #region Other buttons
+        #region Other Buttons
 
-        private void btn_connect_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Hide();
-
-                var cancelLogTaskSource = new CancellationTokenSource();
-
-                var logTask = Task.Run(() =>
-                {
-                    try
-                    {
-                        Logger.LogAccounts(cancelLogTaskSource.Token);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                        App.logstream.Error(ex);
-                    }
-                    catch (System.IO.FileNotFoundException ex)
-                    {
-                        MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                        App.logstream.Error(ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                        App.logstream.Error(ex);
-                    }
-                }, cancelLogTaskSource.Token);
-                var timoutTask = Task.Run(() =>
-                {
-                    try
-                    {
-                        if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
-                        {
-                            cancelLogTaskSource.Cancel();
-                            if (logTask.Exception != null)
-                                throw new TimeoutException();
-                            return;
-                        }
-                        logTask.Dispose();
-
-                        var sb = new StringBuilder();
-                        foreach (var acc in Logger.accounts)
-                        {
-                            sb.Append(acc);
-                            if (Logger.accounts.IndexOf(acc) + 2 == Logger.accounts.Count)
-                                sb.Append(" et ");
-                            else if (Logger.accounts.IndexOf(acc) + 1 != Logger.accounts.Count)
-                                sb.Append(", ");
-                        }
-                        if (Logger.accounts.Count > 1)
-                            sb.Append(" sont");
-                        else
-                            sb.Append(" est");
-                        notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connecté" + (Logger.accounts.Count > 1 ? "s" : "") + " !", Forms.ToolTipIcon.Info);
-                        App.startTime = DateTime.Now;
-                        Task.Run(() =>
-                        {
-                            Thread.Sleep(5000);
-                            Logger.state = Logger.LoggerState.IDLE;
-                        });
-                        if (App.config.AutoOrganizer)
-                        {
-                            App.LaunchOrganizer();
-                            //TODO? #3 : Logger.OrganizeAccounts()
-                        }
-                        if (App.config.AutoUncheckAccount)
-                            Dispatcher.Invoke(new Action(() => ClearSlectedAccounts_Click(sender, e)));
-                    }
-                    catch (TimeoutException ex)
-                    {
-                        MessageBox.Show("La connexion à sûrement échouée, vérifier votre connexion internet et que vous n'avez pas bougé la souris pendant la connexion. Si ce problème persiste contacter l'équipe de développement.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                        App.logstream.Error(ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                        App.logstream.Error(ex);
-                    }
-                    finally
-                    {
-                        Dispatcher.Invoke(new Action(() => Show()));
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-            Forms.Cursor.Current = Forms.Cursors.Default;
-        }
+        private void btn_connect_Click(object sender, RoutedEventArgs e) => ConnectAccounts();
 
         private void btn_settings_Click(object sender, RoutedEventArgs e)
         {
@@ -518,16 +413,14 @@ namespace DofLog
             }
         }
 
-        #endregion Other buttons
-
-        private void ConnectGroup(object sender, RoutedEventArgs e)
+        private void btn_connect_groups_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Logger.accounts.Clear();
+                App.Logger.Accounts.Clear();
                 foreach (var acc in (Group)((MenuItem)((MenuItem)sender).Parent).Header)
-                    Logger.accounts.Add(acc);
-                btn_connect_Click(sender, e);
+                    App.Logger.Accounts.Add(acc);
+                ConnectAccounts();
             }
             catch (Exception ex)
             {
@@ -614,7 +507,7 @@ namespace DofLog
                             }
                         };
                         item.Style = FindResource("MenuItemBaseStyle") as Style;
-                        item.Click += ConnectGroup;
+                        item.Click += btn_connect_groups_Click;
                         grpItem.Items.Add(item);
                     }
                     {
@@ -683,5 +576,95 @@ namespace DofLog
                 App.logstream.Error(ex);
             }
         }
+
+        #endregion Other Buttons
+
+        #region Commands
+
+        private void ConnectAccounts()
+        {
+            try
+            {
+                Hide();
+
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        App.Logger.Start();
+
+                        var sb = new StringBuilder();
+                        foreach (var acc in App.Logger.Accounts)
+                        {
+                            sb.Append(acc);
+                            if (App.Logger.Accounts.IndexOf(acc) + 2 == App.Logger.Accounts.Count)
+                                sb.Append(" et ");
+                            else if (App.Logger.Accounts.IndexOf(acc) + 1 != App.Logger.Accounts.Count)
+                                sb.Append(", ");
+                        }
+                        if (App.Logger.Accounts.Count > 1)
+                            sb.Append(" sont");
+                        else
+                            sb.Append(" est");
+                        notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connecté" + (App.Logger.Accounts.Count > 1 ? "s" : "") + " !", Forms.ToolTipIcon.Info);
+                        App.startTime = DateTime.Now;
+                        if (App.config.AutoOrganizer)
+                        {
+                            App.LaunchOrganizer();
+                            //TODO? #3 : App.Logger.OrganizeAccounts()
+                        }
+                        if (App.config.AutoUncheckAccount)
+                            Dispatcher.Invoke(new Action(() => ClearSelectedAccounts()));
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (System.IO.FileNotFoundException ex)
+                    {
+                        MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        MessageBox.Show("La tâche à mis trop de temps pour être exécutée", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    finally
+                    {
+                        Dispatcher.Invoke(new Action(() => Show()));
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void ClearSelectedAccounts()
+        {
+            try
+            {
+                foreach (CheckBox item in lb_accounts.Items)
+                    if (item.IsChecked.Value)
+                        item.IsChecked = false;
+                App.Logger.Accounts.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        #endregion Commands
     }
 }
