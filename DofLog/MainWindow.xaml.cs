@@ -440,6 +440,7 @@ namespace DofLog
                         else
                             sb.Append(" est");
                         notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connecté" + (Logger.accounts.Count > 1 ? "s" : "") + " !", Forms.ToolTipIcon.Info);
+                        App.startTime = DateTime.Now;
                         Task.Run(() =>
                         {
                             Thread.Sleep(5000);

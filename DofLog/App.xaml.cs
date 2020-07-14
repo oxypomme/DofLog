@@ -17,6 +17,7 @@ namespace DofLog
     public partial class App : Application
     {
         internal static Config config { get; set; }
+        internal static DateTime startTime;
 
         public App()
         {
@@ -27,6 +28,7 @@ namespace DofLog
                 config = new Config();
                 config.GenConfig();
 
+                startTime = DateTime.Now;
                 StartRPC();
 
                 Updater();
@@ -223,7 +225,7 @@ namespace DofLog
                         },
                         Timestamps = new Timestamps()
                         {
-                            Start = Process.GetCurrentProcess().StartTime.ToUniversalTime()
+                            Start = (Process.GetProcessesByName("dofus").ToList().Count > 0 && Logger.state != Logger.LoggerState.CONNECTING ? startTime.ToUniversalTime() : DateTime.Now.AddSeconds(1).ToUniversalTime())
                         },
                         Assets = new Assets()
                         {
