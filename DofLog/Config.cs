@@ -46,23 +46,16 @@ namespace DofLog
 
             try
             {
-                if (!File.Exists("config.sser"))
+                if (!File.Exists("config.ser"))
                 {
-                    File.Create("config.sser").Close();
+                    File.Create("config.ser").Close();
                     App.logstream.Log("config created");
-                    if (File.Exists("config.ser"))
-                        UpgradeConfig();
                     SaveConfig();
                 }
                 else
                     LoadConfig();
             }
             catch (Exception e) { App.logstream.Error(e); }
-        }
-
-        private void UpgradeConfig()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

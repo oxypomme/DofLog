@@ -194,8 +194,5 @@
   <ItemGroup>
     <Resource Include="Themes\placeholder.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Archive\" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
