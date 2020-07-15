@@ -226,6 +226,11 @@ namespace DofLog
                 }
                 lb_accounts.SelectedItem = realSender;
             }
+            catch (System.Security.Cryptography.CryptographicException ex)
+            {
+                MessageBox.Show("Les données sont corrompues ou ne sont pas les vôtres.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
             catch (NullReferenceException ex)
             {
                 MessageBox.Show("Veuillez sélectionner un compte à éditer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -629,6 +634,11 @@ namespace DofLog
                     catch (TimeoutException ex)
                     {
                         MessageBox.Show("La tâche à mis trop de temps pour être exécutée", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (System.Security.Cryptography.CryptographicException ex)
+                    {
+                        MessageBox.Show("Les données sont corrompues ou ne sont pas les vôtres.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                         App.logstream.Error(ex);
                     }
                     catch (Exception ex)

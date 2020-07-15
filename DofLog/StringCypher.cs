@@ -23,7 +23,7 @@ namespace DofLog
             var saltStringBytes = Generate256BitsOfRandomEntropy();
             var ivStringBytes = Generate256BitsOfRandomEntropy();
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            using (var password = new Rfc2898DeriveBytes(App.config.UUID.ToString(), saltStringBytes, DerivationIterations))
+            using (var password = new Rfc2898DeriveBytes(Properties.Settings.Default["UUID"].ToString(), saltStringBytes, DerivationIterations))
             {
                 var keyBytes = password.GetBytes(Keysize / 8);
                 using (var symmetricKey = new RijndaelManaged())
@@ -65,7 +65,7 @@ namespace DofLog
             // Get the actual cipher text bytes by removing the first 64 bytes from the cipherText string.
             var cipherTextBytes = cipherTextBytesWithSaltAndIv.Skip((Keysize / 8) * 2).Take(cipherTextBytesWithSaltAndIv.Length - ((Keysize / 8) * 2)).ToArray();
 
-            using (var password = new Rfc2898DeriveBytes(App.config.UUID.ToString(), saltStringBytes, DerivationIterations))
+            using (var password = new Rfc2898DeriveBytes(Properties.Settings.Default["UUID"].ToString(), saltStringBytes, DerivationIterations))
             {
                 var keyBytes = password.GetBytes(Keysize / 8);
                 using (var symmetricKey = new RijndaelManaged())

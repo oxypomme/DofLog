@@ -1,4 +1,5 @@
 ﻿using DiscordRPC;
+using DofLog.Properties;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -24,6 +25,12 @@ namespace DofLog
         {
             try
             {
+                if ((Guid)Settings.Default["UUID"] == new Guid("00000000-0000-0000-0000-000000000000")) // If the UUID is empty
+                {
+                    Settings.Default["UUID"] = Guid.NewGuid();
+                    Settings.Default.Save();
+                }
+
                 logstream = new LogStream(Path.Combine(Environment.CurrentDirectory, "logs.log"));
 
                 config = new Config();

@@ -11,7 +11,6 @@ namespace DofLog
     {
         #region Public Fields
 
-        public Guid UUID { get; private set; }
         public string AL_Path { get; set; }
         public bool StayLog { get; set; }
         public bool RetroMode { get; set; }
@@ -33,7 +32,6 @@ namespace DofLog
         /// </summary>
         public void GenConfig()
         {
-            UUID = Guid.NewGuid();
             AL_Path = @"C:\Users\" + Environment.GetEnvironmentVariable("USERNAME") + @"\AppData\Local\Programs\zaap\Ankama Launcher.exe";
             StayLog = false;
             RetroMode = false;
@@ -46,9 +44,9 @@ namespace DofLog
 
             try
             {
-                if (!File.Exists("config.ser"))
+                if (!File.Exists("config.sser"))
                 {
-                    File.Create("config.ser").Close();
+                    File.Create("config.sser").Close();
                     App.logstream.Log("config created");
                     SaveConfig();
                 }
@@ -72,7 +70,7 @@ namespace DofLog
         /// </summary>
         public void SaveConfig()
         {
-            using (var stream = File.Open("config.ser", FileMode.Create))
+            using (var stream = File.Open("config.sser", FileMode.Create))
             {
                 var formatter = new BinaryFormatter();
                 formatter.Serialize(stream, this);
@@ -85,7 +83,7 @@ namespace DofLog
         /// </summary>
         public void LoadConfig()
         {
-            using (var stream = File.Open("config.ser", FileMode.Open))
+            using (var stream = File.Open("config.sser", FileMode.Open))
             {
                 var formatter = new BinaryFormatter();
                 var config = (Config)formatter.Deserialize(stream);
@@ -97,8 +95,6 @@ namespace DofLog
                     if (GetType().GetProperty(field.Name).GetValue(this) == null) // If the field is null we initialize it
                         GetType().GetProperty(field.Name).SetValue(this, Activator.CreateInstance(GetType().GetProperty(field.Name).PropertyType));
                 }
-                if (UUID == new Guid("00000000-0000-0000-0000-000000000000")) // If the UUID is empty
-                    UUID = new Guid();
             }
         }
 
