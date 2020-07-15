@@ -23,8 +23,8 @@ namespace DofLog
         public Account(string nickname, string username, string password)
         {
             this.nickname = nickname;
-            this.UsernameCipher = username;
-            this.PasswordCipher = password;
+            UsernameCipher = username;
+            PasswordCipher = password;
         }
 
         public Account(Account acc)

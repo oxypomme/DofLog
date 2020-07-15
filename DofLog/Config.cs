@@ -98,11 +98,7 @@ namespace DofLog
                         GetType().GetProperty(field.Name).SetValue(this, Activator.CreateInstance(GetType().GetProperty(field.Name).PropertyType));
                 }
                 if (UUID == new Guid("00000000-0000-0000-0000-000000000000")) // If the UUID is empty
-                {
                     UUID = new Guid();
-                    foreach (var acc in Accounts)
-                        acc.CleanLogs();
-                }
             }
         }
 
