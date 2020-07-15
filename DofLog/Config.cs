@@ -11,6 +11,7 @@ namespace DofLog
     {
         #region Public Fields
 
+        public Guid UUID { get; private set; }
         public string AL_Path { get; set; }
         public bool StayLog { get; set; }
         public bool RetroMode { get; set; }
@@ -32,6 +33,7 @@ namespace DofLog
         /// </summary>
         public void GenConfig()
         {
+            UUID = Guid.NewGuid();
             AL_Path = @"C:\Users\" + Environment.GetEnvironmentVariable("USERNAME") + @"\AppData\Local\Programs\zaap\Ankama Launcher.exe";
             StayLog = false;
             RetroMode = false;
@@ -94,6 +96,12 @@ namespace DofLog
                     App.logstream.Log(field.Name + " loaded");
                     if (GetType().GetProperty(field.Name).GetValue(this) == null) // If the field is null we initialize it
                         GetType().GetProperty(field.Name).SetValue(this, Activator.CreateInstance(GetType().GetProperty(field.Name).PropertyType));
+                }
+                if (UUID == new Guid("00000000-0000-0000-0000-000000000000")) // If the UUID is empty
+                {
+                    UUID = new Guid();
+                    foreach (var acc in Accounts)
+                        acc.CleanLogs();
                 }
             }
         }

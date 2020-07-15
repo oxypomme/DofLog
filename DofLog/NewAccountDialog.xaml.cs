@@ -31,8 +31,8 @@ namespace DofLog
             InitShortcuts();
 
             tb_nickname.Text = acc.nickname;
-            tb_username.Text = acc.username;
-            tb_password.Password = acc.password;
+            tb_username.Text = acc.UsernameCipher;
+            tb_password.Password = acc.PasswordCipher;
         }
 
         #endregion Constructor

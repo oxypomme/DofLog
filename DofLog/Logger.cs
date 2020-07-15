@@ -435,12 +435,12 @@ namespace DofLog
 
             iS.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_A)
                 .KeyPress(VirtualKeyCode.DELETE).Sleep(PAUSE);
-            iS.Keyboard.TextEntry(account.username).Sleep(PAUSE);
+            iS.Keyboard.TextEntry(account.UsernameCipher).Sleep(PAUSE);
 
             iS.Keyboard.KeyPress(VirtualKeyCode.TAB).Sleep(PAUSE);
             iS.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_A)
                 .KeyPress(VirtualKeyCode.DELETE).Sleep(PAUSE);
-            iS.Keyboard.TextEntry(account.password).Sleep(PAUSE);
+            iS.Keyboard.TextEntry(account.PasswordCipher).Sleep(PAUSE);
         }
 
         #endregion Private Methods

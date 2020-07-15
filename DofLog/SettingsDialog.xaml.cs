@@ -27,7 +27,7 @@ namespace DofLog
                     else if (field.PropertyType == typeof(string)) // if it's a string, a textbox is needed
                         ((TextBox)FindName("tb_" + field.Name.ToLower())).Text = (string)field.GetValue(App.config);
                 }
-                catch (NullReferenceException e) { App.logstream.Warning("Config Window missing an item : " + field.Name); }
+                catch (NullReferenceException) { App.logstream.Warning("Config Window missing an item : " + field.Name); }
             }
 
             lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
