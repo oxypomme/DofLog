@@ -110,13 +110,19 @@ J'utilise [SemVer](http://semver.org/) pour le versioning. Pour la liste complè
     - Intégration discord
     - Compatible Dofus 2 / Dofus retro
 
-## Auteur
+## Auteurs
 
 - [**OxyTom**](https://github.com/oxypomme) - [@OxyTom](https://twitter.com/OxyT0m8)
 
 Lisez la liste des [contributeurs](https://github.com/oxypomme/DofLog/contributors) qui ont participé à ce projet.
 
 [![license](https://img.shields.io/github/license/oxypomme/DofLog?style=for-the-badge)](https://github.com/oxypomme/DofLog/blob/master/LICENSE)
+
+[Dofus](https://dofus.com/fr) est un MMORPG édité par [Ankama](https://www.ankama.com/fr).
+
+**DofLog** est un outil non-officiel sans aucun lien avec Ankama.
+
+Certaines illustrations sont la propriété d'Ankama Studio et de Dofus - Tous droits réservés
 
 ## Contribute
 
@@ -141,5 +147,5 @@ Avant de poster le moindre bug report, merci de respecter ces quelques règles :
 ## Remerciements
 
 - Le [nAiO](https://naio.fr/), de ZDS, pour son concept te pour l'Organizer.
-- [Dofus](https://dofus.com/fr), développé par Ankama, pour continuer à nous amusez après tant d'années.
+- [Dofus](https://dofus.com/fr), développé par [Ankama](https://www.ankama.com/fr), pour continuer à nous amusez après tant d'années.
 - [shields.io](https://shields.io) and [ForTheBadge](https://forthebadge.com) for those quality badges.
