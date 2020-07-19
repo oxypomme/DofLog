@@ -22,6 +22,22 @@ C'est pourquoi j'ai développé `DofLog`, un outil pour se connecter automatique
 
 ## Installation
 
+### Avant de commencer
+
+**<font color=red>
+Ne donnez à personne le fichier `config.ser` et ce peu importe les conditions !
+</font>**
+
+Ce fichiers renferme vos paramètres _mais aussi les identifiants de vos comptes_. L'équipe de développement n'est en aucun cas responsable si vous vous faites pirater votre compte après avoir confié votre fichier `config.ser` à quiconque.
+
+Si un problème survient, n'hésitez pas à contacter l'équipe de développement ou de faire une `issue` sur GitHub. L'équipe de développement ne vous demandera **JAMAIS** votre fichier de configuration.
+
+_DofLog n’a pas été autorisé par la société Ankama_ et ne respecte (probablement) pas les [CGU](https://www.dofus.com/fr/cgu) *(c.f [le cas nAiO](https://www.dofus.com/fr/forum/1003-divers/2299315-pouvons-utilise-naio-2?page=1#entry12456707), l'inspiration principale de DofLog)* et un risque de ban est présent. _L’équipe de développement ne peut être tenue responsable en cas de ban_. Cependant, DofLog ne modifie pas le jeu ou ses fichiers, il simule un clavier et une souris (en intéragissant avec Windows) et prend des captures d'écran d'un pixel afin d'obtenir la couleur du dit pixel. Par conséquent, DofLog est difficilement détéctable *(autant que nAiO en fait)*. L'objectif principal de DofLog est d'être un gestionnaire de mot de passes pour des comptes Dofus.
+
+Si Ankama estime qu’une des fonctionnalités de DofLog va à l’encontre de ce qu’ils souhaitent, l'équipe de développement de DofLog retira cette fonctionnalité.
+
+### Installation
+
 ```md
 Installer la dernière version de l'Ankama Launcher.
 Connectez vous avec un compte (n'importe lequel, on va régler 2~3 trucs).
@@ -47,16 +63,6 @@ Installez.
 Jouez !
 ```
 
-Avant de commencer :
-
-**<font color=red>
-Ne donnez à personne le fichier `config.ser` et ce peu importe les conditions !
-</font>**
-
-Ce fichiers renferme vos paramètres mais aussi les identifiants de vos comptes. L'équipe de développement n'est en aucun cas responsable si vous vous faites pirater votre compte après avoir confié votre fichier `config.ser` à quiconque.
-
-Si un problème survient, n'hésitez pas à contacter l'équipe de développement ou de faire une `issue` sur GitHub. L'équipe de développement ne vous demandera **JAMAIS** votre fichier de configuration.
-
 ## Utilisation
 
 ![Create](https://i.imgur.com/B8zNWjk.gif)
@@ -70,6 +76,10 @@ Possibilité d'édition des comptes
 ![Delete](https://i.imgur.com/LqDixtt.gif)
 
 Vous ne jouez plus un compte ? Vous pouvez le supprimer simplement.
+
+![Groups](https://i.imgur.com/BVEjK4S.gif)
+
+Vous connectez souvent les mêmes comptes ? Créez un groupe !
 
 ![Order](https://i.imgur.com/GNg7I2q.gif)
 
@@ -103,6 +113,26 @@ J'utilise [SemVer](http://semver.org/) pour le versioning. Pour la liste complè
 
 ## Historique des Versions
 
+- 2.0.2
+  - Diverses optimisations
+  - Groupes de comptes :
+    - Clic droit sur le bouton connecter pour accéder au groupes de compte
+  - Barre de défilement colorée en fonction du mode (Dofus Rétro ou Dofus 2)
+  - Possibilité de télécharger directement la nouvelle mise à jour
+- 2.0.1
+  - Raccourcis claviers :
+  - Fenêtre principale :
+    - `Ctrl + N` > Créer un nouveau compte
+    - `Ctrl + E`  > Édite le compte sélectionné
+    - `Suppr`    > Supprime le compte sélectionné
+    - `Ctrl + Flèche` > Bouge le compte sélectionné dans la liste
+  - Création / Édition de compte :
+    - `Entrée` > Valider
+    - `Echap` > Annuler
+  - Lors de la création de compte, le surnom est sélectionné par défaut
+  - Lors d'un mouvement du compte dans la liste, le compte est re-sélectionné
+  - La taille de la fenêtre est maintenant sauvegardée
+  - Possibilité de décocher tout les comptes cochés
 - 2.0.0
   - Sortie officielle de DofLog !
     - Possibilité d'ajouter, retirer et éditer les comptes
@@ -120,7 +150,7 @@ Lisez la liste des [contributeurs](https://github.com/oxypomme/DofLog/contributo
 
 [Dofus](https://dofus.com/fr) est un MMORPG édité par [Ankama](https://www.ankama.com/fr).
 
-**DofLog** est un outil non-officiel sans aucun lien avec Ankama.
+DofLog est un outil non-officiel sans aucun lien avec Ankama.
 
 Certaines illustrations sont la propriété d'Ankama Studio et de Dofus - Tous droits réservés
 
