@@ -102,6 +102,8 @@ namespace DofLog
         {
             try
             {
+                if (File.Exists("DofLog_setup.exe"))
+                    File.Delete("DofLog_setup.exe");
                 /* Credits to WildGoat07 : https://github.com/WildGoat07 */
                 var github = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("DofLog"));
                 var lastRelease = await github.Repository.Release.GetLatest(270258000);
@@ -111,7 +113,14 @@ namespace DofLog
                 {
                     var result = MessageBox.Show("Une nouvelle version est disponible. Voulez-vous la télécharger ?", "Updater", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
-                        Process.Start("https://github.com/oxypomme/DofLog/releases/latest");
+                    {
+                        WebClient webClient = new WebClient();
+                        logstream.Log("Downloading Update");
+                        webClient.DownloadFile(new Uri("https://github.com/oxypomme/DofLog/releases/latest/download/DofLog_setup.exe"), "DofLog_setup.exe");
+                        logstream.Log("Updated downloaded, extracting it");
+                        Process.Start(new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "DofLog_setup.exe")));
+                        Environment.Exit(0);
+                    }
                 }
                 else if (new Version(lastRelease.TagName) < current)
                 {
