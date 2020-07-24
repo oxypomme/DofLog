@@ -298,7 +298,7 @@ namespace DofLog
             }
             catch (NullReferenceException ex)
             {
-                MessageBox.Show("Veuillez sélectionner un compte à supprimer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Impossible de bouger un compte dans la liste, celui-ci est déjà tout en haut.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
             catch (Exception ex)
@@ -333,7 +333,7 @@ namespace DofLog
             }
             catch (NullReferenceException ex)
             {
-                MessageBox.Show("Veuillez sélectionner un compte à supprimer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Impossible de bouger un compte dans la liste, celui-ci est déjà tout en bas.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
             catch (Exception ex)
