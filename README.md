@@ -119,6 +119,7 @@ J'utilise [SemVer](http://semver.org/) pour le versioning. Pour la liste complè
     - Clic droit sur le bouton connecter pour accéder au groupes de compte
   - Barre de défilement colorée en fonction du mode (Dofus Rétro ou Dofus 2)
   - Possibilité de télécharger directement la nouvelle mise à jour
+  - Cryptage des comptes
 - 2.0.1
   - Raccourcis claviers :
   - Fenêtre principale :
