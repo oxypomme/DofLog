@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Forms = System.Windows.Forms;
 
@@ -15,10 +18,18 @@ namespace DofLog
         {
             InitializeComponent();
 
-            tb_al.Text = App.config.AL_Path;
-            cb_organizer.IsChecked = App.config.AutoOrganizer;
-            cb_staylog.IsChecked = App.config.StayLog;
-            cb_retro.IsChecked = App.config.RetroMode;
+            foreach (var field in App.config.GetType().GetProperties())
+            {
+                try
+                {
+                    if (field.PropertyType == typeof(bool)) // if it's a bool, a checkbox is needed
+                        ((CheckBox)FindName("cb_" + field.Name.ToLower())).IsChecked = (bool?)field.GetValue(App.config);
+                    else if (field.PropertyType == typeof(string)) // if it's a string, a textbox is needed
+                        ((TextBox)FindName("tb_" + field.Name.ToLower())).Text = (string)field.GetValue(App.config);
+                }
+                catch (NullReferenceException) { App.logstream.Warning("Config Window missing an item : " + field.Name); }
+            }
+
             lbl_version.Content = "v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
             ReloadTheme();
@@ -104,7 +115,7 @@ namespace DofLog
             if (openFileDialog.ShowDialog() == Forms.DialogResult.OK)
             {
                 App.config.AL_Path = openFileDialog.FileName;
-                tb_al.Text = openFileDialog.FileName;
+                tb_al_path.Text = openFileDialog.FileName;
                 App.config.UpdateConfig();
             }
         }

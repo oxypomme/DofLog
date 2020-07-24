@@ -7,11 +7,14 @@ namespace DofLog
     {
         // TODO #1 : Security
 
+        private string username { get; set; }
+        private string password { get; set; }
+
         #region Public Fields
 
         public string nickname;
-        public string username;
-        public string password;
+        public string UsernameCipher { get => StringCipher.Decrypt(username); private set => username = StringCipher.Encrypt(value); }
+        public string PasswordCipher { get => StringCipher.Decrypt(password); private set => password = StringCipher.Encrypt(value); }
 
         #endregion Public Fields
 
@@ -20,25 +23,28 @@ namespace DofLog
         public Account(string nickname, string username, string password)
         {
             this.nickname = nickname;
-            this.username = username;
-            this.password = password;
+            UsernameCipher = username;
+            PasswordCipher = password;
         }
 
         public Account(Account acc)
         {
             nickname = acc.nickname;
-            username = acc.username;
-            password = acc.password;
+            UsernameCipher = acc.UsernameCipher;
+            PasswordCipher = acc.PasswordCipher;
         }
 
         #endregion Constructors
 
         #region Public Methods
 
-        public override string ToString()
+        public void CleanLogs()
         {
-            return nickname;
+            UsernameCipher = username;
+            PasswordCipher = password;
         }
+
+        public override string ToString() => nickname;
 
         public override bool Equals(object obj)
         {

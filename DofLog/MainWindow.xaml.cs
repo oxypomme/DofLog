@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +25,7 @@ namespace DofLog
         public MainWindow()
         {
             InitializeComponent();
+            //Hide();
             // inspired by https://stackoverflow.com/a/33450624
             RoutedCommand keyShortcut = new RoutedCommand();
 
@@ -83,7 +85,7 @@ namespace DofLog
             notify.Click += NotifyMenu_ShowClick;
             notify.Visible = true;
 
-            btn_discord.IsChecked = App.config.DiscordEnabled;
+            btn_discordenabled.IsChecked = App.config.DiscordEnabled;
 
             Width = App.config.SavedSize.Width;
             Height = App.config.SavedSize.Height;
@@ -124,6 +126,7 @@ namespace DofLog
                         }
                     };
                     item.Click += EditAccount_Click;
+                    item.Style = FindResource("MenuItemBaseStyle") as Style;
                     item_cm.Items.Add(item);
                 }
                 {
@@ -136,6 +139,7 @@ namespace DofLog
                         }
                     };
                     item.Click += DeleteAccount_Click;
+                    item.Style = FindResource("MenuItemBaseStyle") as Style;
                     item_cm.Items.Add(item);
                 }
             }
@@ -156,7 +160,7 @@ namespace DofLog
 
         private void Account_Checked(object sender, RoutedEventArgs e)
         {
-            try { Logger.accounts.Add((Account)((CheckBox)sender).Content); }
+            try { App.Logger.Accounts.Add((Account)((CheckBox)sender).Content); }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -166,7 +170,7 @@ namespace DofLog
 
         private void Account_Unchecked(object sender, RoutedEventArgs e)
         {
-            try { Logger.accounts.Remove((Account)((CheckBox)sender).Content); }
+            try { App.Logger.Accounts.Remove((Account)((CheckBox)sender).Content); }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -222,6 +226,11 @@ namespace DofLog
                 }
                 lb_accounts.SelectedItem = realSender;
             }
+            catch (System.Security.Cryptography.CryptographicException ex)
+            {
+                MessageBox.Show("Les données sont corrompues ou ne sont pas les vôtres.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
             catch (NullReferenceException ex)
             {
                 MessageBox.Show("Veuillez sélectionner un compte à éditer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -262,20 +271,7 @@ namespace DofLog
             }
         }
 
-        private void ClearSlectedAccounts_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                foreach (CheckBox item in lb_accounts.Items)
-                    if (item.IsChecked.Value)
-                        item.IsChecked = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-        }
+        private void ClearSelectedAccounts_Click(object sender, RoutedEventArgs e) => ClearSelectedAccounts();
 
         private void UpAccount_Click(object sender, RoutedEventArgs e)
         {
@@ -302,7 +298,7 @@ namespace DofLog
             }
             catch (NullReferenceException ex)
             {
-                MessageBox.Show("Veuillez sélectionner un compte à supprimer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Impossible de bouger un compte dans la liste, celui-ci est déjà tout en haut.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
             catch (Exception ex)
@@ -337,7 +333,7 @@ namespace DofLog
             }
             catch (NullReferenceException ex)
             {
-                MessageBox.Show("Veuillez sélectionner un compte à supprimer.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Impossible de bouger un compte dans la liste, celui-ci est déjà tout en bas.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
                 App.logstream.Error(ex);
             }
             catch (Exception ex)
@@ -353,6 +349,7 @@ namespace DofLog
 
         private void NotifyMenu_ShowClick(object sender, EventArgs e)
         {
+            Show();
             WindowState = WindowState.Normal;
             ShowInTaskbar = true;
         }
@@ -377,78 +374,9 @@ namespace DofLog
 
         #endregion Notify
 
-        #region Other buttons
+        #region Other Buttons
 
-        private void btn_connect_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Forms.Cursor.Current = Forms.Cursors.WaitCursor;
-
-                var cancelLogTaskSource = new CancellationTokenSource();
-                var ct = cancelLogTaskSource.Token;
-
-                var logTask = Task.Run(() => { Logger.LogAccounts(ct); }, cancelLogTaskSource.Token);
-                if (!logTask.Wait(Logger.PAUSE * 400 * Logger.accounts.Count))
-                {
-                    cancelLogTaskSource.Cancel();
-                    throw new TimeoutException();
-                }
-                logTask.Dispose();
-
-                Forms.Cursor.Current = Forms.Cursors.Default;
-
-                var sb = new System.Text.StringBuilder();
-                foreach (var acc in Logger.accounts)
-                {
-                    sb.Append(acc);
-                    if (Logger.accounts.IndexOf(acc) + 2 == Logger.accounts.Count)
-                        sb.Append(" et ");
-                    else if (Logger.accounts.IndexOf(acc) + 1 != Logger.accounts.Count)
-                        sb.Append(", ");
-                }
-                if (Logger.accounts.Count > 1)
-                    sb.Append(" sont");
-                else
-                    sb.Append(" est");
-                notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connectés !", Forms.ToolTipIcon.Info);
-                Task.Run(() =>
-                {
-                    Thread.Sleep(5000);
-                    Logger.state = Logger.LoggerState.IDLE;
-                });
-                if (App.config.AutoOrganizer)
-                {
-                    App.LaunchOrganizer();
-                    //TODO? #3 : Logger.OrganizeAccounts()
-                }
-                if (App.config.AutoUncheckAccount)
-                {
-                    ClearSlectedAccounts_Click(sender, e);
-                }
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-            catch (System.IO.FileNotFoundException ex)
-            {
-                MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-            catch (TimeoutException ex)
-            {
-                MessageBox.Show("La connexion à sûrement échouée, vérifier votre connexion internet et que vous n'avez pas bougé la souris pendant la connexion. Si ce problème persiste contacter l'équipe de développement.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
-                App.logstream.Error(ex);
-            }
-            Forms.Cursor.Current = Forms.Cursors.Default;
-        }
+        private void btn_connect_Click(object sender, RoutedEventArgs e) => ConnectAccounts();
 
         private void btn_settings_Click(object sender, RoutedEventArgs e)
         {
@@ -490,6 +418,263 @@ namespace DofLog
             }
         }
 
-        #endregion Other buttons
+        private void btn_connect_groups_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                App.Logger.Accounts.Clear();
+                foreach (var acc in (Group)((MenuItem)((MenuItem)sender).Parent).Header)
+                    App.Logger.Accounts.Add(acc);
+                ConnectAccounts();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void NewGroup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var newGroupDialog = new NewGroupDialog();
+                newGroupDialog.Owner = this;
+                newGroupDialog.ShowDialog();
+                if (newGroupDialog.createdGroup != null)
+                {
+                    App.config.Groups.Add(newGroupDialog.createdGroup);
+                    App.config.UpdateConfig();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void EditGroup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var realSender = (MenuItem)((MenuItem)sender).Parent;
+                var newGroupDialog = new NewGroupDialog((Group)(realSender).Header);
+                newGroupDialog.Owner = this;
+                newGroupDialog.ShowDialog();
+                if (!realSender.Header.Equals(newGroupDialog.createdGroup) && newGroupDialog.createdGroup != null)
+                {
+                    var index = App.config.Groups.IndexOf((Group)realSender.Header);
+                    App.config.Groups[index] = new Group(newGroupDialog.createdGroup);
+                    App.config.UpdateConfig();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void DelGroup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                App.config.Groups.Remove((Group)((MenuItem)((MenuItem)sender).Parent).Header);
+                App.config.UpdateConfig();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void btn_connect_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                btn_connect_cm.Items.Clear();
+                foreach (var group in App.config.Groups)
+                {
+                    var grpItem = new MenuItem()
+                    {
+                        Header = group
+                    };
+
+                    {
+                        var item = new MenuItem()
+                        {
+                            Header = "Connexion",
+                            Icon = new Image()
+                            {
+                                Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/run.png", UriKind.Relative))
+                            }
+                        };
+                        item.Style = FindResource("MenuItemBaseStyle") as Style;
+                        item.Click += btn_connect_groups_Click;
+                        grpItem.Items.Add(item);
+                    }
+                    {
+                        var item = new MenuItem()
+                        {
+                            Header = "Editer",
+                            Icon = new Image()
+                            {
+                                Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/edit.png", UriKind.Relative))
+                            }
+                        };
+                        item.Style = FindResource("MenuItemBaseStyle") as Style;
+                        item.Click += EditGroup_Click;
+                        grpItem.Items.Add(item);
+                    }
+                    {
+                        var item = new MenuItem()
+                        {
+                            Header = "Supprimer",
+                            Icon = new Image()
+                            {
+                                Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/remove.png", UriKind.Relative))
+                            }
+                        };
+                        item.Style = FindResource("MenuItemBaseStyle") as Style;
+                        item.Click += DelGroup_Click;
+                        grpItem.Items.Add(item);
+                    }
+
+                    grpItem.Style = FindResource("SubMenuItemBaseStyle") as Style;
+                    grpItem.Items.Add(new Separator());
+
+                    foreach (var acc in group)
+                    {
+                        var accItem = new MenuItem()
+                        {
+                            Header = acc
+                        };
+                        accItem.IsEnabled = false;
+                        accItem.Style = FindResource("MenuItemBaseStyle") as Style;
+                        grpItem.Items.Add(accItem);
+                    }
+
+                    btn_connect_cm.Items.Add(grpItem);
+                }
+
+                btn_connect_cm.Items.Add(new Separator());
+
+                {
+                    var item = new MenuItem()
+                    {
+                        Header = "Nouveau groupe",
+                        Icon = new Image()
+                        {
+                            Source = new System.Windows.Media.Imaging.BitmapImage(new Uri("img/add.png", UriKind.Relative))
+                        }
+                    };
+                    item.Click += NewGroup_Click;
+                    item.Style = FindResource("MenuItemBaseStyle") as Style;
+                    btn_connect_cm.Items.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        #endregion Other Buttons
+
+        #region Commands
+
+        private void ConnectAccounts()
+        {
+            try
+            {
+                Hide();
+
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        App.Logger.Start();
+
+                        var sb = new StringBuilder();
+                        foreach (var acc in App.Logger.Accounts)
+                        {
+                            sb.Append(acc);
+                            if (App.Logger.Accounts.IndexOf(acc) + 2 == App.Logger.Accounts.Count)
+                                sb.Append(" et ");
+                            else if (App.Logger.Accounts.IndexOf(acc) + 1 != App.Logger.Accounts.Count)
+                                sb.Append(", ");
+                        }
+                        if (App.Logger.Accounts.Count > 1)
+                            sb.Append(" sont");
+                        else
+                            sb.Append(" est");
+                        notify.ShowBalloonTip(5000, "Tout les comptes sont connectés", sb.ToString() + " connecté" + (App.Logger.Accounts.Count > 1 ? "s" : "") + " !", Forms.ToolTipIcon.Info);
+                        App.startTime = DateTime.Now;
+                        if (App.config.AutoOrganizer)
+                        {
+                            App.LaunchOrganizer();
+                            //TODO? #3 : App.Logger.OrganizeAccounts()
+                        }
+                        if (App.config.AutoUncheckAccount)
+                            Dispatcher.Invoke(new Action(() => ClearSelectedAccounts()));
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        MessageBox.Show("Veuillez sélectionner au moins un compte à connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (System.IO.FileNotFoundException ex)
+                    {
+                        MessageBox.Show("Veuillez redéfinir le chemin vers l'Ankama Launcher.\nVous pouvez aussi lancer l'Ankama Launcher avant de vous connecter.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (TimeoutException ex)
+                    {
+                        MessageBox.Show("La tâche à mis trop de temps pour être exécutée", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (System.Security.Cryptography.CryptographicException ex)
+                    {
+                        MessageBox.Show("Les données sont corrompues ou ne sont pas les vôtres.", "Une erreur est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                        App.logstream.Error(ex);
+                    }
+                    finally
+                    {
+                        Dispatcher.Invoke(new Action(() => Show()));
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        private void ClearSelectedAccounts()
+        {
+            try
+            {
+                foreach (CheckBox item in lb_accounts.Items)
+                    if (item.IsChecked.Value)
+                        item.IsChecked = false;
+                App.Logger.Accounts.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Une erreur inattendue est survenue...", MessageBoxButton.OK, MessageBoxImage.Error);
+                App.logstream.Error(ex);
+            }
+        }
+
+        #endregion Commands
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DiscordRPC;
+using DofLog.Properties;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -16,17 +17,28 @@ namespace DofLog
     /// </summary>
     public partial class App : Application
     {
-        internal static Config config { get; set; }
+        internal static Config config { get; private set; }
+        internal static Logger Logger { get; private set; }
+        internal static DateTime startTime;
 
         public App()
         {
             try
             {
+                if ((Guid)Settings.Default["UUID"] == new Guid("00000000-0000-0000-0000-000000000000")) // If the UUID is empty
+                {
+                    Settings.Default["UUID"] = Guid.NewGuid();
+                    Settings.Default.Save();
+                }
+
                 logstream = new LogStream(Path.Combine(Environment.CurrentDirectory, "logs.log"));
 
                 config = new Config();
                 config.GenConfig();
 
+                Logger = new Logger();
+
+                startTime = DateTime.Now;
                 StartRPC();
 
                 Updater();
@@ -97,6 +109,8 @@ namespace DofLog
         {
             try
             {
+                if (File.Exists("DofLog_setup.exe"))
+                    File.Delete("DofLog_setup.exe");
                 /* Credits to WildGoat07 : https://github.com/WildGoat07 */
                 var github = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("DofLog"));
                 var lastRelease = await github.Repository.Release.GetLatest(270258000);
@@ -106,10 +120,31 @@ namespace DofLog
                 {
                     var result = MessageBox.Show("Une nouvelle version est disponible. Voulez-vous la télécharger ?", "Updater", MessageBoxButton.YesNo, MessageBoxImage.Information);
                     if (result == MessageBoxResult.Yes)
-                        System.Diagnostics.Process.Start("https://github.com/oxypomme/DofLog/releases/latest");
+                    {
+                        WebClient webClient = new WebClient();
+                        logstream.Log("Downloading Update");
+                        webClient.DownloadFile(new Uri("https://github.com/oxypomme/DofLog/releases/latest/download/DofLog_setup.exe"), "DofLog_setup.exe");
+                        logstream.Log("Updated downloaded, extracting it");
+                        Process.Start(new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "DofLog_setup.exe")));
+                        Environment.Exit(0);
+                    }
+                }
+                else if (new Version(lastRelease.TagName) < current)
+                {
+                    var result = MessageBox.Show("Cette version de DofLog est expérimentale : de nombreux bugs peuvent survenir et les nouvelles fonctionnalités peuvent ne pas être prêtes à l'utilisation. Voulez-vous continuer ?", "Updater", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes);
+                    if (result == MessageBoxResult.No)
+                    {
+                        StopRPC();
+                        logstream.Close();
+                        Environment.Exit(1);
+                    }
                 }
             }
             catch (Exception e) { logstream.Error(e); }
+            finally
+            {
+                //Current.MainWindow.Dispatcher.Invoke(new Action(() => Current.MainWindow.Show()));
+            }
         }
 
         #endregion Utils
@@ -124,8 +159,9 @@ namespace DofLog
         {
             if (!File.Exists("Modules/Organizer.exe"))
                 DownloadOrganizer();
-            var startInfo = new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Modules/Organizer.exe"));
-            return Process.Start(startInfo);
+            foreach (var proc in Process.GetProcessesByName("Organizer"))
+                proc.Kill();
+            return Process.Start(new ProcessStartInfo(Path.Combine(Environment.CurrentDirectory, "Modules/Organizer.exe")));
         }
 
         /// <summary>
@@ -153,44 +189,51 @@ namespace DofLog
             if (config.DiscordEnabled)
             {
                 var discordClient = new DiscordRpcClient("623896785605361664");
-                discordClient.Initialize();
+                try
+                {
+                    discordClient.Initialize();
 
-                rpcUpdaterToken = new CancellationTokenSource();
-                var ct = rpcUpdaterToken.Token;
-                Task.Run(() =>
-                   {
-                       while (config.DiscordEnabled)
+                    rpcUpdaterToken = new CancellationTokenSource();
+                    var ct = rpcUpdaterToken.Token;
+                    Task.Run(() =>
                        {
-                           if (ct.IsCancellationRequested)
-                               break;
-
-                           var dofs = Process.GetProcessesByName("dofus").ToList();
-                           if (Logger.state == Logger.LoggerState.CONNECTING)
-                               UpdateRPC("Se connecte...", "Comptes connectés :", dofs.Count, Logger.accounts.Count);
-                           else if (dofs.Count() > 0)
+                           while (config.DiscordEnabled)
                            {
-                               var sb = new System.Text.StringBuilder();
-                               foreach (var process in dofs)
-                               {
-                                   if (!process.MainWindowTitle.StartsWith("Dofus"))
-                                   {
-                                       sb.Append(process.MainWindowTitle.Split('-')[0].Trim());
+                               if (ct.IsCancellationRequested)
+                                   break;
 
-                                       if (dofs.IndexOf(process) + 2 == dofs.Count)
-                                           sb.Append(" et ");
-                                       else if (dofs.IndexOf(process) + 1 != dofs.Count)
-                                           sb.Append(", ");
+                               var dofs = Process.GetProcessesByName("dofus").ToList();
+                               if (Logger.State == Logger.LoggerState.CONNECTING)
+                                   UpdateRPC("Se connecte...", "Comptes connectés :", dofs.Count, Logger.Accounts.Count);
+                               else if (dofs.Count() > 0)
+                               {
+                                   var sb = new System.Text.StringBuilder();
+                                   foreach (var process in dofs)
+                                   {
+                                       if (!process.MainWindowTitle.StartsWith("Dofus"))
+                                       {
+                                           sb.Append(process.MainWindowTitle.Split('-')[0].Trim());
+
+                                           if (dofs.IndexOf(process) + 2 == dofs.Count)
+                                               sb.Append(" et ");
+                                           else if (dofs.IndexOf(process) + 1 != dofs.Count)
+                                               sb.Append(", ");
+                                       }
                                    }
+                                   UpdateRPC("Connecté avec :", sb.ToString(), dofs.Count);
                                }
-                               UpdateRPC("Connecté avec :", sb.ToString(), dofs.Count);
+                               else
+                                   UpdateRPC("Se prépare...");
+                               Thread.Sleep(1000);
                            }
-                           else
-                               UpdateRPC("Se prépare...");
-                           Thread.Sleep(1000);
-                       }
-                       discordClient.ClearPresence();
-                       discordClient.Dispose();
-                   }, rpcUpdaterToken.Token);
+                           discordClient.ClearPresence();
+                           discordClient.Dispose();
+                       }, rpcUpdaterToken.Token);
+                }
+                catch (Exception e)
+                {
+                    logstream.Log(e);
+                }
 
                 void UpdateRPC(string message, string state = "", int accountCount = 0, int maxCount = 8)
                 {
@@ -206,7 +249,7 @@ namespace DofLog
                         },
                         Timestamps = new Timestamps()
                         {
-                            Start = Process.GetCurrentProcess().StartTime.ToUniversalTime()
+                            Start = (Process.GetProcessesByName("dofus").ToList().Count > 0 && Logger.State != Logger.LoggerState.CONNECTING ? startTime.ToUniversalTime() : DateTime.Now.AddSeconds(1).ToUniversalTime())
                         },
                         Assets = new Assets()
                         {

@@ -19,8 +19,9 @@ namespace DofLog
 
         public bool AutoOrganizer { get; set; }
         public bool AutoUncheckAccount { get; set; }
-        public List<Account> Accounts { get; set; }
         public Size SavedSize { get; set; }
+        public List<Account> Accounts { get; set; }
+        public List<Group> Groups { get; set; }
 
         #endregion Public Fields
 
@@ -39,12 +40,13 @@ namespace DofLog
             AutoUncheckAccount = false;
             SavedSize = new Size(250, 200);
             Accounts = new List<Account>();
+            Groups = new List<Group>();
 
             try
             {
-                if (!File.Exists("config.ser"))
+                if (!File.Exists("config.sser"))
                 {
-                    File.Create("config.ser").Close();
+                    File.Create("config.sser").Close();
                     App.logstream.Log("config created");
                     SaveConfig();
                 }
@@ -68,7 +70,7 @@ namespace DofLog
         /// </summary>
         public void SaveConfig()
         {
-            using (var stream = File.Open("config.ser", FileMode.Create))
+            using (var stream = File.Open("config.sser", FileMode.Create))
             {
                 var formatter = new BinaryFormatter();
                 formatter.Serialize(stream, this);
@@ -81,7 +83,7 @@ namespace DofLog
         /// </summary>
         public void LoadConfig()
         {
-            using (var stream = File.Open("config.ser", FileMode.Open))
+            using (var stream = File.Open("config.sser", FileMode.Open))
             {
                 var formatter = new BinaryFormatter();
                 var config = (Config)formatter.Deserialize(stream);
@@ -90,6 +92,8 @@ namespace DofLog
                 {
                     GetType().GetProperty(field.Name).SetValue(this, field.GetValue(config));
                     App.logstream.Log(field.Name + " loaded");
+                    if (GetType().GetProperty(field.Name).GetValue(this) == null) // If the field is null we initialize it
+                        GetType().GetProperty(field.Name).SetValue(this, Activator.CreateInstance(GetType().GetProperty(field.Name).PropertyType));
                 }
             }
         }

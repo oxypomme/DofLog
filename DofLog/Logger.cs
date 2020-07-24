@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
@@ -44,10 +45,12 @@ namespace DofLog
 
         #region Internal Fields
 
-        internal static List<Account> accounts = new List<Account>();
-        internal static LoggerState state = LoggerState.IDLE;
+        internal LoggerState State { get; private set; }
+        internal List<Account> Accounts { get; set; }
 
         #endregion Internal Fields
+
+        private CancellationTokenSource ctSource { get; set; }
 
         #region Constants
 
@@ -55,56 +58,54 @@ namespace DofLog
 
         #endregion Constants
 
+        private CancellationToken ct;
+
+        public Logger()
+        {
+            State = LoggerState.IDLE;
+            Accounts = new List<Account>();
+        }
+
         #region Public Methods
 
-        public static void LogAccounts(CancellationToken ct)
+        public void Start()
         {
-            state = LoggerState.STARTING;
-
-            if (!accounts.Any())
+            if (!Accounts.Any())
                 throw new ArgumentException();
+
+            ctSource = new CancellationTokenSource();
+
+            var logTask = Task.Run(() => { LogAccounts(Accounts); }, ctSource.Token);
+            if (!logTask.Wait(PAUSE * 400 * Accounts.Count))
+            {
+                ctSource.Cancel();
+                State = LoggerState.IDLE;
+                throw new TimeoutException();
+            }
+            Task.Run(() =>
+            {
+                List<Process> dofusProcess;
+                if (!App.config.RetroMode)
+                    dofusProcess = Process.GetProcessesByName("dofus").ToList();
+                else
+                    dofusProcess = Process.GetProcessesByName("Dofus Retro").ToList();
+                while (dofusProcess.Count > 0)
+                {
+                    State = LoggerState.CONNECTED;
+                    Thread.Sleep(500);
+                }
+                State = LoggerState.IDLE;
+            });
+        }
+
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private void LogAccounts(List<Account> accounts)
+        {
+            State = LoggerState.STARTING;
             var input = new InputSimulator();
-
-            void SetForegroundWindowAL(AnkamaLauncher launcher)
-            {
-                foreach (var process in launcher.process)
-                    SetForegroundWindow(process.MainWindowHandle);
-            }
-
-            void UnlogFromAL(AnkamaLauncher launcher, InputSimulator controller = null)
-            {
-                if (controller == null)
-                    controller = new InputSimulator();
-
-                /* UNLOG FROM AL*/
-                App.logstream.Log("Logging off from AL");
-                SetForegroundWindowAL(launcher);
-                App.logstream.Log($"Waiting to detect the games button (x:{launcher.gamesBtn.X},y:{launcher.gamesBtn.Y})");
-                while (!launcher.IsGamesBtn(GetPixel(launcher.gamesBtn)))
-                {
-                    Thread.Sleep(PAUSE * 2);
-                    if (ct.IsCancellationRequested)
-                    {
-                        state = LoggerState.IDLE;
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-                LClickMouseTo(launcher.profileBtn, controller);
-                CustomMouseTo(launcher.unlogBtn, controller);
-                App.logstream.Log($"Waiting to detect the unlog button (x:{launcher.unlogBtn.X},y:{launcher.unlogBtn.Y})");
-                while (!launcher.IsUnlogBtn(GetPixel(launcher.unlogBtn)))
-                {
-                    Thread.Sleep(PAUSE * 2);
-                    if (ct.IsCancellationRequested)
-                    {
-                        state = LoggerState.IDLE;
-                        ct.ThrowIfCancellationRequested();
-                    }
-                }
-                controller.Mouse.LeftButtonClick().Sleep(PAUSE);
-                CustomMouseTo(launcher.usernameField, controller);
-                Thread.Sleep(PAUSE);
-            }
 
             // Attempting to get the AL processes
             var AL_Process = Process.GetProcessesByName("ankama launcher");
@@ -137,10 +138,7 @@ namespace DofLog
                     if (AL_Size.Width != 0 && AL_Size.Height != 0)
                         break;
                     if (ct.IsCancellationRequested)
-                    {
-                        state = LoggerState.IDLE;
                         ct.ThrowIfCancellationRequested();
-                    }
                 }
 
                 App.logstream.Log($"AL orig (x:{AL_Origin.X},y: {AL_Origin.Y})", "DEBUG");
@@ -151,7 +149,7 @@ namespace DofLog
             SetForegroundWindowAL(al);
 
             Thread.Sleep(PAUSE * 2);
-            state = LoggerState.CONNECTING;
+            State = LoggerState.CONNECTING;
             /* CONNECT TO AL */
             App.logstream.Log($"Waiting to detect FB button (x:{al.fbBtn.X},y:{al.fbBtn.Y})");
             while (!al.IsFbBtn(GetPixel(al.fbBtn)))
@@ -163,10 +161,7 @@ namespace DofLog
                     App.logstream.Log("Unlogged from AL");
                 }
                 if (ct.IsCancellationRequested)
-                {
-                    state = LoggerState.IDLE;
                     ct.ThrowIfCancellationRequested();
-                }
             }
             App.logstream.Log("FB button found !");
             LClickMouseTo(al.usernameField, input);
@@ -214,10 +209,7 @@ namespace DofLog
                     SetForegroundWindowAL(al);
                     Thread.Sleep(PAUSE * 2);
                     if (ct.IsCancellationRequested)
-                    {
-                        state = LoggerState.IDLE;
                         ct.ThrowIfCancellationRequested();
-                    }
                 }
 
                 LClickMouseTo(al.startBtn, input);
@@ -251,10 +243,7 @@ namespace DofLog
                                 if (size.Width != 0 && size.Height != 0)
                                     break;
                                 if (ct.IsCancellationRequested)
-                                {
-                                    state = LoggerState.IDLE;
                                     ct.ThrowIfCancellationRequested();
-                                }
                             }
                             App.logstream.Log($"Dofus orig (x:{procWin.Left},y: {procWin.Top})", "DEBUG");
                             App.logstream.Log($"Dofus size (x:{size.Width},y: {size.Height})", "DEBUG");
@@ -269,16 +258,10 @@ namespace DofLog
                             dofusProcess = TMPdofusProcess;
                         }
                         if (ct.IsCancellationRequested)
-                        {
-                            state = LoggerState.IDLE;
                             ct.ThrowIfCancellationRequested();
-                        }
                     }
                 if (ct.IsCancellationRequested)
-                {
-                    state = LoggerState.IDLE;
                     ct.ThrowIfCancellationRequested();
-                }
             }
             for (int i = 0; i < accounts.Count; i++)
             {
@@ -318,16 +301,10 @@ namespace DofLog
                         break;
                     }
                     if (ct.IsCancellationRequested)
-                    {
-                        state = LoggerState.IDLE;
                         ct.ThrowIfCancellationRequested();
-                    }
                 }
                 if (ct.IsCancellationRequested)
-                {
-                    state = LoggerState.IDLE;
                     ct.ThrowIfCancellationRequested();
-                }
             }
 
             App.logstream.Log($"Waiting to detect the play button (x:{dofs[0].logBtn.X},y:{dofs[0].logBtn.Y})");
@@ -336,10 +313,7 @@ namespace DofLog
                 Thread.Sleep(PAUSE * 2);
                 SetForegroundWindow(dofs[0].process.MainWindowHandle);
                 if (ct.IsCancellationRequested)
-                {
-                    state = LoggerState.IDLE;
                     ct.ThrowIfCancellationRequested();
-                }
             }
 
             if (!App.config.StayLog)
@@ -347,13 +321,52 @@ namespace DofLog
 
             SetForegroundWindow(dofs[0].process.MainWindowHandle);
 
-            state = LoggerState.CONNECTED;
             App.logstream.Log("Connected and ready to play !");
         }
 
-        #endregion Public Methods
+        private void UnlogFromAL(AnkamaLauncher launcher, InputSimulator controller = null)
+        {
+            if (controller == null)
+                controller = new InputSimulator();
 
-        #region Private Methods
+            /* UNLOG FROM AL*/
+            App.logstream.Log("Logging off from AL");
+            SetForegroundWindowAL(launcher);
+            App.logstream.Log($"Waiting to detect the games button (x:{launcher.gamesBtn.X},y:{launcher.gamesBtn.Y})");
+            while (!launcher.IsGamesBtn(GetPixel(launcher.gamesBtn)))
+            {
+                Thread.Sleep(PAUSE * 2);
+                if (ct.IsCancellationRequested)
+                {
+                    State = LoggerState.IDLE;
+                    ct.ThrowIfCancellationRequested();
+                }
+            }
+            LClickMouseTo(launcher.profileBtn, controller);
+            CustomMouseTo(launcher.unlogBtn, controller);
+            App.logstream.Log($"Waiting to detect the unlog button (x:{launcher.unlogBtn.X},y:{launcher.unlogBtn.Y})");
+            /* AL Unlog Verification
+            while (!launcher.IsUnlogBtn(GetPixel(launcher.unlogBtn)))
+            {
+                Thread.Sleep(PAUSE * 2);
+                if (ct.IsCancellationRequested)
+                {
+                    state = LoggerState.IDLE;
+                    ct.ThrowIfCancellationRequested();
+                }
+            }
+            */
+            Thread.Sleep(PAUSE * 2);
+            controller.Mouse.LeftButtonClick().Sleep(PAUSE);
+            CustomMouseTo(launcher.usernameField, controller);
+            Thread.Sleep(PAUSE);
+        }
+
+        private void SetForegroundWindowAL(AnkamaLauncher launcher)
+        {
+            foreach (var process in launcher.process)
+                SetForegroundWindow(process.MainWindowHandle);
+        }
 
         private static Color GetPixel(Point p)
         {
@@ -422,12 +435,12 @@ namespace DofLog
 
             iS.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_A)
                 .KeyPress(VirtualKeyCode.DELETE).Sleep(PAUSE);
-            iS.Keyboard.TextEntry(account.username).Sleep(PAUSE);
+            iS.Keyboard.TextEntry(account.UsernameCipher).Sleep(PAUSE);
 
             iS.Keyboard.KeyPress(VirtualKeyCode.TAB).Sleep(PAUSE);
             iS.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_A)
                 .KeyPress(VirtualKeyCode.DELETE).Sleep(PAUSE);
-            iS.Keyboard.TextEntry(account.password).Sleep(PAUSE);
+            iS.Keyboard.TextEntry(account.PasswordCipher).Sleep(PAUSE);
         }
 
         #endregion Private Methods

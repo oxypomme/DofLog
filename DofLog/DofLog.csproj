@@ -82,9 +82,14 @@
     </ApplicationDefinition>
     <Compile Include="Dofus.cs" />
     <Compile Include="DofusRetro.cs" />
+    <Compile Include="Group.cs" />
     <Compile Include="SettingsDialog.xaml.cs">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NewGroupDialog.xaml.cs">
+      <DependentUpon>NewGroupDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StringCypher.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -121,6 +126,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\DofusRetro\DofusRetro.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewGroupDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -178,6 +187,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="img\clean.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="img\run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\placeholder.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
